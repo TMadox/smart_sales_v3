@@ -59,7 +59,7 @@ class OperationsSource extends DataTableSource {
                       ),
                     ),
               onTap: () {
-                log(receipt.toString());
+                log(receipt["sender_oper_id"].toString());
                 if (receipt["section_type_no"] != 9999) {
                   Navigator.of(context).pushNamed(
                     "receiptDetails",

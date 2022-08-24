@@ -55,7 +55,7 @@ class InventoryViewmodel extends ChangeNotifier with BaseViewmodel {
       "is_saved_in_server": 1,
       "refrence_id": locator.get<DeviceParam>().deviceId,
       "save_eror_mes": "0",
-      "sender_oper_id": loggedUser.userId,
+      "sender_oper_id": context.read<GeneralState>().receiptsList.length,
       "is_review_from_sender": 0,
       "is_sender_complete_status": 0,
       "employee_name": loggedUser.userName,

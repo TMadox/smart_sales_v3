@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_sales/Data/Models/user_model.dart';
@@ -21,6 +22,7 @@ class UploadReceipts {
       final List products = json.decode(
         receipt["products"] ?? "[]",
       );
+
       final response = await dio
           .post(
             "http://$ipAddress/update_fat_head_data",

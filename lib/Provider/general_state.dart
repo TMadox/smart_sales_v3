@@ -14,8 +14,7 @@ import 'package:smart_sales/Provider/expenses_state.dart';
 import 'package:smart_sales/Provider/mow_state.dart';
 import 'package:smart_sales/View/Screens/Items/Items_viewmodel.dart';
 import 'package:smart_sales/Provider/customers_state.dart';
-import 'package:smart_sales/View/Widgets/Common/alert_snackbar.dart';
-import 'package:retry/retry.dart';
+
 
 class GeneralState extends ChangeNotifier {
   Map currentReceipt = {"totalProducts": 0};

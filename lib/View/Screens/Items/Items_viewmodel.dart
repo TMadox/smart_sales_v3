@@ -135,11 +135,11 @@ class ItemsViewmodel extends ChangeNotifier {
           null) {
         return filteredItems;
       } else {
-        return filteredItems
-            .where((element) =>
-                element.storId ==
-                context.read<GeneralState>().currentReceipt["selected_stor_id"])
-            .toList();
+        return filteredItems;
+        // .where((element) =>
+        //     element.storId ==
+        //     context.read<GeneralState>().currentReceipt["selected_stor_id"])
+        // .toList();
       }
     } else {
       return filteredItems;

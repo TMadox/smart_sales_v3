@@ -49,8 +49,11 @@ Future<void> main() async {
     }
     await prefs.setString("ip_address", "164.68.105.110");
   }
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-      overlays: [SystemUiOverlay.bottom]); // t
+  prefs.clear();
+  SystemChrome.setEnabledSystemUIMode(
+    SystemUiMode.manual,
+    overlays: [SystemUiOverlay.bottom],
+  ); // t
   EasyLoading.instance
     ..displayDuration = const Duration(milliseconds: 2000)
     ..indicatorType = EasyLoadingIndicatorType.threeBounce

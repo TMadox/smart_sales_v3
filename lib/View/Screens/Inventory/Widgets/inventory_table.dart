@@ -264,14 +264,6 @@ class _InventoryTableState extends State<InventoryTable> {
 
   saveReceipt({required BuildContext context}) async {
     await context.read<GeneralState>().computeReceipt(context: context);
-    await locator.get<SaveData>().saveReceiptsData(
-        input: context.read<GeneralState>().receiptsList, context: context);
-    await locator
-        .get<SaveData>()
-        .saveItemsData(input: context.read<ItemsViewmodel>().items);
-    await locator
-        .get<SaveData>()
-        .saveCustomersData(input: context.read<CustomersState>().customers);
   }
 
   changeValue(

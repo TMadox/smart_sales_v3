@@ -211,7 +211,7 @@ abstract class BaseViewmodel {
       "is_saved_in_server": 1,
       "refrence_id": locator.get<DeviceParam>().deviceId,
       "save_eror_mes": "0",
-      "sender_oper_id": loggedUser.userId,
+      "sender_oper_id": context.read<GeneralState>().receiptsList.length,
       "is_review_from_sender": 0,
       "oper_disc_value_with_tax": 0.0,
       "oper_add_value_with_tax": 0.0,

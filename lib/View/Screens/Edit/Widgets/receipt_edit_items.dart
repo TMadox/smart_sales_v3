@@ -492,14 +492,6 @@ class _ReceiptEditItemsViewmodel extends State<ReceiptEditItems> {
   saveReceipt(BuildContext context) async {
     context.read<GeneralState>().setRemainingQty();
     await context.read<GeneralState>().computeReceipt(context: context);
-    await locator.get<SaveData>().saveReceiptsData(
-        input: context.read<GeneralState>().receiptsList, context: context);
-    await locator
-        .get<SaveData>()
-        .saveItemsData(input: context.read<ItemsViewmodel>().items);
-    await locator
-        .get<SaveData>()
-        .saveCustomersData(input: context.read<CustomersState>().customers);
   }
 
   changeValue(

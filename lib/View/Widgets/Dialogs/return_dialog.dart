@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:get/get.dart';
@@ -146,14 +147,14 @@ partReturn({required BuildContext context, required Map receipt}) {
         .read<GeneralState>()
         .fillReceiptWithItems(input: products, addController: false);
     Navigator.of(context).pop();
-    if (loadedReceipt["section_type_no"] == 1) {
+    if (loadedReceipt["section_type_no"] == 2) {
       Navigator.of(context).pushReplacementNamed("receiptEdit",
           arguments: context.read<CustomersState>().customers.firstWhere(
               (element) => element.accId == loadedReceipt["basic_acc_id"]));
     } else {
       MowModel mow = context.read<MowState>().mows.firstWhere(
           (element) => element.accId == loadedReceipt["basic_acc_id"]);
-      Navigator.of(context).pushReplacementNamed(
+      Get.toNamed(
         "receiptEdit",
         arguments: ClientModel(
           amName: mow.mowName,
@@ -281,20 +282,25 @@ newReceipt({required BuildContext context, required Map receipt}) async {
         .fillReceiptWithItems(input: products, addController: true);
     Navigator.of(context).pop();
     if (loadedReceipt["section_type_no"] == 1) {
-      Navigator.of(context).pushReplacementNamed("receiptEdit",
-          arguments: context.read<CustomersState>().customers.firstWhere(
-              (element) => element.accId == loadedReceipt["basic_acc_id"]));
+     
+      await Navigator.of(context).pushNamed(
+        "ReceiptCreation",
+        arguments: context.read<CustomersState>().customers.firstWhere(
+              (element) => element.accId == loadedReceipt["basic_acc_id"],
+            ),
+      );
     } else {
       MowModel mow = context.read<MowState>().mows.firstWhere(
-          (element) => element.accId == loadedReceipt["basic_acc_id"]);
-      Navigator.of(context).pushReplacementNamed("receiptEdit",
+            (element) => element.accId == loadedReceipt["basic_acc_id"],
+          );
+      await Navigator.of(context).pushNamed("ReceiptCreation",
           arguments: ClientModel(
             amName: mow.mowName,
             curBalance: mow.curBalance,
             taxFileNo: mow.taxFileNo,
             employAccId: mow.mowId,
             accId: mow.accId,
-          ));
+          ),);
     }
   } else {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -320,14 +326,6 @@ bool checkIfAllowed({required BuildContext context, required Map receipt}) {
 saveReceipt(BuildContext context) async {
   context.read<GeneralState>().setRemainingQty();
   await context.read<GeneralState>().computeReceipt(context: context);
-  await locator.get<SaveData>().saveReceiptsData(
-      input: context.read<GeneralState>().receiptsList, context: context);
-  await locator
-      .get<SaveData>()
-      .saveItemsData(input: context.read<ItemsViewmodel>().items);
-  await locator
-      .get<SaveData>()
-      .saveCustomersData(input: context.read<CustomersState>().customers);
 }
 
 getStartingId(BuildContext context, int sectionNo) {

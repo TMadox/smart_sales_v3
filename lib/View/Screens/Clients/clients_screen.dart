@@ -50,6 +50,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    log(widget.sectionType.toString());
     return SafeArea(
       left: false,
       right: false,

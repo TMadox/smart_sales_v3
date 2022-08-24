@@ -406,7 +406,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                   builder: (context, state, widget) {
                                     double quantity = 0;
                                     for (var element in state.receiptItems) {
-                                      double temp = element["free_qty"];
+                                      num temp = element["free_qty"];
                                       quantity += temp;
                                     }
                                     return AutoSizeText.rich(
