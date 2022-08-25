@@ -15,7 +15,6 @@ import 'package:smart_sales/Provider/mow_state.dart';
 import 'package:smart_sales/View/Screens/Items/Items_viewmodel.dart';
 import 'package:smart_sales/Provider/customers_state.dart';
 
-
 class GeneralState extends ChangeNotifier {
   Map currentReceipt = {"totalProducts": 0};
   List<Map> receiptItems = [];
@@ -469,7 +468,11 @@ class GeneralState extends ChangeNotifier {
     currentReceipt["credit_after"] = calculateCreditAfter();
   }
 
-  setReceiptsUploaded({required int index, required int code}) {
+  setReceiptsUploadStatus({
+    required int index,
+    required int code,
+    required int completeStatus,
+  }) {
     Map receipt = receiptsList[index];
     receipt["is_sender_complete_status"] = 1;
     receipt["upload_code"] = code;

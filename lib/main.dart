@@ -40,16 +40,12 @@ Future<void> main() async {
   await locator.get<DeviceParam>().getDeviceId();
   await locator.get<DeviceParam>().getDocumentsPath();
   final prefs = locator.get<SharedStorage>().prefs;
+  // prefs.clear();
   if (prefs.getString("ip_password") == null) {
-    if (defaultTargetPlatform == TargetPlatform.iOS) {
-      await prefs.setString("ip_password", "200");
-      await prefs.setString("user_id", "49");
-    } else {
-      await prefs.setString("ip_password", "1");
-    }
-    await prefs.setString("ip_address", "164.68.105.110");
+    await prefs.setString("ip_password", "200");
+    await prefs.setString("user_id", "31");
+    await prefs.setString("ip_address", "sky3m.duckdns.org");
   }
-  prefs.clear();
   SystemChrome.setEnabledSystemUIMode(
     SystemUiMode.manual,
     overlays: [SystemUiOverlay.bottom],

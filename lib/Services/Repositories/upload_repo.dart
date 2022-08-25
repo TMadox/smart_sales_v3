@@ -17,12 +17,14 @@ class UploadReceipts {
     String encoded = base64.encode(utf8.encode(ipPassword));
     List<Map> receipts = context.read<GeneralState>().receiptsList;
     bool foundError = false;
-    for (Map receipt in receipts
-        .where((element) => element["is_sender_complete_status"] == 0)) {
+    for (Map receipt in receipts.where(
+      (element) =>
+          (element["is_sender_complete_status"] == 0) &&
+          (element["upload_code"] != -19),
+    )) {
       final List products = json.decode(
         receipt["products"] ?? "[]",
       );
-
       final response = await dio
           .post(
             "http://$ipAddress/update_fat_head_data",
@@ -42,11 +44,21 @@ class UploadReceipts {
           );
       if (response.data == "[]" ||
           response.data == -1 ||
+          response.data == -19 ||
           response.data == -30) {
         foundError = true;
+        if (response.data == -19) {
+          context.read<GeneralState>().setReceiptsUploadStatus(
+                index:
+                    context.read<GeneralState>().receiptsList.indexOf(receipt),
+                completeStatus: 0,
+                code: response.data,
+              );
+        }
       } else {
-        context.read<GeneralState>().setReceiptsUploaded(
+        context.read<GeneralState>().setReceiptsUploadStatus(
               index: context.read<GeneralState>().receiptsList.indexOf(receipt),
+              completeStatus: 1,
               code: response.data,
             );
         context.read<UserState>().setLastUploadDate(
