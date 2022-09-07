@@ -1,9 +1,11 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-
 import 'package:smart_sales/App/Util/date.dart';
 import 'package:smart_sales/App/Util/device.dart';
 import 'package:smart_sales/App/Util/locator.dart';
@@ -12,11 +14,12 @@ import 'package:smart_sales/App/Resources/values_manager.dart';
 import 'package:smart_sales/Data/Models/client_model.dart';
 import 'package:smart_sales/Data/Models/mow_model.dart';
 import 'package:smart_sales/Data/Models/user_model.dart';
-import 'package:smart_sales/Provider/customers_state.dart';
+import 'package:smart_sales/Provider/clients_state.dart';
 import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/Provider/mow_state.dart';
 import 'package:smart_sales/Provider/options_state.dart';
 import 'package:smart_sales/Provider/powers_state.dart';
+import 'package:smart_sales/Provider/stor_state.dart';
 import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/View/Screens/Documents/document_viewmodel.dart';
 import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
@@ -38,6 +41,18 @@ class MowView extends StatefulWidget {
 
 class _MowViewState extends State<MowView> {
   String searchWord = "";
+  late int selectedStoreId;
+  @override
+  void initState() {
+    if (context.read<GeneralState>().currentReceipt["selected_stor_id"] ==
+        null) {
+      selectedStoreId = context.read<UserState>().user.defStorId;
+    } else {
+      selectedStoreId =
+          context.read<GeneralState>().currentReceipt["selected_stor_id"];
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +81,60 @@ class _MowViewState extends State<MowView> {
                   },
                 ),
               ),
+              Visibility(
+                visible: widget.canTap,
+                child: Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: FormBuilderDropdown<int>(
+                      name: "stor",
+                      iconEnabledColor: Colors.transparent,
+                      initialValue: context
+                              .read<GeneralState>()
+                              .currentReceipt["selected_stor_id"] ??
+                          selectedStoreId,
+                      hint: Text("choose_stor".tr),
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() {
+                            selectedStoreId = value;
+                          });
+                        }
+                      },
+                      validator: FormBuilderValidators.required(context),
+                      items: context
+                          .read<StoreState>()
+                          .stors
+                          .map(
+                            (stor) => DropdownMenuItem<int>(
+                              alignment: AlignmentDirectional.center,
+                              child: AutoSizeText(
+                                stor.storName.toString(),
+                                style: GoogleFonts.cairo(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              value: stor.storId,
+                            ),
+                          )
+                          .toList(),
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(horizontal: 5),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.green,
+                          ),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(
+                              10,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              )
             ],
           ),
         ),
@@ -186,8 +255,8 @@ class _MowViewState extends State<MowView> {
   }) async {
     UserModel loggedUser = context.read<UserState>().user;
     context
-        .read<CustomersState>()
-        .setCurrentCustomer(customer: ClientModel(priceId: 1));
+        .read<ClientsState>()
+        .setCurrentCustomer(customer: ClientsModel(priceId: 1));
     context.read<GeneralState>().setCurrentReceipt(input: {
       "oper_code": getStartingId(context) + 1,
       "basic_acc_id": mow.accId,
@@ -216,6 +285,7 @@ class _MowViewState extends State<MowView> {
       "oper_add_per": 0.0,
       "oper_add_value": 0.0,
       "oper_net_value": 0.0,
+      "selected_stor_id": selectedStoreId,
       "reside_value": 0.0,
       "tax_per": 0.0,
       "tax_value": 0.0,
@@ -252,7 +322,7 @@ class _MowViewState extends State<MowView> {
       Navigator.of(context).pushNamedAndRemoveUntil(
         "ReceiptCreation",
         (route) => count++ >= 2,
-        arguments: ClientModel(
+        arguments: ClientsModel(
           amName: mow.mowName,
           curBalance: mow.curBalance,
           taxFileNo: mow.taxFileNo,
@@ -262,7 +332,7 @@ class _MowViewState extends State<MowView> {
       );
     } else {
       context.read<DocumentsViewmodel>().setSelectedCustomer(
-              input: ClientModel(
+              input: ClientsModel(
             amName: mow.mowName,
             curBalance: mow.curBalance,
             taxFileNo: mow.taxFileNo,
@@ -275,7 +345,7 @@ class _MowViewState extends State<MowView> {
       } else {
         await Navigator.of(context).pushNamed(
           "ReceiptCreation",
-          arguments: ClientModel(
+          arguments: ClientsModel(
             amName: mow.mowName,
             curBalance: mow.curBalance,
             taxFileNo: mow.taxFileNo,
@@ -287,10 +357,3 @@ class _MowViewState extends State<MowView> {
     }
   }
 }
-      // "extend_time": DateTime.now().toString(),
-      // "section_type_no": 9999,
-      // "user_name": widget.customer.amName,
-      // "credit_before": widget.customer.curBalance ?? 0.0,
-      // "cst_tax": widget.customer.taxFileNo ?? ".....",
-      // "employ_id": widget.customer.employAccId,
-      // "basic_acc_id": widget.customer.accId,

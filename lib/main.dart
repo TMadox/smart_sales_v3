@@ -19,7 +19,7 @@ import 'package:smart_sales/Provider/mow_state.dart';
 import 'package:smart_sales/Provider/stor_state.dart';
 import 'package:smart_sales/View/Screens/Inventory/inventory_viewmodel.dart';
 import 'package:smart_sales/View/Screens/Items/Items_viewmodel.dart';
-import 'package:smart_sales/Provider/customers_state.dart';
+import 'package:smart_sales/Provider/clients_state.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:smart_sales/Provider/info_state.dart';
 import 'package:smart_sales/Provider/options_state.dart';
@@ -49,7 +49,7 @@ Future<void> main() async {
   SystemChrome.setEnabledSystemUIMode(
     SystemUiMode.manual,
     overlays: [SystemUiOverlay.bottom],
-  ); // t
+  );
   EasyLoading.instance
     ..displayDuration = const Duration(milliseconds: 2000)
     ..indicatorType = EasyLoadingIndicatorType.threeBounce
@@ -69,7 +69,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => DocumentsViewmodel()),
         ChangeNotifierProvider(create: (_) => ItemsViewmodel()),
         ChangeNotifierProvider(create: (_) => GeneralState()),
-        ChangeNotifierProvider(create: (_) => CustomersState()),
+        ChangeNotifierProvider(create: (_) => ClientsState()),
         ChangeNotifierProvider(create: (_) => UserState()),
         ChangeNotifierProvider(create: (_) => SettingsViewmodel()),
         ChangeNotifierProvider(create: (_) => InventoryViewmodel()),

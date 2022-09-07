@@ -39,6 +39,8 @@ class _ExpensesViewState extends State<ExpensesView> {
   Widget build(BuildContext context) {
     return SafeArea(
       left: false,
+      right: false,
+      bottom: false,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
@@ -250,7 +252,7 @@ class _ExpensesViewState extends State<ExpensesView> {
       "notes": ""
     });
     context.read<DocumentsViewmodel>().setSelectedCustomer(
-          input: ClientModel(
+          input: ClientsModel(
             amName: expense.accName,
             curBalance: expense.curBalance,
             taxFileNo: "",

@@ -77,7 +77,7 @@ void showForgotPassword({
                 icon: const Icon(Icons.arrow_back_ios),
                 color: Colors.red,
                 onPressed: () async {
-                  Navigator.pop(context);
+                  Get.back();
                 },
               )
             ],

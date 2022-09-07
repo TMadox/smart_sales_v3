@@ -52,7 +52,7 @@ class _DocumentsPageState extends State<DocumentsPage> {
                             onPressed: () {
                               context
                                   .read<DocumentsViewmodel>()
-                                  .setSelectedCustomer(input: ClientModel());
+                                  .setSelectedCustomer(input: ClientsModel());
                               Navigator.of(context).pushNamed(
                                 "clients",
                                 arguments: const ClientsScreen(
@@ -72,7 +72,7 @@ class _DocumentsPageState extends State<DocumentsPage> {
                             onPressed: () {
                               context
                                   .read<DocumentsViewmodel>()
-                                  .setSelectedCustomer(input: ClientModel());
+                                  .setSelectedCustomer(input: ClientsModel());
                               Navigator.of(context).pushNamed(
                                 "clients",
                                 arguments: const ClientsScreen(

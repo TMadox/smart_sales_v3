@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:get/get.dart';
@@ -12,8 +11,7 @@ import 'package:smart_sales/Data/Models/client_model.dart';
 import 'package:smart_sales/Data/Models/mow_model.dart';
 import 'package:smart_sales/Provider/mow_state.dart';
 import 'package:smart_sales/Services/Repositories/upload_repo.dart';
-import 'package:smart_sales/View/Screens/Items/Items_viewmodel.dart';
-import 'package:smart_sales/Provider/customers_state.dart';
+import 'package:smart_sales/Provider/clients_state.dart';
 import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/loading_dialog.dart';
 
@@ -122,8 +120,8 @@ partReturn({required BuildContext context, required Map receipt}) {
     }
     if (loadedReceipt["section_type_no"] == 1) {
       loadedReceipt["credit_before"] = context
-          .read<CustomersState>()
-          .customers
+          .read<ClientsState>()
+          .clients
           .firstWhere(
               (element) => element.accId == loadedReceipt["basic_acc_id"])
           .curBalance;
@@ -149,14 +147,14 @@ partReturn({required BuildContext context, required Map receipt}) {
     Navigator.of(context).pop();
     if (loadedReceipt["section_type_no"] == 2) {
       Navigator.of(context).pushReplacementNamed("receiptEdit",
-          arguments: context.read<CustomersState>().customers.firstWhere(
+          arguments: context.read<ClientsState>().clients.firstWhere(
               (element) => element.accId == loadedReceipt["basic_acc_id"]));
     } else {
       MowModel mow = context.read<MowState>().mows.firstWhere(
           (element) => element.accId == loadedReceipt["basic_acc_id"]);
       Get.toNamed(
         "receiptEdit",
-        arguments: ClientModel(
+        arguments: ClientsModel(
           amName: mow.mowName,
           curBalance: mow.curBalance,
           taxFileNo: mow.taxFileNo,
@@ -194,8 +192,8 @@ fullReturn({required BuildContext context, required Map receipt}) async {
     }
     if (loadedReceipt["section_type_no"] == 1) {
       loadedReceipt["credit_before"] = context
-          .read<CustomersState>()
-          .customers
+          .read<ClientsState>()
+          .clients
           .firstWhere(
               (element) => element.accId == loadedReceipt["basic_acc_id"])
           .curBalance;
@@ -258,8 +256,8 @@ newReceipt({required BuildContext context, required Map receipt}) async {
     }
     if (loadedReceipt["section_type_no"] == 1) {
       loadedReceipt["credit_before"] = context
-          .read<CustomersState>()
-          .customers
+          .read<ClientsState>()
+          .clients
           .firstWhere(
               (element) => element.accId == loadedReceipt["basic_acc_id"])
           .curBalance;
@@ -282,10 +280,9 @@ newReceipt({required BuildContext context, required Map receipt}) async {
         .fillReceiptWithItems(input: products, addController: true);
     Navigator.of(context).pop();
     if (loadedReceipt["section_type_no"] == 1) {
-     
       await Navigator.of(context).pushNamed(
         "ReceiptCreation",
-        arguments: context.read<CustomersState>().customers.firstWhere(
+        arguments: context.read<ClientsState>().clients.firstWhere(
               (element) => element.accId == loadedReceipt["basic_acc_id"],
             ),
       );
@@ -293,14 +290,16 @@ newReceipt({required BuildContext context, required Map receipt}) async {
       MowModel mow = context.read<MowState>().mows.firstWhere(
             (element) => element.accId == loadedReceipt["basic_acc_id"],
           );
-      await Navigator.of(context).pushNamed("ReceiptCreation",
-          arguments: ClientModel(
-            amName: mow.mowName,
-            curBalance: mow.curBalance,
-            taxFileNo: mow.taxFileNo,
-            employAccId: mow.mowId,
-            accId: mow.accId,
-          ),);
+      await Navigator.of(context).pushNamed(
+        "ReceiptCreation",
+        arguments: ClientsModel(
+          amName: mow.mowName,
+          curBalance: mow.curBalance,
+          taxFileNo: mow.taxFileNo,
+          employAccId: mow.mowId,
+          accId: mow.accId,
+        ),
+      );
     }
   } else {
     ScaffoldMessenger.of(context).showSnackBar(

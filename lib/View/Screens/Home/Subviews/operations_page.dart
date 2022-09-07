@@ -132,7 +132,7 @@ class _OperationsPageState extends State<OperationsPage> {
                                 "clients",
                                 arguments: const ClientsScreen(
                                   canPushReplace: false,
-                                  sectionType: 51,
+                                  sectionType: 31,
                                   canTap: true,
                                 ),
                               );

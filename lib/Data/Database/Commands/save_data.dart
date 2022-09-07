@@ -17,7 +17,7 @@ class SaveData {
     await box.setString("items", itemsJsonFromList(data: input).toString());
   }
 
-  Future<void> saveCustomersData({required List<ClientModel> input}) async {
+  Future<void> saveCustomersData({required List<ClientsModel> input}) async {
     await box.setString("customers", customersJsonFromList(data: input));
   }
 
@@ -37,7 +37,7 @@ class SaveData {
   }
 
   Future<void> savePowersInfo({required List<PowersModel> powers}) async {
-    await box.setString("powers", powersModelToMap(powers));
+    await box.setString("user_powers", powersModelToMap(powers));
   }
 
   saveFinalReceipts(BuildContext context) async {

@@ -141,7 +141,7 @@ class _StorsViewState extends State<StorsView> {
                                         if (widget.choosingReceivingStor ==
                                             false) {
                                           intializeReceipt(
-                                            client: ClientModel(
+                                            client: ClientsModel(
                                               amName: stor.storName,
                                             ),
                                             context: context,
@@ -213,7 +213,7 @@ class _StorsViewState extends State<StorsView> {
 
   Future<void> intializeReceipt({
     required BuildContext context,
-    required ClientModel client,
+    required ClientsModel client,
     required int sectionTypeNo,
     required StorModel selectedStor,
   }) async {

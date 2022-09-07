@@ -219,7 +219,7 @@ class ReceiptsSummeryTable extends StatelessWidget {
         return "purchase_return".tr;
       case 101:
         return "seizure_document".tr;
-      case 51:
+      case 31:
         return "cashier_receipt".tr;
       default:
         return "sales".tr;
@@ -241,7 +241,7 @@ class ReceiptsSummeryTable extends StatelessWidget {
             .receiptsList
             .where((element) => (element["section_type_no"] == type ||
                 element["section_type_no"] == 101 ||
-                element["section_type_no"] == 51 ||
+                element["section_type_no"] == 31 ||
                 element["section_type_no"] == 3 ||
                 element["section_type_no"] == 107 ||
                 element["section_type_no"] == 103))
@@ -284,7 +284,7 @@ class ReceiptsSummeryTable extends StatelessWidget {
                 .where((element) => (element["section_type_no"] == 1 ||
                     element["section_type_no"] == 101 ||
                     element["section_type_no"] == 3 ||
-                    element["section_type_no"] == 51 ||
+                    element["section_type_no"] == 31 ||
                     element["section_type_no"] == 107 ||
                     element["section_type_no"] == 103))
                 .fold<double>(0, (double sum, receipt) => sum + receipt[key]) -

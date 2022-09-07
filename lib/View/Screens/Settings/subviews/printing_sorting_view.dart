@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_progress_hud/flutter_progress_hud.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Printing/create_pdf.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
 import 'package:smart_sales/App/Util/locator.dart';
-import 'package:smart_sales/App/Util/routing.dart';
 import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
 import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/View/Screens/Settings/Widgets/demo_cell.dart';
@@ -48,15 +48,12 @@ class _PrintingSortingViewState extends State<PrintingSortingView> {
             appBar: AppBar(
               title: Text("a4_settings".tr),
             ),
-            body: ProgressHUD(
-              child: Builder(
-                builder: (context) {
-                  return Column(
+            body: Column(
                     children: [
                       ListTile(
                         leading: IconButton(
                           onPressed: () async {
-                            ProgressHUD.of(context)!.show();
+                            EasyLoading.show();
                             for (var item in state.headers) {
                               await storage.setDouble(
                                 item.toString() + "_x",
@@ -64,7 +61,7 @@ class _PrintingSortingViewState extends State<PrintingSortingView> {
                               );
                             }
                             setState(() {});
-                            ProgressHUD.of(context)!.dismiss();
+                            EasyLoading.dismiss();
                           },
                           icon: const Icon(
                             Icons.refresh,
@@ -154,10 +151,7 @@ class _PrintingSortingViewState extends State<PrintingSortingView> {
                         ),
                       ),
                     ],
-                  );
-                },
-              ),
-            ),
+                  ),
           ),
         );
       },

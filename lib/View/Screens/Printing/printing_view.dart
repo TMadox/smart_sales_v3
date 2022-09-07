@@ -65,7 +65,7 @@ class _PrintingViewState extends State<PrintingView> {
       //                               printer,
       //                           onTap: () async {
       //                             try {
-      //                               ProgressHUD.of(context)!.show();
+      //                               EasyLoading.show();
       //                               await printingViewmodel
       //                                   .connectPrinter(printer);
       //                               setState(() {});
@@ -77,7 +77,7 @@ class _PrintingViewState extends State<PrintingView> {
       //                                 description: "connecting_error".tr,
       //                               );
       //                             } finally {
-      //                               ProgressHUD.of(context)!.dismiss();
+      //                               EasyLoading.dismiss();
       //                             }
       //                           },
       //                         ),
@@ -100,12 +100,12 @@ class _PrintingViewState extends State<PrintingView> {
       //                           ? null
       //                           : () async {
       //                               try {
-      //                                 ProgressHUD.of(context)!.show();
+      //                                 EasyLoading.show();
       //                                 await printingViewmodel.printDocument(
       //                                   path: path.toString(),
       //                                   cxt: context,
       //                                 );
-      //                                 Navigator.pop(context);
+      //                                 Get.back();
       //                               } catch (e) {
       //                                 log(e.toString());
       //                                 showErrorDialog(
@@ -114,7 +114,7 @@ class _PrintingViewState extends State<PrintingView> {
       //                                   description: "error".tr,
       //                                 );
       //                               } finally {
-      //                                 ProgressHUD.of(context)!.dismiss();
+      //                                 EasyLoading.dismiss();
       //                               }
       //                             },
       //                     ),

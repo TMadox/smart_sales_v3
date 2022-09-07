@@ -1,24 +1,30 @@
+import 'dart:developer';
+
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_progress_hud/flutter_progress_hud.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:hawk_fab_menu/hawk_fab_menu.dart';
 import 'package:provider/provider.dart';
+import 'package:smart_sales/App/Util/device.dart';
 import 'package:smart_sales/App/Util/locator.dart';
 import 'package:smart_sales/App/Util/routing.dart';
 import 'package:smart_sales/Data/Database/Commands/save_data.dart';
 import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
 import 'package:smart_sales/Data/Models/client_model.dart';
 import 'package:smart_sales/Data/Models/item_model.dart';
+import 'package:smart_sales/Data/Models/options_model.dart';
 import 'package:smart_sales/Data/Models/user_model.dart';
-import 'package:smart_sales/Provider/customers_state.dart';
+import 'package:smart_sales/Provider/clients_state.dart';
 import 'package:smart_sales/Provider/general_state.dart';
+import 'package:smart_sales/Provider/options_state.dart';
 import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/Services/Helpers/exceptions.dart';
 import 'package:smart_sales/Services/Repositories/check_allowance_repo.dart';
 import 'package:smart_sales/Services/Repositories/customers_repo.dart';
 import 'package:smart_sales/Services/Repositories/delete_repo.dart';
+import 'package:smart_sales/Services/Repositories/general_repository.dart';
 import 'package:smart_sales/Services/Repositories/items_repo.dart';
 import 'package:smart_sales/View/Screens/Home/home_viewmodel.dart';
 import 'package:smart_sales/View/Screens/Items/Items_viewmodel.dart';
@@ -53,9 +59,9 @@ class _CustomFABState extends State<CustomFAB> {
         HawkFabMenuItem(
           label: 'request_reload'.tr,
           ontap: () async {
-            ProgressHUD.of(context)!.show();
+            EasyLoading.show();
             await _homeViewmodel.newRequest(context);
-            ProgressHUD.of(context)!.dismiss();
+            EasyLoading.dismiss();
           },
           icon: const Icon(Icons.request_page),
           color: Colors.indigo,
@@ -139,7 +145,7 @@ class _CustomFABState extends State<CustomFAB> {
   retrieveNewInfo(BuildContext context) async {
     try {
       isDialOpen.value = false;
-      ProgressHUD.of(context)!.show();
+      EasyLoading.show();
       final user = context.read<UserState>().user;
       if (context.read<GeneralState>().receiptsList.isNotEmpty &&
           context
@@ -162,23 +168,12 @@ class _CustomFABState extends State<CustomFAB> {
             throw "no_request_found".tr;
           case 1:
             {
-              final customers =
-                  await locator.get<CustomersRepo>().requestCustomers(
-                        ipAddress: user.ipAddress,
-                        employerId: user.defEmployAccId,
-                        ipPassword: user.ipPassword,
-                      );
-              final items = await locator.get<ItemRepo>().requestItems(
-                    ip: user.ipAddress,
-                    ipPassword: user.ipPassword,
-                    storeId: user.defStorId,
-                  );
-              await saveData(
-                customers: customers,
-                items: items,
-              );
-              context.read<ItemsViewmodel>().fillItems(input: items);
-              context.read<CustomersState>().fillCustomers(input: customers);
+              await context
+                  .read<ItemsViewmodel>()
+                  .refillItems(context: context, user: user);
+              await context
+                  .read<ClientsState>()
+                  .refillClients(context: context, user: user);
             }
             break;
           default:
@@ -198,7 +193,7 @@ class _CustomFABState extends State<CustomFAB> {
             context: context, description: e.toString(), title: "error".tr);
       }
     } finally {
-      ProgressHUD.of(context)!.dismiss();
+      EasyLoading.dismiss();
     }
   }
 
@@ -219,14 +214,12 @@ class _CustomFABState extends State<CustomFAB> {
               ipPassword: user.ipPassword,
             ),
       );
-      await saveData(
-        items: context.read<ItemsViewmodel>().items,
-        customers: context.read<CustomersState>().customers,
-      );
-      Navigator.pop(context);
+      await context.read<ItemsViewmodel>().saveItems();
+      await context.read<ClientsState>().saveClients();
+      Get.back();
       responseSnackbar(context, "update_successful".tr);
     } catch (e) {
-      Navigator.pop(context);
+      Get.back();
       if (e is DioError) {
         String message = DioExceptions.fromDioError(e).toString();
         showErrorDialog(
@@ -252,7 +245,7 @@ class _CustomFABState extends State<CustomFAB> {
               .receiptsList
               .where((element) => element["is_sender_complete_status"] == 0)
               .isNotEmpty) {
-        Navigator.pop(context);
+        Get.back();
         showErrorDialog(
           context: context,
           title: "error".tr,
@@ -281,16 +274,16 @@ class _CustomFABState extends State<CustomFAB> {
     }
   }
 
-  saveData({
-    required List<ItemsModel> items,
-    required List<ClientModel> customers,
-  }) async {
-    await locator.get<SaveData>().saveItemsData(input: items);
-    await locator.get<SaveData>().saveCustomersData(input: customers);
-  }
+  // saveData({
+  //   required List<ItemsModel> items,
+  //   required List<ClientModel> customers,
+  // }) async {
+  //   await locator.get<SaveData>().saveItemsData(input: items);
+  //   await locator.get<SaveData>().saveCustomersData(input: customers);
+  // }
 
-  compare(List<ItemsModel> items, List<ClientModel> customers) {
-    final currentCustomers = context.read<CustomersState>().customers;
+  compare(List<ItemsModel> items, List<ClientsModel> customers) {
+    final currentCustomers = context.read<ClientsState>().clients;
     final currentItems = context.read<ItemsViewmodel>().items;
     for (var newItem in items) {
       if (currentItems

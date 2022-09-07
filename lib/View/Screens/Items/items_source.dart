@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:auto_size_text/auto_size_text.dart';
 // ignore: implementation_imports
 import 'package:collection/src/iterable_extensions.dart';
@@ -38,7 +36,8 @@ class ItemsSource extends DataTableSource {
         item.outPrice,
         item.avPrice,
         item.laPrice,
-        item.unitBarcode
+        item.unitBarcode,
+        item.storId,
       ];
     } else {
       return [
@@ -48,7 +47,8 @@ class ItemsSource extends DataTableSource {
         item.curQty,
         item.outPrice2,
         item.outPrice,
-        item.unitBarcode
+        item.unitBarcode,
+        item.storId,
       ];
     }
   }
@@ -56,7 +56,6 @@ class ItemsSource extends DataTableSource {
   @override
   DataRow? getRow(int index) {
     ItemsModel item = items[index];
-    log(item.storId.toString());
     final cell = showAvPrice(item);
     return DataRow(
         color: MaterialStateProperty.resolveWith<Color?>(

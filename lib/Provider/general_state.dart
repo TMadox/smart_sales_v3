@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'package:smart_sales/Data/Models/location_model.dart';
+import 'package:smart_sales/Provider/user_state.dart';
 import 'package:universal_io/io.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -13,7 +14,7 @@ import 'package:smart_sales/Data/Database/Commands/save_data.dart';
 import 'package:smart_sales/Provider/expenses_state.dart';
 import 'package:smart_sales/Provider/mow_state.dart';
 import 'package:smart_sales/View/Screens/Items/Items_viewmodel.dart';
-import 'package:smart_sales/Provider/customers_state.dart';
+import 'package:smart_sales/Provider/clients_state.dart';
 
 class GeneralState extends ChangeNotifier {
   Map currentReceipt = {"totalProducts": 0};
@@ -113,7 +114,9 @@ class GeneralState extends ChangeNotifier {
               id: element["unit_id"],
               qty: element["fat_qty"],
               unitMulti: element["unit_convert"],
-              sectionTypeNo: currentReceipt["section_type_no"],
+              storId: currentReceipt["selected_stor_id"],
+              sectionTypeNo: currentReceipt["section_type_no"] ??
+                  context.read<UserState>().user.defStorId,
             );
       }
       currentReceipt.addAll({
@@ -139,6 +142,8 @@ class GeneralState extends ChangeNotifier {
               qty: element["fat_qty"],
               unitMulti: element["unit_convert"],
               sectionTypeNo: currentReceipt["section_type_no"],
+              storId: currentReceipt["selected_stor_id"] ??
+                  context.read<UserState>().user.defStorId,
             );
         element["original_fat_value"] = element["fat_value"];
         if (currentReceipt["use_tax_system"] == 1 &&
@@ -192,6 +197,12 @@ class GeneralState extends ChangeNotifier {
                     (1 + (currentReceipt["tax_per"] / 100))) -
                 (currentReceipt["oper_add_value"] /
                     (1 + (currentReceipt["tax_per"] / 100))));
+      }
+      if (currentReceipt["section_type_no"] == 31) {
+        currentReceipt["saraf_acc_id"] =
+            context.read<UserState>().user.defSarafAccId;
+        currentReceipt["saraf_cash_value"] =
+            currentReceipt["saraf_cash_value"] ?? 0.0;
       }
       currentReceipt.addAll({
         "products": json.encode(receiptItems),
@@ -459,12 +470,16 @@ class GeneralState extends ChangeNotifier {
         currentReceipt["section_type_no"] == 103 ||
         currentReceipt["section_type_no"] == 104) {
       currentReceipt["reside_value"] = currentReceipt["cash_value"];
+    } else if (currentReceipt["section_type_no"] == 31) {
+      currentReceipt["reside_value"] =
+          currentReceipt["oper_net_value_with_tax"] -
+              ((currentReceipt["cash_value"] ?? 0.0) +
+                  (currentReceipt["saraf_cash_value"] ?? 0.0));
     } else {
       currentReceipt["reside_value"] =
           currentReceipt["oper_net_value_with_tax"] -
               currentReceipt["cash_value"];
     }
-
     currentReceipt["credit_after"] = calculateCreditAfter();
   }
 
@@ -524,8 +539,10 @@ class GeneralState extends ChangeNotifier {
       case 108:
       case 17:
       case 18:
+      case 32:
         return creditBefore - resideValue;
       case 1:
+      case 31:
       case 4:
       case 103:
       case 102:
@@ -572,8 +589,9 @@ class GeneralState extends ChangeNotifier {
         currentReceipt["section_type_no"] == 1 ||
         currentReceipt["section_type_no"] == 101 ||
         currentReceipt["section_type_no"] == 102 ||
+        currentReceipt["section_type_no"] == 31 ||
         currentReceipt["section_type_no"] == 51) {
-      creditAfter = await context.read<CustomersState>().editCustomer(
+      creditAfter = await context.read<ClientsState>().editCustomer(
             id: currentReceipt["basic_acc_id"],
             amount: currentReceipt["reside_value"],
             sectionType: currentReceipt["section_type_no"],

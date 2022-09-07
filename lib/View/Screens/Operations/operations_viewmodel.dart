@@ -1,9 +1,7 @@
 import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Util/locator.dart';
@@ -48,7 +46,7 @@ class OperationsViewmodel {
         return "expenses_seizure_document".tr;
       case 108:
         return "expenses_document".tr;
-      case 51:
+      case 31:
         return "cashier_receipt".tr;
       default:
         return "sales".tr;

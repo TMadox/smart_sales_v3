@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -5,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:smart_sales/App/Util/device.dart';
@@ -179,6 +183,125 @@ class _SettingsViewState extends State<SettingsView> {
                         ),
                       ),
                     ),
+                    SettingsTile.switchTile(
+                      leading: const Icon(
+                        CupertinoIcons.alarm,
+                      ),
+                      initialValue:
+                          storage.prefs.getBool("allow_shift") ?? false,
+                      onToggle: (value) {
+                        storage.prefs.setBool("allow_shift", value);
+                      },
+                      title: Text(
+                        "use shift".tr,
+                      ),
+                    ),
+                    SettingsTile.navigation(
+                      leading: const Icon(
+                        Icons.timelapse,
+                      ),
+                      title: Text(
+                        "shift start time".tr,
+                        style: GoogleFonts.cairo(),
+                      ),
+                      trailing: SizedBox(
+                        width: width * 0.3,
+                        child: FormBuilderDateTimePicker(
+                          name: "start_time",
+                          initialValue: DateTime.parse(
+                              storage.prefs.getString("shift_start_time") ??
+                                  DateFormat("yyyy-MM-dd", "en")
+                                      .format(DateTime.now())),
+                          initialDate: DateTime.parse(
+                              storage.prefs.getString("shift_start_time") ??
+                                  DateFormat("yyyy-MM-dd", "en")
+                                      .format(DateTime.now())),
+                          decoration: const InputDecoration(
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 10),
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.green),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.green),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                            ),
+                          ),
+                          locale: const Locale("en"),
+                          inputType: InputType.time,
+                          onChanged: (time) async {
+                            await storage.prefs.setString(
+                              "shift_start_time",
+                              time.toString(),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    SettingsTile.navigation(
+                      leading: const Icon(
+                        Icons.lock_clock,
+                      ),
+                      title: Text(
+                        "shift end time".tr,
+                        style: GoogleFonts.cairo(),
+                      ),
+                      trailing: SizedBox(
+                        width: width * 0.3,
+                        child: FormBuilderDateTimePicker(
+                          name: "end_time",
+                          initialValue: DateTime.parse(
+                              storage.prefs.getString("shift_end_time") ??
+                                  DateFormat("yyyy-MM-dd", "en")
+                                      .format(DateTime.now())),
+                          initialDate: DateTime.parse(
+                              storage.prefs.getString("shift_end_time") ??
+                                  DateFormat("yyyy-MM-dd", "en")
+                                      .format(DateTime.now())),
+                          decoration: const InputDecoration(
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 10),
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.green),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.green),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                            ),
+                          ),
+                          locale: const Locale("en"),
+                          inputType: InputType.time,
+                          onChanged: (time) async {
+                            await storage.prefs.setString(
+                              "shift_end_time",
+                              time.toString(),
+                            );
+                          },
+                        ),
+                      ),
+                    )
                   ],
                 ),
                 SettingsSection(

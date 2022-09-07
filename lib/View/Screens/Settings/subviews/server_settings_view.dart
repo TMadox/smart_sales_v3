@@ -48,7 +48,7 @@ class ServerSettingsView extends StatelessWidget {
             ),
             tiles: context
                 .read<PowersState>()
-                .powersList
+                .userPowersList
                 .map((e) => SettingsTile.switchTile(
                       title: Text(e.powerName.toString()),
                       initialValue: e.powerState == 1.0,

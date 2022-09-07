@@ -4,29 +4,29 @@
 
 import 'dart:convert';
 
-ClientModel customerModelFromString({required String str}) {
-  return ClientModel.fromMap(json.decode(str));
+ClientsModel customerModelFromString({required String str}) {
+  return ClientsModel.fromMap(json.decode(str));
 }
 
-String customersJsonFromList({required List<ClientModel> data}) => json.encode(
+String customersJsonFromList({required List<ClientsModel> data}) => json.encode(
       data.map<Map<String, dynamic>>((number) => number.toMap()).toList(),
     );
 
-String customerStringFromModel({required ClientModel input}) {
+String customerStringFromModel({required ClientsModel input}) {
   return json.encode(input.toMap());
 }
 
-List<ClientModel> customersListFromJson({required String input}) =>
+List<ClientsModel> customersListFromJson({required String input}) =>
     (json.decode(input) as List)
-        .map<ClientModel>(
-          (number) => ClientModel.fromMap(
+        .map<ClientsModel>(
+          (number) => ClientsModel.fromMap(
             number,
           ),
         )
         .toList();
 
-class ClientModel {
-  ClientModel({
+class ClientsModel {
+  ClientsModel({
     this.amId,
     this.amCode,
     this.amName,
@@ -50,10 +50,10 @@ class ClientModel {
   double? maxCredit;
   double? curBalance;
 
-  factory ClientModel.fromMap(
+  factory ClientsModel.fromMap(
     Map<String, dynamic> json,
   ) =>
-      ClientModel(
+      ClientsModel(
         amId: json["am_id"] ?? 0,
         amCode: json["am_code"] ?? 0,
         amName: json["am_name"] ?? "",

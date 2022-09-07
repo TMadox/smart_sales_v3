@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -61,10 +60,7 @@ class _InventoryViewState extends State<InventoryView> {
     double width = screenWidth(context);
     double height = screenHeight(context);
     final generalState = context.read<GeneralState>();
-    return ProgressHUD(
-      barrierEnabled: false,
-      child: Builder(builder: (context) {
-        return WillPopScope(
+    return WillPopScope(
           onWillPop: () async {
             if (generalState.receiptItems.isNotEmpty) {
               warningDialog(
@@ -85,7 +81,7 @@ class _InventoryViewState extends State<InventoryView> {
                     );
                     return false;
                   } else {
-                    Navigator.pop(context);
+                    Get.back();
                   }
                 },
               );
@@ -336,7 +332,5 @@ class _InventoryViewState extends State<InventoryView> {
             ),
           ),
         );
-      }),
-    );
   }
 }

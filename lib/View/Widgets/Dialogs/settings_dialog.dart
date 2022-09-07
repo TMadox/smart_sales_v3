@@ -49,7 +49,7 @@ void settingsDialog({
           SharedPreferences prefs = await SharedPreferences.getInstance();
           if (_formKey.currentState!.value["ip_password"] ==
               prefs.getString("ip_password")) {
-            Navigator.pop(context);
+            Get.back();
             Navigator.of(context).pushNamed(Routes.settingsRoute);
           }
         }

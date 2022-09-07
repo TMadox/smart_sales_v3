@@ -6,7 +6,7 @@ import 'package:smart_sales/App/Util/locator.dart';
 import 'package:smart_sales/App/Util/routing.dart';
 import 'package:smart_sales/Data/Models/client_model.dart';
 import 'package:smart_sales/Data/Models/user_model.dart';
-import 'package:smart_sales/Provider/customers_state.dart';
+import 'package:smart_sales/Provider/clients_state.dart';
 import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/Provider/options_state.dart';
 import 'package:smart_sales/Provider/powers_state.dart';
@@ -31,7 +31,7 @@ class ClientsViewmodel {
 
   Future<void> intializeReceipt({
     required BuildContext context,
-    required ClientModel client,
+    required ClientsModel client,
     required int sectionTypeNo,
     required bool canPushReplacement,
     required int selectedStorId,
@@ -102,7 +102,7 @@ class ClientsViewmodel {
     if (sectionTypeNo == 101 || sectionTypeNo == 102) {
       context.read<DocumentsViewmodel>().setSelectedCustomer(input: client);
     } else {
-      context.read<CustomersState>().setCurrentCustomer(customer: client);
+      context.read<ClientsState>().setCurrentCustomer(customer: client);
     }
     if (canPushReplacement) {
       int count = 0;
@@ -118,7 +118,7 @@ class ClientsViewmodel {
       } else if (sectionTypeNo == 98) {
         await Navigator.of(context)
             .pushNamed(Routes.inventoryRoute, arguments: client);
-      } else if (sectionTypeNo == 51) {
+      } else if (sectionTypeNo == 31) {
         await Navigator.of(context)
             .pushNamed(Routes.cashierRoute, arguments: client);
       } else {

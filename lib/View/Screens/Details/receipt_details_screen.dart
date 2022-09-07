@@ -31,6 +31,8 @@ class _ReceiptDetailsScreenState extends State<ReceiptDetailsScreen> {
     List<Map> products = List.from(json.decode(widget.receipt["products"]));
     return SafeArea(
       left: false,
+      right: false,
+      bottom: false,
       child: Scaffold(
         body: LayoutBuilder(
           builder: (layoutContext, constrains) {
@@ -232,7 +234,7 @@ class _ReceiptDetailsScreenState extends State<ReceiptDetailsScreen> {
                                         receipt: widget.receipt,
                                       );
                                     }
-                                    Navigator.pop(context);
+                                    Get.back();
                                     // Navigator.pushNamed(
                                     //     context, Routes.printingRoute);
                                   },
@@ -453,7 +455,7 @@ class _ReceiptDetailsScreenState extends State<ReceiptDetailsScreen> {
         return "expenses_seizure_document".tr;
       case 98:
         return "inventory".tr;
-      case 51:
+      case 31:
         return "cashier_receipt".tr;
       case 108:
         return "expenses_document".tr;

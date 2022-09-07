@@ -32,7 +32,6 @@ class ItemRepo {
     if (response.data == "[]") {
       throw "خطا في استحضار المنتجات";
     }
-    log(response.data.toString());
     List serializedList = json.decode(response.data);
     return serializedList
         .map<ItemsModel>((e) => ItemsModel.fromMap(e))

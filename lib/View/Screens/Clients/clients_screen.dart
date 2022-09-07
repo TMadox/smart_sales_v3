@@ -11,7 +11,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:smart_sales/App/Util/colors.dart';
 import 'package:smart_sales/Data/Models/client_model.dart';
 import 'package:smart_sales/Data/Models/stor_model.dart';
-import 'package:smart_sales/Provider/customers_state.dart';
+import 'package:smart_sales/Provider/clients_state.dart';
 import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/Provider/stor_state.dart';
 import 'package:smart_sales/Provider/user_state.dart';
@@ -50,7 +50,6 @@ class _ClientsScreenState extends State<ClientsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    log(widget.sectionType.toString());
     return SafeArea(
       left: false,
       right: false,
@@ -74,7 +73,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
                     activated: true,
                     onChanged: (p0) {
                       setState(() {
-                        searchWord = p0!;
+                        searchWord = p0 ?? "";
                       });
                     },
                     prefixIcon: const Icon(Icons.search),
@@ -94,9 +93,11 @@ class _ClientsScreenState extends State<ClientsScreen> {
                             selectedStoreId,
                         hint: Text("choose_stor".tr),
                         onChanged: (value) {
-                          setState(() {
-                            selectedStoreId = value!;
-                          });
+                          if (value != null) {
+                            setState(() {
+                              selectedStoreId = value;
+                            });
+                          }
                         },
                         validator: FormBuilderValidators.required(context),
                         items: context
@@ -154,7 +155,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
                           "last_clients_update".tr +
                               ": " +
                               context
-                                  .read<CustomersState>()
+                                  .read<ClientsState>()
                                   .lastCustomerFetchDate,
                           style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
                         ),
@@ -218,12 +219,12 @@ class _ClientsScreenState extends State<ClientsScreen> {
                       ),
                       ClipRRect(
                         borderRadius: BorderRadius.circular(15),
-                        child: Consumer<CustomersState>(
+                        child: Consumer<ClientsState>(
                           builder:
                               (BuildContext context, value, Widget? child) {
                             double totalCredit = 0;
-                            for (var item in value.customers) {
-                              totalCredit += item.curBalance!;
+                            for (var clients in value.clients) {
+                              totalCredit += clients.curBalance!;
                             }
                             return Column(
                               children: [
@@ -264,23 +265,15 @@ class _ClientsScreenState extends State<ClientsScreen> {
     );
   }
 
-  List<ClientModel> filterList(
+  List<ClientsModel> filterList(
       {required String input, required BuildContext context}) {
     if (input != "") {
-      return context.read<CustomersState>().customers.where((element) {
+      return context.read<ClientsState>().clients.where((element) {
         return (element.amName!.contains(input) ||
             element.accId.toString().contains(input));
       }).toList();
     } else {
-      return context.read<CustomersState>().customers;
+      return context.read<ClientsState>().clients;
     }
-  }
-
-  List<StorModel> filterStor() {
-    List<StorModel> filteredStors = [];
-    filteredStors = List.from(context.read<StoreState>().stors);
-    filteredStors.removeWhere((element) =>
-        element.storId == context.read<UserState>().user.defStorId);
-    return filteredStors;
   }
 }

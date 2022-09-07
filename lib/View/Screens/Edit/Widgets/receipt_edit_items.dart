@@ -3,10 +3,10 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:collection/src/iterable_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Printing/create_pdf.dart';
 import 'package:smart_sales/App/Util/routing.dart';
@@ -14,13 +14,13 @@ import 'package:smart_sales/App/Resources/values_manager.dart';
 import 'package:smart_sales/Data/Database/Commands/save_data.dart';
 import 'package:smart_sales/App/Util/locator.dart';
 import 'package:smart_sales/Services/Repositories/upload_repo.dart';
-import 'package:smart_sales/View/Screens/Items/Items_viewmodel.dart';
-import 'package:smart_sales/Provider/customers_state.dart';
 import 'package:smart_sales/Provider/general_state.dart';
+import 'package:smart_sales/View/Screens/Receipts/receipt_viewmodel.dart';
 import 'package:smart_sales/View/Widgets/Common/options_button.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/edit_price_dialog.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/error_dialog.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/loading_dialog.dart';
+import 'package:smart_sales/View/Widgets/Dialogs/save_dialog.dart';
 
 class ReceiptEditItems extends StatefulWidget {
   final double width;
@@ -39,7 +39,6 @@ class ReceiptEditItems extends StatefulWidget {
 
 class _ReceiptEditItemsViewmodel extends State<ReceiptEditItems> {
   List selected = [];
-  bool isLoading = false;
   @override
   void initState() {
     super.initState();
@@ -47,356 +46,258 @@ class _ReceiptEditItemsViewmodel extends State<ReceiptEditItems> {
 
   @override
   Widget build(BuildContext context) {
-    return ModalProgressHUD(
-      inAsyncCall: isLoading,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Column(
-              children: [
-                OptionsButton(
-                  color: Colors.red,
-                  iconData: Icons.undo,
-                  onPressed: () async {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                SizedBox(
-                  height: widget.width * 0.01,
-                ),
-                OptionsButton(
-                  color: Colors.blue,
-                  iconData: Icons.save,
-                  onPressed: () async {
-                    showAnimatedDialog(
-                      context: context,
-                      builder: (bcontext) {
-                        return AlertDialog(
-                          title: const Text(
-                            "تاكيد",
-                            style: TextStyle(color: Colors.black),
-                          ),
-                          content: const Text(
-                            "تاكيد انشاء فتورة جديدة ",
-                            style: TextStyle(color: Colors.black),
-                          ),
-                          actions: [
-                            ElevatedButton(
-                              onPressed: () async {
-                                try {
-                                  Navigator.of(context).pop();
-                                  showLoaderDialog(context);
-                                  await saveReceipt(context);
-                                  if (await InternetConnectionChecker()
-                                      .hasConnection) {
-                                    await locator
-                                        .get<UploadReceipts>()
-                                        .requestUploadReceipts(
-                                            context: context);
-                                    await locator
-                                        .get<SaveData>()
-                                        .saveReceiptsData(
-                                            input: context
-                                                .read<GeneralState>()
-                                                .receiptsList,
-                                            context: context);
-                                  }
-                                  await createPDF(
-                                      bContext: context,
-                                      receipt: context
-                                          .read<GeneralState>()
-                                          .receiptsList
-                                          .last,
-                                      share: true);
-                                } finally {
-                                  Navigator.of(context).pushNamedAndRemoveUntil(
-                                      Routes.homeRoute, (route) => false);
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                primary: Colors.green,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                    10,
-                                  ),
-                                ),
-                              ),
-                              child: const Text(
-                                "مشاركة",
-                              ),
-                            ),
-                            ElevatedButton(
-                                onPressed: () async {
-                                  Navigator.of(context).pop();
-                                  showLoaderDialog(context);
-                                  await saveReceipt(context);
-                                  if (await InternetConnectionChecker()
-                                      .hasConnection) {
-                                    try {
-                                      await locator
-                                          .get<UploadReceipts>()
-                                          .requestUploadReceipts(
-                                              context: context);
-                                      await locator
-                                          .get<SaveData>()
-                                          .saveReceiptsData(
-                                              input: context
-                                                  .read<GeneralState>()
-                                                  .receiptsList,
-                                              context: context);
-                                    } finally {}
-                                  }
-                                  Navigator.of(context).pop();
-                                  Navigator.of(context).pop();
-                                },
-                                style: ElevatedButton.styleFrom(
-                                    primary: Colors.blue,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10))),
-                                child: const Text("حفظ")),
-                            ElevatedButton(
-                                onPressed: () async {
-                                  Navigator.of(context).pop();
-                                  showLoaderDialog(context);
-                                  await saveReceipt(context);
-                                  try {
-                                    if (await InternetConnectionChecker()
-                                        .hasConnection) {
-                                      await locator
-                                          .get<UploadReceipts>()
-                                          .requestUploadReceipts(
-                                              context: context);
-                                      await locator
-                                          .get<SaveData>()
-                                          .saveReceiptsData(
-                                              input: context
-                                                  .read<GeneralState>()
-                                                  .receiptsList,
-                                              context: context);
-                                    }
-                                  } finally {}
-                                  await createPDF(
-                                      bContext: context,
-                                      receipt: context
-                                          .read<GeneralState>()
-                                          .receiptsList
-                                          .last);
-                                  Navigator.of(context).pop();
-                                  Navigator.of(context).pop();
-                                },
-                                style: ElevatedButton.styleFrom(
-                                    primary: Colors.pink,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10))),
-                                child: const Text("حفظ مع طباعة")),
-                            ElevatedButton(
-                                onPressed: () async {
-                                  Navigator.of(context).pop();
-                                },
-                                style: ElevatedButton.styleFrom(
-                                    primary: Colors.red,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10))),
-                                child: const Text("ألغاء"))
-                          ],
-                        );
-                      },
-                    );
-                  },
-                ),
-                SizedBox(
-                  height: widget.width * 0.01,
-                ),
-                OptionsButton(
-                  color: Colors.purple,
-                  iconData: Icons.print,
-                  onPressed: () async {
-                    showLoaderDialog(context);
-                    await createPDF(
-                        bContext: context,
-                        receipt:
-                            context.read<GeneralState>().receiptsList.last);
-                    Navigator.of(context).pop();
-                    // Navigator.pushNamed(context, Routes.printingRoute);
-                  },
-                ),
-                SizedBox(
-                  height: widget.width * 0.01,
-                ),
-                OptionsButton(
-                  color: Colors.pink,
-                  iconData: Icons.arrow_back_ios,
-                  onPressed: () {
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                      Routes.homeRoute,
-                      (route) => false,
-                    );
-                  },
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            width: widget.width * 0.01,
-          ),
-          Expanded(
-            flex: 20,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(15),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: SingleChildScrollView(
-                  child: Consumer<GeneralState>(
-                    builder: (context, value, child) {
-                      return ClipRRect(
-                        borderRadius: BorderRadius.circular(15),
-                        child: DataTable(
-                          headingRowColor:
-                              MaterialStateProperty.resolveWith<Color?>(
-                                  (Set<MaterialState> states) {
-                            if (context
-                                    .read<GeneralState>()
-                                    .currentReceipt["section_type_no"] ==
-                                2) {
-                              return Colors.red;
-                            }
-                            return Colors.green;
-                          }),
-                          headingRowHeight: widget.height * 0.07,
-                          dataRowHeight: widget.height * 0.08,
-                          showBottomBorder: true,
-                          horizontalMargin: widget.width * 0.023,
-                          border: TableBorder.all(
-                            width: 0.5,
-                            style: BorderStyle.none,
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          dividerThickness: 1,
-                          columnSpacing: value.receiptItems.isEmpty
-                              ? widget.width * 0.1
-                              : 0,
-                          columns: [
-                            "number".tr,
-                            "unit".tr,
-                            "item".tr,
-                            "qty".tr,
-                            "price".tr,
-                            "discount".tr,
-                            "value".tr,
-                            "free_qty".tr,
-                            "remaining".tr,
-                            "متبقي مجاني"
-                          ]
-                              .map((e) => DataColumn(
-                                      label: Expanded(
-                                    child: Center(
-                                      child: Text(
-                                        e,
-                                        style: GoogleFonts.cairo(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  )))
-                              .toList(),
-                          rows: value.receiptItems.mapIndexed((index, item) {
-                            return DataRow(
-                                color:
-                                    MaterialStateProperty.resolveWith<Color?>(
-                                        (Set<MaterialState> states) {
-                                  if ((value.receiptItems.indexOf(item) % 2) ==
-                                      0) {
-                                    return Colors.grey[200];
-                                  }
-                                  return null;
-                                }),
-                                onSelectChanged: (boolValue) {
-                                  setState(() {
-                                    if (boolValue == true) {
-                                      selected.add(item);
-                                    }
-                                    if (boolValue == false) {
-                                      selected.remove(item);
-                                    }
-                                  });
-                                },
-                                selected: selected.contains(item),
-                                cells: [
-                                  customDataCell(
-                                    isEditable: false,
-                                    item: item,
-                                    key: 'fat_det_id',
-                                  ),
-                                  customDataCell(
-                                    isEditable: false,
-                                    item: item,
-                                    key: 'unit_convert',
-                                  ),
-                                  customDataCell(
-                                    isEditable: false,
-                                    item: item,
-                                    key: 'name',
-                                  ),
-                                  customDataCell(
-                                    isEditable: true,
-                                    item: item,
-                                    key: 'fat_qty',
-                                    controller: item["fat_qty_controller"],
-                                  ),
-                                  customDataCell(
-                                    isEditable: false,
-                                    item: item,
-                                    key: 'original_price',
-                                  ),
-                                  customDataCell(
-                                    isEditable: false,
-                                    item: item,
-                                    key: 'fat_disc_value_with_tax',
-                                  ),
-                                  customDataCell(
-                                    isEditable: false,
-                                    item: item,
-                                    key: 'fat_value',
-                                  ),
-                                  customDataCell(
-                                    isEditable: true,
-                                    item: item,
-                                    key: 'free_qty',
-                                    controller: item["free_qty_controller"],
-                                  ),
-                                  DataCell(
-                                    SizedBox(
-                                      width: widget.width * 0.118,
-                                      child: AutoSizeText(
-                                        (item["qty_remain"] - item["fat_qty"])
-                                            .toString(),
-                                        textAlign: TextAlign.center,
-                                        maxLines: 1,
-                                        style: GoogleFonts.cairo(),
-                                      ),
-                                    ),
-                                  ),
-                                  customDataCell(
-                                    isEditable: false,
-                                    item: item,
-                                    key: 'free_qty_remain',
-                                  ),
-                                ]);
-                          }).toList(),
-                        ),
+    final receiptCreationState = context.read<ReceiptViewmodel>();
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Column(
+            children: [
+              OptionsButton(
+                color: Colors.red,
+                iconData: Icons.undo,
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                },
+              ),
+              SizedBox(
+                height: widget.width * 0.01,
+              ),
+              OptionsButton(
+                color: Colors.blue,
+                iconData: Icons.save,
+                onPressed: () async {
+                  saveDialog(
+                    context: context,
+                    onSave: () async {
+                      Get.back();
+                      EasyLoading.show();
+                      await receiptCreationState.onFinishOperation(
+                        context: context,
+                      );
+                      EasyLoading.dismiss();
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          Routes.homeRoute, (route) => false);
+                    },
+                    onCancel: () {
+                      Get.back();
+                    },
+                    onPrint: () async {
+                      Get.back();
+                      EasyLoading.show();
+                      await receiptCreationState.onFinishOperation(
+                        context: context,
+                        doShare: false,
+                        doPrint: true,
+                      );
+                      EasyLoading.dismiss();
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                        Routes.homeRoute,
+                        (route) => false,
                       );
                     },
-                  ),
+                    onShare: () async {
+                      Get.back();
+                      EasyLoading.show();
+                      await receiptCreationState.onFinishOperation(
+                        context: context,
+                        doShare: true,
+                        doPrint: true,
+                      );
+                      EasyLoading.dismiss();
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                        Routes.homeRoute,
+                        (route) => false,
+                      );
+                    },
+                  );
+                },
+              ),
+              SizedBox(
+                height: widget.width * 0.01,
+              ),
+              OptionsButton(
+                color: Colors.purple,
+                iconData: Icons.print,
+                onPressed: () async {
+                  showLoaderDialog(context);
+                  await createPDF(
+                      bContext: context,
+                      receipt: context.read<GeneralState>().receiptsList.last);
+                  Navigator.of(context).pop();
+                  // Navigator.pushNamed(context, Routes.printingRoute);
+                },
+              ),
+              SizedBox(
+                height: widget.width * 0.01,
+              ),
+              OptionsButton(
+                color: Colors.pink,
+                iconData: Icons.arrow_back_ios,
+                onPressed: () {
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    Routes.homeRoute,
+                    (route) => false,
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          width: widget.width * 0.01,
+        ),
+        Expanded(
+          flex: 20,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(15),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: SingleChildScrollView(
+                child: Consumer<GeneralState>(
+                  builder: (context, value, child) {
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(15),
+                      child: DataTable(
+                        headingRowColor:
+                            MaterialStateProperty.resolveWith<Color?>(
+                                (Set<MaterialState> states) {
+                          if (context
+                                  .read<GeneralState>()
+                                  .currentReceipt["section_type_no"] ==
+                              2) {
+                            return Colors.red;
+                          }
+                          return Colors.green;
+                        }),
+                        headingRowHeight: widget.height * 0.07,
+                        dataRowHeight: widget.height * 0.08,
+                        showBottomBorder: true,
+                        horizontalMargin: widget.width * 0.023,
+                        border: TableBorder.all(
+                          width: 0.5,
+                          style: BorderStyle.none,
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        dividerThickness: 1,
+                        columnSpacing:
+                            value.receiptItems.isEmpty ? widget.width * 0.1 : 0,
+                        columns: [
+                          "number".tr,
+                          "unit".tr,
+                          "item".tr,
+                          "qty".tr,
+                          "price".tr,
+                          "discount".tr,
+                          "value".tr,
+                          "free_qty".tr,
+                          "remaining".tr,
+                          "متبقي مجاني"
+                        ]
+                            .map((e) => DataColumn(
+                                    label: Expanded(
+                                  child: Center(
+                                    child: Text(
+                                      e,
+                                      style: GoogleFonts.cairo(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                )))
+                            .toList(),
+                        rows: value.receiptItems.mapIndexed((index, item) {
+                          return DataRow(
+                              color: MaterialStateProperty.resolveWith<Color?>(
+                                  (Set<MaterialState> states) {
+                                if ((value.receiptItems.indexOf(item) % 2) ==
+                                    0) {
+                                  return Colors.grey[200];
+                                }
+                                return null;
+                              }),
+                              onSelectChanged: (boolValue) {
+                                setState(() {
+                                  if (boolValue == true) {
+                                    selected.add(item);
+                                  }
+                                  if (boolValue == false) {
+                                    selected.remove(item);
+                                  }
+                                });
+                              },
+                              selected: selected.contains(item),
+                              cells: [
+                                customDataCell(
+                                  isEditable: false,
+                                  item: item,
+                                  key: 'fat_det_id',
+                                ),
+                                customDataCell(
+                                  isEditable: false,
+                                  item: item,
+                                  key: 'unit_convert',
+                                ),
+                                customDataCell(
+                                  isEditable: false,
+                                  item: item,
+                                  key: 'name',
+                                ),
+                                customDataCell(
+                                  isEditable: true,
+                                  item: item,
+                                  key: 'fat_qty',
+                                  controller: item["fat_qty_controller"],
+                                ),
+                                customDataCell(
+                                  isEditable: false,
+                                  item: item,
+                                  key: 'original_price',
+                                ),
+                                customDataCell(
+                                  isEditable: false,
+                                  item: item,
+                                  key: 'fat_disc_value_with_tax',
+                                ),
+                                customDataCell(
+                                  isEditable: false,
+                                  item: item,
+                                  key: 'fat_value',
+                                ),
+                                customDataCell(
+                                  isEditable: true,
+                                  item: item,
+                                  key: 'free_qty',
+                                  controller: item["free_qty_controller"],
+                                ),
+                                DataCell(
+                                  SizedBox(
+                                    width: widget.width * 0.118,
+                                    child: AutoSizeText(
+                                      (item["qty_remain"] - item["fat_qty"])
+                                          .toString(),
+                                      textAlign: TextAlign.center,
+                                      maxLines: 1,
+                                      style: GoogleFonts.cairo(),
+                                    ),
+                                  ),
+                                ),
+                                customDataCell(
+                                  isEditable: false,
+                                  item: item,
+                                  key: 'free_qty_remain',
+                                ),
+                              ]);
+                        }).toList(),
+                      ),
+                    );
+                  },
                 ),
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

@@ -11,7 +11,7 @@ import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/error_dialog.dart';
 
 class BottomTable extends StatefulWidget {
-  final ClientModel customer;
+  final ClientsModel customer;
   final double height;
   final double width;
   final List<TextEditingController> controllers;
@@ -284,8 +284,9 @@ class _BottomTableState extends State<BottomTable> {
                           ),
                           onTap: () {
                             controllers[3].selection = TextSelection(
-                                baseOffset: 0,
-                                extentOffset: controllers[3].value.text.length);
+                              baseOffset: 0,
+                              extentOffset: controllers[3].value.text.length,
+                            );
                           },
                           onChanged: (value) {
                             final currentValue = context

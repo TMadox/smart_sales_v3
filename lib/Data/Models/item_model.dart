@@ -42,10 +42,10 @@ class ItemsModel {
   final double laPrice;
   final double unitConvert;
   final String unitName;
-  final int storId;
+  num storId;
   final double taxPer;
-  double curQty0;
-  double curQty;
+  num curQty0;
+  num curQty;
   ItemsModel({
     required this.unitId,
     required this.typeId,
@@ -165,4 +165,78 @@ class ItemsModel {
 
   factory ItemsModel.fromJson(String source) =>
       ItemsModel.fromMap(json.decode(source));
+
+  ItemsModel copyWith({
+    int? unitId,
+    int? typeId,
+    String? itemCode,
+    String? itemName,
+    String? unitBarcode,
+    double? genLowOutPer,
+    double? kindId,
+    double? groupId,
+    double? outPrice,
+    double? lowOutPer,
+    double? outPrice2,
+    double? lowOutPer2,
+    double? outPrice3,
+    double? lowOutPer3,
+    double? outPrice4,
+    double? lowOutPer4,
+    double? outPrice5,
+    double? lowOutPer5,
+    double? outPrice6,
+    double? lowOutPer6,
+    double? outPrice7,
+    double? lowOutPer7,
+    double? outPrice8,
+    double? lowOutPer8,
+    double? marPrice,
+    double? defOverPrice,
+    double? avPrice,
+    double? laPrice,
+    double? unitConvert,
+    String? unitName,
+    num? storId,
+    double? taxPer,
+    num? curQty0,
+    num? curQty,
+  }) {
+    return ItemsModel(
+      unitId: unitId ?? this.unitId,
+      typeId: typeId ?? this.typeId,
+      itemCode: itemCode ?? this.itemCode,
+      itemName: itemName ?? this.itemName,
+      unitBarcode: unitBarcode ?? this.unitBarcode,
+      genLowOutPer: genLowOutPer ?? this.genLowOutPer,
+      kindId: kindId ?? this.kindId,
+      groupId: groupId ?? this.groupId,
+      outPrice: outPrice ?? this.outPrice,
+      lowOutPer: lowOutPer ?? this.lowOutPer,
+      outPrice2: outPrice2 ?? this.outPrice2,
+      lowOutPer2: lowOutPer2 ?? this.lowOutPer2,
+      outPrice3: outPrice3 ?? this.outPrice3,
+      lowOutPer3: lowOutPer3 ?? this.lowOutPer3,
+      outPrice4: outPrice4 ?? this.outPrice4,
+      lowOutPer4: lowOutPer4 ?? this.lowOutPer4,
+      outPrice5: outPrice5 ?? this.outPrice5,
+      lowOutPer5: lowOutPer5 ?? this.lowOutPer5,
+      outPrice6: outPrice6 ?? this.outPrice6,
+      lowOutPer6: lowOutPer6 ?? this.lowOutPer6,
+      outPrice7: outPrice7 ?? this.outPrice7,
+      lowOutPer7: lowOutPer7 ?? this.lowOutPer7,
+      outPrice8: outPrice8 ?? this.outPrice8,
+      lowOutPer8: lowOutPer8 ?? this.lowOutPer8,
+      marPrice: marPrice ?? this.marPrice,
+      defOverPrice: defOverPrice ?? this.defOverPrice,
+      avPrice: avPrice ?? this.avPrice,
+      laPrice: laPrice ?? this.laPrice,
+      unitConvert: unitConvert ?? this.unitConvert,
+      unitName: unitName ?? this.unitName,
+      storId: storId ?? this.storId,
+      taxPer: taxPer ?? this.taxPer,
+      curQty0: curQty0 ?? this.curQty0,
+      curQty: curQty ?? this.curQty,
+    );
+  }
 }

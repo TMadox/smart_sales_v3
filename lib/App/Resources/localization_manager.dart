@@ -329,9 +329,19 @@ class LocalizationManager extends Translations {
     "new_rec": "New record",
     "allow_new_rec": "Allow creating new record",
     "records": "Records",
+    "shift start time": "Shift Start Time",
+    "shift end time": "Shift End Time",
+    "banking": "Banking",
+    "use shifts": "Use Shifts",
   };
 
   final Map<String, String> arabic = {
+    "cancel":"الغاء",
+    "allow shift": "استخدام مواقيت عمل",
+    "banking": "مصرفي",
+    "shift start time": "وقت بداية الشيفت",
+    "shift end time": "وقت نهاية الشيفت",
+
     "records": "سجلات",
     "new_rec": "سجل جديد",
     "allow_stor_transfer": "السماح بعمل تحويل مخازن",
@@ -542,7 +552,7 @@ class LocalizationManager extends Translations {
     "time": "الوقت",
     "number": "رقم",
     "cash": "نقدي",
-    "instant": "فوري",
+    "instant": "اجل",
     "unit": "وحدة",
     "item": "الصنف",
     "qty": "الكمية",

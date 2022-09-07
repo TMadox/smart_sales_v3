@@ -8,7 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:smart_sales/App/Resources/enums_manager.dart';
 import 'package:smart_sales/Data/Models/client_model.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_sales/Provider/customers_state.dart';
+import 'package:smart_sales/Provider/clients_state.dart';
 import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/View/Screens/Documents/document_viewmodel.dart';
 import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
@@ -45,53 +45,33 @@ class _FirstRowState extends State<FirstRow> {
           flex: 2,
           child: FormBuilderField(
               builder: (field) {
-                return DropdownSearch<ClientModel>(
+                return DropdownSearch<ClientsModel>(
                   validator: FormBuilderValidators.required(context),
-                  dropdownSearchDecoration: InputDecoration(
-                    contentPadding: EdgeInsets.only(
-                      right: widget.height * 0.01,
-                      left: widget.height * 0.02,
-                    ),
-                    hintText: "choose_customer".tr,
-                    border: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.green),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(20),
-                      ),
-                    ),
-                    enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(20),
-                      ),
-                    ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.green),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(20),
-                      ),
-                    ),
+                  popupProps: PopupProps.modalBottomSheet(
+                    showSearchBox: true,
+                    itemBuilder: (context, item, isSelected) {
+                      return ListTile(
+                        title: Text(item.amName!),
+                        subtitle: Text(item.accId.toString()),
+                      );
+                    },
                   ),
-                  mode: Mode.DIALOG,
-                  popupItemBuilder: (context, item, isSelected) {
+                  dropdownBuilder: (context, selectedItem) {
                     return ListTile(
-                      title: Text(item.amName!),
-                      subtitle: Text(item.accId.toString()),
+                      dense: true,
+                      title: Text(
+                        selectedItem == null
+                            ? ""
+                            : selectedItem.amName.toString(),
+                      ),
                     );
                   },
-                  dropdownBuilder: (context, selectedItem) {
-                    return Text(selectedItem == null
-                        ? ""
-                        : selectedItem.amName.toString());
-                  },
-                  dropdownBuilderSupportsNullItem: true,
-                  showSearchBox: true,
                   selectedItem:
                       context.read<DocumentsViewmodel>().selectedCustomer,
-                  items: context.read<CustomersState>().customers,
-                  itemAsString: (item) => item!.amName!,
+                  items: context.read<ClientsState>().clients,
+                  itemAsString: (item) => item.amName!,
                   filterFn: (instance, filter) {
-                    if (instance!.amName!.contains(filter.toString())) {
+                    if (instance.amName!.contains(filter.toString())) {
                       return true;
                     } else {
                       return false;

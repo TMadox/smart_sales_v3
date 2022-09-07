@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_sales/App/Util/device.dart';
@@ -21,16 +22,19 @@ class DeleteRepo {
     int priorIndex = receipts.length;
     for (var element in receipts
         .where((element) => element["is_sender_complete_status"] == 1)) {
+      log(element["upload_code"].toString());
       final response = await dio.post(
-          "http://$ipAddress/api_delete_saved_operation_by_oper_id_and_refrence_id",
-          queryParameters: {
-            "oper_id": element["upload_code"],
-            "refrence_id": locator.get<DeviceParam>().deviceId
-          },
-          options: Options(
-              headers: {"Authorization": 'Basic ' + encoded},
-              receiveTimeout: 15000,
-              sendTimeout: 15000));
+        "http://$ipAddress/api_delete_saved_operation_by_oper_id_and_refrence_id",
+        queryParameters: {
+          "oper_id": element["upload_code"],
+          "refrence_id": locator.get<DeviceParam>().deviceId
+        },
+        options: Options(
+          headers: {"Authorization": 'Basic ' + encoded},
+          receiveTimeout: 15000,
+          sendTimeout: 15000,
+        ),
+      );
       if (response.data == "not ok" || response.data == "not found") {
         foundError = true;
       } else {

@@ -28,10 +28,15 @@ class GeneralRepository {
   }
 
   post({
-    required Object data,
+    Object? data,
     required String path,
+    Map<String, dynamic>? parameters,
   }) async {
-    final response = await _dio.post(path, data: data);
+    final response = await _dio.post(
+      path,
+      data: data,
+      queryParameters: parameters,
+    );
     if (response.data == "[]" || response.data == -1 || response.data == -30) {
       throw "خطا في العملية";
     }

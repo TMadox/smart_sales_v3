@@ -48,7 +48,7 @@ class SearchBar extends StatelessWidget {
                     );
                     return false;
                   } else {
-                    Navigator.pop(context);
+                    Get.back();
                   }
                 },
               );
@@ -63,7 +63,7 @@ class SearchBar extends StatelessWidget {
                   data: data,
                 );
               } else {
-                Navigator.pop(context);
+                Get.back();
               }
             }
           },

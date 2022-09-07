@@ -21,6 +21,8 @@ class _GroupsViewState extends State<GroupsView> {
   Widget build(BuildContext context) {
     return SafeArea(
       left: false,
+      right: false,
+      bottom: false,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(

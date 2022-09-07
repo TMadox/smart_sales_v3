@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/done_dialog.dart';
 
 class DocumentsViewmodel extends ChangeNotifier with BaseViewmodel {
-  ClientModel selectedCustomer = ClientModel();
+  ClientsModel selectedCustomer = ClientsModel();
   PaymentMethod paymentMethod = PaymentMethod.cash;
   double newCredit = 0.0;
   void switchPaymentMethod() {
@@ -27,7 +27,7 @@ class DocumentsViewmodel extends ChangeNotifier with BaseViewmodel {
   }
 
   void setSelectedCustomer({
-    required ClientModel input,
+    required ClientsModel input,
     bool rebuild = true,
   }) {
     selectedCustomer = input;
@@ -86,11 +86,11 @@ class DocumentsViewmodel extends ChangeNotifier with BaseViewmodel {
       doneDialog(
         context: context,
         onOk: () {
-          Navigator.pop(context);
+          Get.back();
         },
       );
     } catch (e) {
-      Navigator.pop(context);
+      Get.back();
       EasyLoading.showError("error".tr);
     }
   }

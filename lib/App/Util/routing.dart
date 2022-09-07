@@ -103,7 +103,7 @@ class AppRouter {
       case Routes.cashierRoute:
         return MaterialPageRoute(builder: (BuildContext context) {
           return CashierView(
-            customer: settings.arguments as ClientModel,
+            customer: settings.arguments as ClientsModel,
           );
         });
       case Routes.kindsRoute:
@@ -140,14 +140,14 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (BuildContext context) {
             return ReceiptScreen(
-              customer: settings.arguments as ClientModel,
+              customer: settings.arguments as ClientsModel,
             );
           },
         );
       case "receiptEdit":
         return MaterialPageRoute(builder: (BuildContext context) {
           return ReceiptEditScreen(
-            customer: settings.arguments as ClientModel,
+            customer: settings.arguments as ClientsModel,
           );
         });
       case Routes.itemsRoute:

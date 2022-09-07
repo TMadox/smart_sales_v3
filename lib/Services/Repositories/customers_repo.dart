@@ -4,7 +4,7 @@ import 'package:smart_sales/Data/Models/client_model.dart';
 
 class CustomersRepo {
   Dio dio = Dio();
-  Future<List<ClientModel>> requestCustomers({
+  Future<List<ClientsModel>> requestCustomers({
     required String ipAddress,
     required int employerId,
     required String ipPassword,
@@ -22,7 +22,7 @@ class CustomersRepo {
     }
     List serializedList = json.decode(response.data);
     return serializedList
-        .map<ClientModel>((e) => ClientModel.fromMap(e))
+        .map<ClientsModel>((e) => ClientsModel.fromMap(e))
         .toList();
   }
 }

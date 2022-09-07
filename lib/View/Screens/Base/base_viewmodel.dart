@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:get/get.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Printing/create_pdf.dart';
 import 'package:smart_sales/App/Util/date.dart';
@@ -11,7 +10,7 @@ import 'package:smart_sales/App/Util/select_cst_class.dart';
 import 'package:smart_sales/Data/Database/Commands/save_data.dart';
 import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
 import 'package:smart_sales/Data/Models/item_model.dart';
-import 'package:smart_sales/Provider/customers_state.dart';
+import 'package:smart_sales/Provider/clients_state.dart';
 import 'package:smart_sales/Provider/options_state.dart';
 import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/Provider/powers_state.dart';
@@ -97,7 +96,7 @@ abstract class BaseViewmodel {
             );
             return false;
           } else {
-            Navigator.pop(context);
+            Get.back();
           }
         },
       );
@@ -111,7 +110,7 @@ abstract class BaseViewmodel {
         );
         return false;
       } else {
-        Navigator.pop(context);
+        Get.back();
         return true;
       }
     }
@@ -231,106 +230,108 @@ abstract class BaseViewmodel {
         );
   }
 
-  addNewItem({required BuildContext context, required ItemsModel item}) {
-    context.read<GeneralState>().addItem(item: {
-      "fat_det_id": context.read<ItemsViewmodel>().items.indexOf(item),
-      "oper_id": context.read<GeneralState>().currentReceipt["oper_id"],
-      "unit_convert": item.unitConvert,
-      "unit_name": item.unitName,
-      "barcode": item.unitBarcode,
-      "fat_item_no": 1,
-      "fat_qty": 1.0,
-      "original_qty": item.curQty,
-      "original_qty_after": item.curQty,
-      "fat_price": context.read<CustomersState>().currentCustomer == null
-          ? 0.0
-          : selectCstClass(
-              context: context,
-              item: item,
-              customerClass:
-                  context.read<CustomersState>().currentCustomer!.priceId!,
-            ),
-      "original_price": context.read<CustomersState>().currentCustomer == null
-          ? 0.0
-          : selectCstClass(
-              context: context,
-              item: item,
-              customerClass:
-                  context.read<CustomersState>().currentCustomer!.priceId!,
-            ),
-      "fat_qty_controller": TextEditingController(text: 1.toString()),
-      "fat_disc_value_controller": TextEditingController(text: 0.0.toString()),
-      "free_qty_controller": TextEditingController(text: 0.toString()),
-      "fat_price_controller": TextEditingController(
-          text: context.read<CustomersState>().currentCustomer == null
-              ? "0.0"
-              : selectCstClass(
-                      context: context,
-                      item: item,
-                      customerClass: context
-                          .read<CustomersState>()
-                          .currentCustomer!
-                          .priceId!)
-                  .toString()),
-      "fat_disc_per": 0.0,
-      "fat_disc_value": 0.0,
-      "fat_disc_value_with_tax": 0.0,
-      "fat_disc_per2": 0.0,
-      "fat_disc_value2": 0.0,
-      "fat_disc_per3": 0.0,
-      "fat_disc_value3": 0.0,
-      "fat_add_per": item.taxPer,
-      "fat_add_value": 0.0,
-      "fat_add_price_value": 0.0,
-      "fat_disc_price": 0.0,
-      "fat_net_price": context.read<CustomersState>().currentCustomer == null
-          ? 0.0
-          : selectCstClass(
-              context: context,
-              item: item,
-              customerClass:
-                  context.read<CustomersState>().currentCustomer!.priceId!),
-      "fat_value": context.read<CustomersState>().currentCustomer == null
-          ? 0.0
-          : selectCstClass(
-              context: context,
-              item: item,
-              customerClass:
-                  context.read<CustomersState>().currentCustomer!.priceId!),
-      "fat_net_value": context.read<CustomersState>().currentCustomer == null
-          ? 0.0
-          : selectCstClass(
-              context: context,
-              item: item,
-              customerClass:
-                  context.read<CustomersState>().currentCustomer!.priceId!),
-      "fat_profit": 1.0,
-      "profit": 1.0,
-      "free_qty": 0.0,
-      "name": item.itemName,
-      "unit_id": item.unitId.toInt(),
-      "tax_per": item.taxPer,
-      "fat_price_with_tax":
-          context.read<CustomersState>().currentCustomer == null
-              ? 0.0
-              : selectCstClass(
-                  context: context,
-                  item: item,
-                  customerClass:
-                      context.read<CustomersState>().currentCustomer!.priceId!,
-                ),
-      "notes": "",
-      "can_sell_with_lower_price":
-          context.read<PowersState>().canSellWithLowerPrice,
-      "least_selling_price":
-          context.read<CustomersState>().currentCustomer == null
-              ? 0.0
-              : calcLeastSellingPrice(context: context, item: item),
-      "least_selling_price_with_tax":
-          context.read<CustomersState>().currentCustomer == null
-              ? 0.0
-              : calcLeastSellingPriceWithoutTax(context: context, item: item)
-    });
+  void addNewItem({required BuildContext context, required ItemsModel item}) {
+    context.read<GeneralState>().addItem(
+      item: {
+        "fat_det_id": context.read<ItemsViewmodel>().items.indexOf(item),
+        "oper_id": context.read<GeneralState>().currentReceipt["oper_id"],
+        "unit_convert": item.unitConvert,
+        "unit_name": item.unitName,
+        "barcode": item.unitBarcode,
+        "fat_item_no": 1,
+        "fat_qty": 1.0,
+        "original_qty": item.curQty,
+        "original_qty_after": item.curQty,
+        "fat_price": context.read<ClientsState>().currentClient == null
+            ? 0.0
+            : selectCstClass(
+                context: context,
+                item: item,
+                customerClass:
+                    context.read<ClientsState>().currentClient!.priceId!,
+              ),
+        "original_price": context.read<ClientsState>().currentClient == null
+            ? 0.0
+            : selectCstClass(
+                context: context,
+                item: item,
+                customerClass:
+                    context.read<ClientsState>().currentClient!.priceId!,
+              ),
+        "fat_qty_controller": TextEditingController(text: 1.toString()),
+        "fat_disc_value_controller":
+            TextEditingController(text: 0.0.toString()),
+        "free_qty_controller": TextEditingController(text: 0.toString()),
+        "fat_price_controller": TextEditingController(
+            text: context.read<ClientsState>().currentClient == null
+                ? "0.0"
+                : selectCstClass(
+                        context: context,
+                        item: item,
+                        customerClass: context
+                            .read<ClientsState>()
+                            .currentClient!
+                            .priceId!)
+                    .toString()),
+        "fat_disc_per": 0.0,
+        "fat_disc_value": 0.0,
+        "fat_disc_value_with_tax": 0.0,
+        "fat_disc_per2": 0.0,
+        "fat_disc_value2": 0.0,
+        "fat_disc_per3": 0.0,
+        "fat_disc_value3": 0.0,
+        "fat_add_per": item.taxPer,
+        "fat_add_value": 0.0,
+        "fat_add_price_value": 0.0,
+        "fat_disc_price": 0.0,
+        "fat_net_price": context.read<ClientsState>().currentClient == null
+            ? 0.0
+            : selectCstClass(
+                context: context,
+                item: item,
+                customerClass:
+                    context.read<ClientsState>().currentClient!.priceId!),
+        "fat_value": context.read<ClientsState>().currentClient == null
+            ? 0.0
+            : selectCstClass(
+                context: context,
+                item: item,
+                customerClass:
+                    context.read<ClientsState>().currentClient!.priceId!),
+        "fat_net_value": context.read<ClientsState>().currentClient == null
+            ? 0.0
+            : selectCstClass(
+                context: context,
+                item: item,
+                customerClass:
+                    context.read<ClientsState>().currentClient!.priceId!),
+        "fat_profit": 1.0,
+        "profit": 1.0,
+        "free_qty": 0.0,
+        "name": item.itemName,
+        "unit_id": item.unitId.toInt(),
+        "tax_per": item.taxPer,
+        "fat_price_with_tax": context.read<ClientsState>().currentClient == null
+            ? 0.0
+            : selectCstClass(
+                context: context,
+                item: item,
+                customerClass:
+                    context.read<ClientsState>().currentClient!.priceId!,
+              ),
+        "notes": "",
+        "can_sell_with_lower_price":
+            context.read<PowersState>().canSellWithLowerPrice,
+        "least_selling_price":
+            context.read<ClientsState>().currentClient == null
+                ? 0.0
+                : calcLeastSellingPrice(context: context, item: item),
+        "least_selling_price_with_tax":
+            context.read<ClientsState>().currentClient == null
+                ? 0.0
+                : calcLeastSellingPriceWithoutTax(context: context, item: item)
+      },
+    );
   }
 
   scanBarcode({required BuildContext context}) async {
@@ -349,7 +350,7 @@ abstract class BaseViewmodel {
       {required BuildContext context, required ItemsModel item}) {
     double per = selectCstPer(
       context: context,
-      customerClass: context.read<CustomersState>().currentCustomer!.priceId!,
+      customerClass: context.read<ClientsState>().currentClient!.priceId!,
       item: item,
     );
     if (context.read<GeneralState>().currentReceipt["use_price_with_tax"] ==
@@ -365,7 +366,7 @@ abstract class BaseViewmodel {
       {required BuildContext context, required ItemsModel item}) {
     double per = selectCstPer(
         context: context,
-        customerClass: context.read<CustomersState>().currentCustomer!.priceId!,
+        customerClass: context.read<ClientsState>().currentClient!.priceId!,
         item: item);
     return (item.avPrice + (item.avPrice * (per / 100)));
   }

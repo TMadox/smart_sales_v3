@@ -9,12 +9,15 @@ class PowersRepo {
       required String ipPassword,
       required int userId}) async {
     String encoded = base64.encode(utf8.encode(ipPassword));
-    final response = await dio.get("http://$ip/get_user_powers_by_user_id",
-        queryParameters: {"user_id": userId},
-        options: Options(
-            headers: {"Authorization": 'Basic ' + encoded},
-            receiveTimeout: 15000,
-            sendTimeout: 15000));
+    final response = await dio.get(
+      "http://$ip/get_user_powers_by_user_id",
+      queryParameters: {"user_id": userId},
+      options: Options(
+        headers: {"Authorization": 'Basic ' + encoded},
+        receiveTimeout: 15000,
+        sendTimeout: 15000,
+      ),
+    );
     if (response.data == "[]") {
       throw "خطا في استحضار الصلاحيات";
     }

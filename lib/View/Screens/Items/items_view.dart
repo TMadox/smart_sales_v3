@@ -336,7 +336,8 @@ class _ItemsViewState extends State<ItemsView> {
       "sectoral_price".tr,
       "avg_selling_price".tr,
       "last_selling_price".tr,
-      "barcode".tr
+      "barcode".tr,
+      "stor_id".tr,
     ]);
     if (context.read<PowersState>().showPurchasePrices) {
       return tableHeaders;

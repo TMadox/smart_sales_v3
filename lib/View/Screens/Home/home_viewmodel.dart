@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -30,7 +32,7 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
           context
               .read<GeneralState>()
               .receiptsList
-              .where((element) => element["is_sender_complete_status"] == 0)
+              .where((element) => element["is_sender_complete_status"] == 0.0)
               .isNotEmpty) {
         showErrorDialog(
           context: context,
@@ -50,6 +52,7 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
         );
       }
     } catch (e) {
+      log(e.toString());
       if (e is DioError) {
         String message = DioExceptions.fromDioError(e).toString();
         showErrorDialog(
@@ -182,7 +185,7 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
             onPressed: () {
               context
                   .read<DocumentsViewmodel>()
-                  .setSelectedCustomer(input: ClientModel());
+                  .setSelectedCustomer(input: ClientsModel());
               Navigator.of(context).pushNamed(
                 "clients",
                 arguments: const ClientsScreen(
@@ -207,7 +210,7 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
             onPressed: () {
               context
                   .read<DocumentsViewmodel>()
-                  .setSelectedCustomer(input: ClientModel());
+                  .setSelectedCustomer(input: ClientsModel());
               Navigator.of(context).pushNamed(
                 "clients",
                 arguments: const ClientsScreen(
@@ -294,7 +297,7 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
                 "clients",
                 arguments: const ClientsScreen(
                   canPushReplace: false,
-                  sectionType: 51,
+                  sectionType: 31,
                   canTap: true,
                 ),
               );

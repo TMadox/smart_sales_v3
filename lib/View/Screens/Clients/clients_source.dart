@@ -9,7 +9,7 @@ import 'package:smart_sales/Data/Models/client_model.dart';
 import 'package:smart_sales/View/Screens/Clients/clients_viewmodel.dart';
 
 class ClientsSource extends DataTableSource {
-  final List<ClientModel> clients;
+  final List<ClientsModel> clients;
   final BuildContext context;
   final bool canTap;
   final int sectionTypeNo;
@@ -23,7 +23,7 @@ class ClientsSource extends DataTableSource {
     required this.sectionTypeNo,
     required this.canPushReplacement,
   });
-  List prepareCells(ClientModel client) {
+  List prepareCells(ClientsModel client) {
     return [
       client.amId,
       client.amName,
@@ -37,7 +37,7 @@ class ClientsSource extends DataTableSource {
 
   @override
   DataRow? getRow(int index) {
-    ClientModel client = clients[index];
+    ClientsModel client = clients[index];
     List cells = prepareCells(client);
     return DataRow(
         color: MaterialStateProperty.resolveWith<Color?>(
@@ -67,7 +67,6 @@ class ClientsSource extends DataTableSource {
                           ),
                         ), onTap: () async {
                 if (canTap) {
-                  log(selectedStorId.toString());
                   await ClientsViewmodel().intializeReceipt(
                     context: context,
                     client: client,

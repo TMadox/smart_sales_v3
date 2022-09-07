@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 
-class CustomTextField extends StatelessWidget {
+class CustomTextField extends StatefulWidget {
   final String? hintText;
   final String name;
   final Icon? prefixIcon;
@@ -49,33 +49,38 @@ class CustomTextField extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<CustomTextField> createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
+  @override
   Widget build(BuildContext context) {
     return FormBuilderTextField(
       cursorColor: Colors.green,
-      validator: validators ?? FormBuilderValidators.required(context),
-      enabled: activated ?? false,
-      onChanged: onChanged,
-      onSubmitted: onSubmitted,
-      onTap: onTap,
-      autofocus: autoFocus,
-      initialValue: initialValue,
-      controller: editingController,
-      inputFormatters: inputFormatters,
-      keyboardType: inputType,
-      readOnly: readOnly,
-      autovalidateMode: validationMode ?? AutovalidateMode.disabled,
-      textAlign: textAlign ?? TextAlign.start,
+      validator: widget.validators ?? FormBuilderValidators.required(context),
+      enabled: widget.activated ?? false,
+      onChanged: widget.onChanged,
+      onSubmitted: widget.onSubmitted,
+      onTap: widget.onTap,
+      autofocus: widget.autoFocus,
+      initialValue: widget.initialValue,
+      controller: widget.editingController,
+      inputFormatters: widget.inputFormatters,
+      keyboardType: widget.inputType,
+      readOnly: widget.readOnly,
+      autovalidateMode: widget.validationMode ?? AutovalidateMode.disabled,
+      textAlign: widget.textAlign ?? TextAlign.start,
       decoration: InputDecoration(
         errorStyle: TextStyle(
-          fontSize: errorFontSize,
-          height: errorFontSize,
+          fontSize: widget.errorFontSize,
+          height: widget.errorFontSize,
         ),
-        suffix: suffixWidget,
+        suffix: widget.suffixWidget,
         contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-        prefixIcon: prefixIcon,
-        hintText: hintText,
-        fillColor: fillColor,
-        isDense: isDense,
+        prefixIcon: widget.prefixIcon,
+        hintText: widget.hintText,
+        fillColor: widget.fillColor,
+        isDense: widget.isDense,
         filled: true,
         border: const OutlineInputBorder(
           borderSide: BorderSide(color: Colors.green),
@@ -96,7 +101,7 @@ class CustomTextField extends StatelessWidget {
           ),
         ),
       ),
-      name: name,
+      name: widget.name,
     );
   }
 }

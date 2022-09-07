@@ -27,9 +27,11 @@ class OperationsSource extends DataTableSource {
       receipt["oper_time"],
       receipt["cash_value"],
       OperationsViewmodel().receiptType(type: receipt["section_type_no"]),
-      receipt["is_sender_complete_status"] == 0
-          ? "select_receipt_dialog_No".tr
-          : "select_receipt_dialog_yes".tr
+      receipt["is_sender_complete_status"] == -19
+          ? "repeated".tr
+          : receipt["is_sender_complete_status"] == 0
+              ? "select_receipt_dialog_No".tr
+              : "select_receipt_dialog_yes".tr
     ];
     return DataRow(
       color: MaterialStateProperty.resolveWith<Color?>(
@@ -59,7 +61,7 @@ class OperationsSource extends DataTableSource {
                       ),
                     ),
               onTap: () {
-                log(receipt["sender_oper_id"].toString());
+                log(receipt.toString());
                 if (receipt["section_type_no"] != 9999) {
                   Navigator.of(context).pushNamed(
                     "receiptDetails",

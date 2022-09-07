@@ -53,11 +53,4 @@ class ReadData {
     return null;
   }
 
-  String? readPowersData() {
-    if (box.containsKey("powers")) {
-      String data = box.getString("powers").toString();
-      return data;
-    }
-    return null;
-  }
 }

@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_progress_hud/flutter_progress_hud.dart';
+
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Util/device.dart';
@@ -82,7 +82,7 @@ class LoginViewmodel extends ChangeNotifier {
           final OptionsModel transAllAm =
               optionsList.firstWhere((option) => option.optionId == 5);
           await saveDataLocally(
-            items: transAllAm.optionValue == 0
+            items: transAllStors.optionValue == 0
                 ? await locator.get<GeneralRepository>().get(
                     path: '/get_data_items_with_stor_id',
                     data: {
@@ -92,6 +92,11 @@ class LoginViewmodel extends ChangeNotifier {
                 : await locator.get<GeneralRepository>().get(
                       path: '/get_data_items',
                     ),
+            types: transAllStors.optionValue == 1
+                ? await locator
+                    .get<GeneralRepository>()
+                    .get(path: '/get_data_types_qtys')
+                : null,
             user: userStringFromModel(input: user),
             options: optionsList,
             info: await getInfo(user: user),
@@ -103,7 +108,7 @@ class LoginViewmodel extends ChangeNotifier {
                 : await locator.get<GeneralRepository>().get(
                       path: '/get_data_am',
                     ),
-            powers: await getPower(user: user),
+            userPowers: await getPower(user: user),
             stors: transAllStors.optionValue == 1.0
                 ? await locator
                     .get<GeneralRepository>()
@@ -121,6 +126,9 @@ class LoginViewmodel extends ChangeNotifier {
             groups: await locator
                 .get<GeneralRepository>()
                 .get(path: '/get_data_groups'),
+            powers: await locator
+                .get<GeneralRepository>()
+                .get(path: '/get_data_powers'),
           );
           storage.loggedBefore = true;
           Navigator.of(context).pushReplacementNamed("splash");
@@ -157,7 +165,7 @@ class LoginViewmodel extends ChangeNotifier {
         );
   }
 
-  Future<List<ClientModel>> getCustomers({required UserModel user}) async {
+  Future<List<ClientsModel>> getCustomers({required UserModel user}) async {
     return await locator.get<CustomersRepo>().requestCustomers(
         ipAddress: user.ipAddress,
         employerId: user.defEmployAccId,
@@ -191,19 +199,20 @@ class LoginViewmodel extends ChangeNotifier {
     required String items,
     required String customers,
     required InfoModel info,
-    required List<PowersModel> powers,
+    required List<PowersModel> userPowers,
+    required String powers,
     required List<OptionsModel> options,
     required String stors,
     required String kinds,
     required String mows,
     required String expenses,
     required String groups,
+    String? types,
   }) async {
     await locator.get<SaveSensitiveData>().saveSensitiveData(input: user);
-    // await locator.get<SaveData>().saveItemsData(input: items);
     await locator.get<SaveData>().saveOptionsData(input: options);
     await locator.get<SaveData>().saveInfoData(info: info);
-    await locator.get<SaveData>().savePowersInfo(powers: powers);
+    await locator.get<SaveData>().savePowersInfo(powers: userPowers);
     await storage.prefs.setString("stors", stors);
     await storage.prefs.setString("kinds", kinds);
     await storage.prefs.setString("items", items);
@@ -211,5 +220,11 @@ class LoginViewmodel extends ChangeNotifier {
     await storage.prefs.setString("expenses", expenses);
     await storage.prefs.setString("groups", groups);
     await storage.prefs.setString("customers", customers);
+    await storage.prefs.setString("powers", powers);
+    if (types != null) {
+      await storage.prefs.setString("types", types);
+    } else {
+      await storage.prefs.remove("types");
+    }
   }
 }

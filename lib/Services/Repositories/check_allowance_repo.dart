@@ -15,12 +15,14 @@ class CheckAllowanceRepo {
     String ipAddress = currentUser.ipAddress;
     String encoded = base64.encode(utf8.encode(ipPassword));
     final response = await dio.post(
-        "http://$ipAddress/api_chk_applity_to_bigin_new_period_refrence_id",
-        queryParameters: {"refrence_id": locator.get<DeviceParam>().deviceId},
-        options: Options(
-            headers: {"Authorization": 'Basic ' + encoded},
-            receiveTimeout: 15000,
-            sendTimeout: 15000));
+      "http://$ipAddress/api_chk_applity_to_bigin_new_period_refrence_id",
+      queryParameters: {"refrence_id": locator.get<DeviceParam>().deviceId},
+      options: Options(
+        headers: {"Authorization": 'Basic ' + encoded},
+        receiveTimeout: 30000,
+        sendTimeout: 30000,
+      ),
+    );
     return response.data;
   }
 }

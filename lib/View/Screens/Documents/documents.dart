@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_progress_hud/flutter_progress_hud.dart';
+
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
@@ -58,10 +58,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
       onTap: () {
         FocusScope.of(context).unfocus();
       },
-      child: ProgressHUD(
-        barrierEnabled: false,
-        child: Builder(builder: (context) {
-          return WillPopScope(
+      child: WillPopScope(
             onWillPop: () async {
               return documentsState.onExit(
                 context: context,
@@ -70,6 +67,8 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
             },
             child: SafeArea(
               left: false,
+              right: false,
+              bottom: false,
               child: Scaffold(
                 body: Center(
                   child: SizedBox(
@@ -274,9 +273,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
                 ),
               ),
             ),
-          );
-        }),
-      ),
+          ),
     );
   }
 }

@@ -12,18 +12,21 @@ class PowersModel {
     this.powerCode,
     this.powerName,
     this.powerState,
+    this.defState,
   });
 
   final int? powerId;
   final String? powerCode;
   final String? powerName;
   final int? powerState;
+  final String? defState;
 
   factory PowersModel.fromMap(Map<String, dynamic> json) => PowersModel(
         powerId: json["power_id"],
         powerCode: json["power_code"],
         powerName: json["power_name"],
         powerState: json["power_state"],
+        defState: json["def_state"],
       );
 
   Map<String, dynamic> toMap() => {
@@ -31,5 +34,6 @@ class PowersModel {
         "power_code": powerCode,
         "power_name": powerName,
         "power_state": powerState,
+        "def_state": defState,
       };
 }

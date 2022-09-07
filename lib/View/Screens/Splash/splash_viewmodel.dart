@@ -1,5 +1,8 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:collection/collection.dart';
+import 'package:smart_sales/Data/Models/type_model.dart';
+import 'package:smart_sales/View/Widgets/Common/alert_snackbar.dart';
 import 'package:universal_io/io.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +21,7 @@ import 'package:smart_sales/Data/Models/options_model.dart';
 import 'package:smart_sales/Data/Models/power_model.dart';
 import 'package:smart_sales/Data/Models/stor_model.dart';
 import 'package:smart_sales/Data/Models/user_model.dart';
-import 'package:smart_sales/Provider/customers_state.dart';
+import 'package:smart_sales/Provider/clients_state.dart';
 import 'package:smart_sales/Provider/expenses_state.dart';
 import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/Provider/groups_state.dart';
@@ -50,6 +53,7 @@ class SplashViewmodel extends ChangeNotifier {
         "user_id": instance.userId,
       },
     );
+
     //if the platform is web then do some changes.
     if (!kIsWeb) {
       if (Platform.isIOS || Platform.isAndroid) {
@@ -63,10 +67,39 @@ class SplashViewmodel extends ChangeNotifier {
       return const LoginScreen();
     } else {
       try {
+        //Check if author wants the user to login only within set period
+        if (instance.prefs.getBool("allow_shift") ?? false) {
+          if (instance.prefs.containsKey("shift_end_time") &&
+              instance.prefs.containsKey("shift_start_time")) {
+            DateTime startDate =
+                DateTime.parse(instance.prefs.getString("shift_start_time")!);
+            DateTime endDate =
+                DateTime.parse(instance.prefs.getString("shift_end_time")!);
+            DateTime now = DateTime(
+              1,
+              1,
+              1,
+              DateTime.now().hour,
+              DateTime.now().minute,
+              DateTime.now().second,
+              DateTime.now().millisecond,
+              DateTime.now().microsecond,
+            );
+            log("end date" + endDate.toString());
+            log("start date" + startDate.toString());
+            log("now date" + now.toString());
+            if ((startDate.isBefore(now) && endDate.isAfter(now)) == false) {
+              showAlertSnackbar(
+                  context: context, text: "لا يمكن الدخول في غير ساعات العمل");
+              throw "error";
+            }
+          }
+        }
         //start reading stored data then inject them in their prespective instances
         await context.read<SplashViewmodel>().readStoredData(
               context: context,
               user: userModelFromString(str: user),
+              reference: instance,
             );
         //define values for the general repository to be used in api calls
         locator.get<GeneralRepository>().init(
@@ -83,11 +116,14 @@ class SplashViewmodel extends ChangeNotifier {
     }
   }
 
-  readStoredData(
-      {required BuildContext context, required UserModel user}) async {
+  readStoredData({
+    required BuildContext context,
+    required UserModel user,
+    required SharedStorage reference,
+  }) async {
     final customersList = customersListFromJson(
         input: locator.get<ReadData>().readCustomersData()!);
-    final itemsList =
+    List<ItemsModel> itemsList =
         itemsListFromJson(input: locator.get<ReadData>().readItemsData()!);
     final List<Map> receiptsList = List<Map>.from(
         json.decode(locator.get<ReadData>().readReceiptsData() ?? "[]"));
@@ -95,19 +131,35 @@ class SplashViewmodel extends ChangeNotifier {
         input: locator.get<ReadData>().readOptionsData() ?? "[]");
     final info =
         infoModelFromMap(locator.get<ReadData>().readInfoData() ?? "[]");
-    final powers =
-        powersModelFromMap(locator.get<ReadData>().readPowersData()!);
+
     final Map finalreceipt = locator.get<ReadData>().loadLastId();
-    final stors = storModelFromJson(
-        locator.get<SharedStorage>().prefs.getString("stors")!);
-    final kinds = kindModelFromJson(
-        locator.get<SharedStorage>().prefs.getString("kinds")!);
-    final mows =
-        mowModelFromMap(locator.get<SharedStorage>().prefs.getString("mows")!);
-    final expenses = expenseModelFromMap(
-        locator.get<SharedStorage>().prefs.getString("expenses")!);
-    final groups = groupModelFromJson(
-        locator.get<SharedStorage>().prefs.getString("groups")!);
+    final stors = storModelFromJson(reference.prefs.getString("stors")!);
+    final kinds = kindModelFromJson(reference.prefs.getString("kinds")!);
+    final mows = mowModelFromMap(reference.prefs.getString("mows")!);
+    final expenses =
+        expenseModelFromMap(reference.prefs.getString("expenses")!);
+    final groups = groupModelFromJson(reference.prefs.getString("groups")!);
+    List<TypeModel> types = [];
+    if (reference.prefs.getString("types") != null) {
+      types = typeModelFromJson(reference.prefs.getString("types")!);
+      if (types.length != itemsList.length) {
+        List<ItemsModel> tempItems = [];
+        for (var type in types) {
+          ItemsModel item = itemsList
+              .firstWhere(
+                (element) => element.typeId == type.typeId,
+              )
+              .copyWith();
+          item = item.copyWith(
+            curQty0: (type.curQty0 / item.unitConvert),
+            curQty: (type.curQty0 / item.unitConvert),
+            storId: type.storId,
+          );
+          tempItems.add(item);
+        }
+        itemsList = List.from(tempItems);
+      }
+    }
     context.read<SettingsViewmodel>().getStoredPrintingData();
     injectData(
       context: context,
@@ -118,12 +170,12 @@ class SplashViewmodel extends ChangeNotifier {
       receipts: receiptsList,
       options: optionsList,
       info: info,
-      powers: powers,
       stors: stors,
       kinds: kinds,
       mows: mows,
       expenses: expenses,
       groups: groups,
+      types: types,
     );
   }
 
@@ -134,27 +186,28 @@ class SplashViewmodel extends ChangeNotifier {
 
   injectData({
     required UserModel user,
-    required List<ClientModel> customers,
+    required List<ClientsModel> customers,
     required Map finalReceipt,
     required List<ItemsModel> items,
     required BuildContext context,
     required List<OptionsModel> options,
     required InfoModel info,
-    required List<PowersModel> powers,
     required List<Map> receipts,
     required List<StorModel> stors,
     required List<KindsModel> kinds,
     required List<MowModel> mows,
     required List<ExpenseModel> expenses,
     required List<GroupModel> groups,
+    required List<TypeModel> types,
   }) {
+    context.read<ItemsViewmodel>().fillTypeQty(input: types);
     context.read<ItemsViewmodel>().fillItems(input: items);
-    context.read<CustomersState>().fillCustomers(input: customers);
+    context.read<ClientsState>().fillCustomers(input: customers);
     context.read<UserState>().setLoggedUser(input: user);
     context.read<GeneralState>().fillReceiptsList(input: receipts);
     context.read<OptionsState>().fillOptions(input: options);
     context.read<InfoState>().fillInfo(input: info);
-    context.read<PowersState>().fillPowers(powers: powers);
+    context.read<PowersState>().fillPowers();
     context.read<GeneralState>().setfinalReceipts(finalReceipt);
     context.read<StoreState>().fillStors(input: stors, context: context);
     context.read<KindsState>().fillKinds(input: kinds);
