@@ -23,26 +23,6 @@ class ReceiptViewmodel extends ChangeNotifier with BaseViewmodel {
     notifyListeners();
   }
 
-  void multiInput({
-    required String searchString,
-    required BuildContext context,
-  }) {
-    final List<String> searchWords = searchString.split(" ");
-    List<ItemsModel> itemsList = context
-        .read<ItemsViewmodel>()
-        .filterStor(context: context, canTap: true);
-    List<ItemsModel> resultList = [];
-    for (var searchWord in searchWords) {
-      for (var item in itemsList) {
-        if (item.itemName.split(" ").contains(searchWord)) {
-          resultList.add(item);
-        }
-      }
-    }
-    for (var item in resultList) {
-      addNewItem(context: context, item: item);
-    }
-  }
 
   void clearSelected() {
     selectedItems = [];

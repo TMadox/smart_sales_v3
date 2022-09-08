@@ -85,25 +85,22 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
           builder: (context, constrains) {
             return Scaffold(
               resizeToAvoidBottomInset: false,
-              floatingActionButton: FloatingActionButton(
-                onPressed: () {
-                  String testString = "شل استات اسيد اندونيسي";
-                  final List<String> searchWords = testString.split(" ");
-                  List<ItemsModel> itemsList =
-                      context.read<ItemsViewmodel>().items;
-                  List<ItemsModel> testList = [];
-                  for (var searchWord in searchWords) {
-                    for (var item in itemsList) {
-                      if (item.itemName.split(" ").contains(searchWord)) {
-                        testList.add(item);
-                      }
-                    }
-                  }
-                  testList.forEach((element) {
-                    log(element.itemName.toString());
-                  });
-                },
-              ),
+              // floatingActionButton: FloatingActionButton(
+              //   onPressed: () {
+              //     String testString = "شل استات اسيد اندونيسي";
+              //     final List<String> searchWords = testString.split(" ");
+              //     List<ItemsModel> itemsList =
+              //         context.read<ItemsViewmodel>().items;
+              //     List<ItemsModel> testList = [];
+              //     for (var searchWord in searchWords) {
+              //       for (var item in itemsList) {
+              //         if (item.itemName.split(" ").contains(searchWord)) {
+              //           testList.add(item);
+              //         }
+              //       }
+              //     }
+              //   },
+              // ),
               body: Row(
                 children: [
                   Expanded(

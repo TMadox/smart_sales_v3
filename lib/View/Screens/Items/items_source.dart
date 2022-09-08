@@ -9,6 +9,7 @@ import 'package:smart_sales/Data/Models/item_model.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/Provider/powers_state.dart';
 import 'package:smart_sales/Provider/general_state.dart';
+import 'package:smart_sales/View/Screens/Items/Items_viewmodel.dart';
 import 'package:smart_sales/View/Screens/Receipts/receipt_viewmodel.dart';
 import 'package:smart_sales/View/Widgets/Common/alert_snackbar.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/error_dialog.dart';
@@ -17,10 +18,12 @@ class ItemsSource extends DataTableSource {
   final List<ItemsModel> items;
   final BuildContext context;
   final bool canTap;
+  final ItemsViewmodel state;
   ItemsSource({
     required this.items,
     required this.context,
     required this.canTap,
+    required this.state,
   });
   List showAvPrice(ItemsModel item) {
     String unit = double.parse(item.unitConvert.toString()) > 1.0
@@ -58,6 +61,16 @@ class ItemsSource extends DataTableSource {
     ItemsModel item = items[index];
     final cell = showAvPrice(item);
     return DataRow(
+        selected: state.selectedItems.contains(item),
+        onSelectChanged: canTap
+            ? (v) {
+                if (v!) {
+                  state.addToSelectedItems(input: item);
+                } else {
+                  state.removeFromSelectedItems(input: item);
+                }
+              }
+            : null,
         color: MaterialStateProperty.resolveWith<Color?>(
             (Set<MaterialState> states) {
           if ((index % 2) == 0) {

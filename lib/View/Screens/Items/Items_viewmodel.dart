@@ -10,9 +10,11 @@ import 'package:smart_sales/Data/Models/user_model.dart';
 import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/Provider/options_state.dart';
 import 'package:smart_sales/Services/Repositories/general_repository.dart';
+import 'package:smart_sales/View/Screens/Receipts/receipt_viewmodel.dart';
 
 class ItemsViewmodel extends ChangeNotifier {
   List<ItemsModel> items = [];
+  List<ItemsModel> selectedItems = [];
   List<TypeModel> types = [];
   String lastFetchDate = "";
   int compareValue = 0;
@@ -25,6 +27,29 @@ class ItemsViewmodel extends ChangeNotifier {
   void fillItems({required List<ItemsModel> input}) {
     items = input;
     lastFetchDate = DateTime.now().toString();
+    notifyListeners();
+  }
+
+  void addToSelectedItems({
+    required ItemsModel input,
+  }) {
+    selectedItems.add(input);
+    notifyListeners();
+  }
+
+  void muliAddToReceipt({required BuildContext context}) {
+    for (var item in selectedItems) {
+      context.read<ReceiptViewmodel>().addNewItem(
+            item: item,
+            context: context,
+          );
+    }
+  }
+
+  void removeFromSelectedItems({
+    required ItemsModel input,
+  }) {
+    selectedItems.remove(input);
     notifyListeners();
   }
 
@@ -56,6 +81,7 @@ class ItemsViewmodel extends ChangeNotifier {
   }
 
   void reset() {
+    selectedItems.clear();
     compareValue = 0;
     searchWord = "";
     filterType = FilterType.more;
@@ -140,13 +166,24 @@ class ItemsViewmodel extends ChangeNotifier {
   List<ItemsModel> filterItems() {
     List<ItemsModel> resultList = [];
     if (searchWord != "" && searchWord != "null") {
-      resultList = items
-          .where(
-            (element) => element.itemName.toString().toLowerCase().contains(
-                  searchWord.toString().toLowerCase(),
-                ),
-          )
-          .toList();
+      if (searchWord.contains(" ")) {
+        final List<String> searchWords = searchWord.toLowerCase().split(" ");
+        List<ItemsModel> proccessedList = [];
+        for (var searchWord in searchWords) {
+          for (var item in items) {
+            if (item.itemName.toLowerCase().split(" ").contains(searchWord)) {
+              proccessedList.add(item);
+            }
+          }
+        }
+        resultList = proccessedList;
+      } else {
+        resultList = items
+            .where((element) => element.itemName
+                .toLowerCase()
+                .contains(searchWord.toLowerCase()))
+            .toList();
+      }
     } else {
       resultList = items;
     }
