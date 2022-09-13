@@ -1,9 +1,6 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:smart_sales/App/Resources/screen_size.dart';
 import 'package:smart_sales/App/Util/routing.dart';
 import 'package:smart_sales/View/Screens/Clients/clients_screen.dart';
 import 'package:smart_sales/View/Screens/Expenses/expenses_view.dart';

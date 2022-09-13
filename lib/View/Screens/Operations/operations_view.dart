@@ -1,11 +1,9 @@
 // ignore_for_file: implementation_imports
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:collection/src/iterable_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import 'package:smart_sales/App/Resources/screen_size.dart';
 import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/Provider/user_state.dart';

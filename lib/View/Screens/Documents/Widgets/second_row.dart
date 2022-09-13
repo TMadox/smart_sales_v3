@@ -2,7 +2,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
-import 'package:flutter/services.dart';
 import 'package:smart_sales/App/Resources/values_manager.dart';
 import 'package:smart_sales/App/Util/date.dart';
 import 'package:smart_sales/Provider/general_state.dart';

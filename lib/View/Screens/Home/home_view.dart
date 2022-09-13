@@ -1,18 +1,14 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
 import 'package:smart_sales/App/Util/routing.dart';
 import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
 import 'package:smart_sales/App/Util/locator.dart';
-import 'package:smart_sales/Data/Models/item_model.dart';
 import 'package:smart_sales/Provider/info_state.dart';
 import 'package:smart_sales/Provider/user_state.dart';
-import 'package:smart_sales/Services/Repositories/general_repository.dart';
 import 'package:smart_sales/View/Screens/Home/Subviews/desktop_page.dart';
 import 'package:smart_sales/View/Screens/Home/Subviews/documents_page.dart';
 import 'package:smart_sales/View/Screens/Home/Subviews/info_page.dart';
@@ -21,7 +17,6 @@ import 'package:smart_sales/View/Screens/Home/Subviews/records_page.dart';
 import 'package:smart_sales/View/Screens/Home/Widgets/custom_fab.dart';
 import 'package:smart_sales/View/Screens/Home/Widgets/side_bar.dart';
 import 'package:smart_sales/View/Screens/Home/home_viewmodel.dart';
-import 'package:smart_sales/View/Screens/Items/Items_viewmodel.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);

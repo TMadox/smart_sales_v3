@@ -1,7 +1,6 @@
 import 'package:universal_io/io.dart';
 import 'dart:typed_data';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart' as intl;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pdf/widgets.dart' as pw;

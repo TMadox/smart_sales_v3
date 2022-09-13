@@ -1,11 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'package:smart_sales/Data/Models/location_model.dart';
 import 'package:smart_sales/Provider/user_state.dart';
-import 'package:universal_io/io.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Resources/values_manager.dart';
 import 'package:smart_sales/App/Util/get_location.dart';

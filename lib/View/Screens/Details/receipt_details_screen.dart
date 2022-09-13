@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:auto_size_text/auto_size_text.dart';
 // ignore: implementation_imports
 import 'package:collection/src/iterable_extensions.dart';

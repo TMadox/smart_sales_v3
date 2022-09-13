@@ -3,12 +3,10 @@ import 'dart:developer';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
-import 'package:smart_sales/App/Resources/values_manager.dart';
 import 'package:smart_sales/App/Util/locator.dart';
 import 'package:smart_sales/App/Util/routing.dart';
 import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
@@ -59,7 +57,6 @@ class _CashierViewState extends State<CashierView> {
   @override
   Widget build(BuildContext context) {
     final generalState = context.read<GeneralState>();
-    final double width = screenWidth(context);
     final double height = screenHeight(context);
     return WillPopScope(
       onWillPop: () async {

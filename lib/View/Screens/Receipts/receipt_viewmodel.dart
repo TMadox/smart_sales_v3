@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:smart_sales/Data/Models/item_model.dart';
 import 'package:smart_sales/Data/Models/stor_model.dart';
-import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/View/Screens/Base/base_viewmodel.dart';
-import 'package:smart_sales/View/Screens/Items/Items_viewmodel.dart';
 
 class ReceiptViewmodel extends ChangeNotifier with BaseViewmodel {
   List selectedItems = [];

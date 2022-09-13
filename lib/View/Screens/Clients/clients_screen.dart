@@ -1,8 +1,6 @@
-import 'dart:developer';
 
 import 'package:auto_size_text/auto_size_text.dart';
 // ignore: implementation_imports
-import 'package:collection/src/iterable_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -10,7 +8,6 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smart_sales/App/Util/colors.dart';
 import 'package:smart_sales/Data/Models/client_model.dart';
-import 'package:smart_sales/Data/Models/stor_model.dart';
 import 'package:smart_sales/Provider/clients_state.dart';
 import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/Provider/stor_state.dart';

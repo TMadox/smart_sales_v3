@@ -2,18 +2,13 @@ import 'package:auto_size_text/auto_size_text.dart';
 // ignore: implementation_imports
 import 'package:collection/src/iterable_extensions.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Printing/create_pdf.dart';
 import 'package:smart_sales/App/Util/routing.dart';
 import 'package:smart_sales/App/Resources/values_manager.dart';
-import 'package:smart_sales/Data/Database/Commands/save_data.dart';
-import 'package:smart_sales/App/Util/locator.dart';
-import 'package:smart_sales/Services/Repositories/upload_repo.dart';
 import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/View/Screens/Receipts/receipt_viewmodel.dart';
 import 'package:smart_sales/View/Widgets/Common/options_button.dart';
