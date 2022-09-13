@@ -78,7 +78,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => PowersState()),
         ChangeNotifierProvider(create: (_) => LoginViewmodel()),
         ChangeNotifierProvider(create: (_) => ReceiptViewmodel()),
-        ChangeNotifierProvider(create: (_) => PrintingViewmodel()),
+        // ChangeNotifierProvider(create: (_) => PrintingViewmodel()),
         ChangeNotifierProvider(create: (_) => StoreState()),
         ChangeNotifierProvider(create: (_) => KindsState()),
         ChangeNotifierProvider(create: (_) => MowState()),
