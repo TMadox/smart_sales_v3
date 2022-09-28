@@ -16,7 +16,7 @@ import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/Provider/powers_state.dart';
 import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/Services/Repositories/upload_repo.dart';
-import 'package:smart_sales/View/Screens/Items/Items_viewmodel.dart';
+import 'package:smart_sales/View/Screens/Items/items_viewmodel.dart';
 import 'package:smart_sales/View/Screens/Receipts/receipt_viewmodel.dart';
 import 'package:smart_sales/View/Widgets/Common/alert_snackbar.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/exit_dialog.dart';
@@ -45,7 +45,10 @@ abstract class BaseViewmodel {
             input: context.read<GeneralState>().receiptsList, context: context);
       }
     } catch (e) {
-      showAlertSnackbar(context: context, text: "خطا في الرفع التلقائي");
+      showAlertSnackbar(
+        context: context,
+        text: "خطا في الرفع التلقائي",
+      );
     } finally {
       context.read<GeneralState>().uploading = false;
     }

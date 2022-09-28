@@ -32,7 +32,7 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
           context
               .read<GeneralState>()
               .receiptsList
-              .where((element) => element["is_sender_complete_status"] == 0.0)
+              .where((element) => element["is_sender_complete_status"] == 0)
               .isNotEmpty) {
         showErrorDialog(
           context: context,
@@ -40,9 +40,9 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
           description: "operations_not_uploaded_yet".tr,
         );
       } else {
-        if (await locator.get<DeleteRepo>().requestDeleteRepo(
-              context: context,
-            )) {
+        if (await locator
+            .get<DeleteRepo>()
+            .requestDeleteRepo(context: context)) {
           throw "operations_not_exported_yet".tr;
         }
         await locator.get<RequestAllowanceRepo>().requestAllowance(context);

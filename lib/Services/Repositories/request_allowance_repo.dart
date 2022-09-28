@@ -15,11 +15,13 @@ class RequestAllowanceRepo {
     String ipAddress = currentUser.ipAddress;
     String encoded = base64.encode(utf8.encode(ipPassword));
     await dio.post(
-        "http://$ipAddress/api_new_period_add_new_talab_by_refrence_id",
-        queryParameters: {"refrence_id": locator.get<DeviceParam>().deviceId},
-        options: Options(
-            headers: {"Authorization": 'Basic ' + encoded},
-            receiveTimeout: 15000,
-            sendTimeout: 15000));
+      "http://$ipAddress/api_new_period_add_new_talab_by_refrence_id",
+      queryParameters: {"refrence_id": locator.get<DeviceParam>().deviceId},
+      options: Options(
+        headers: {"Authorization": 'Basic ' + encoded},
+        receiveTimeout: 15000,
+        sendTimeout: 15000,
+      ),
+    );
   }
 }

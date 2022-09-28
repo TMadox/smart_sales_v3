@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -10,17 +12,17 @@ import 'package:smart_sales/App/Util/routing.dart';
 import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
 import 'package:smart_sales/Data/Models/client_model.dart';
 import 'package:smart_sales/Data/Models/item_model.dart';
+import 'package:smart_sales/Data/Models/options_model.dart';
 import 'package:smart_sales/Data/Models/user_model.dart';
 import 'package:smart_sales/Provider/clients_state.dart';
 import 'package:smart_sales/Provider/general_state.dart';
+import 'package:smart_sales/Provider/options_state.dart';
 import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/Services/Helpers/exceptions.dart';
 import 'package:smart_sales/Services/Repositories/check_allowance_repo.dart';
-import 'package:smart_sales/Services/Repositories/customers_repo.dart';
 import 'package:smart_sales/Services/Repositories/delete_repo.dart';
-import 'package:smart_sales/Services/Repositories/items_repo.dart';
 import 'package:smart_sales/View/Screens/Home/home_viewmodel.dart';
-import 'package:smart_sales/View/Screens/Items/Items_viewmodel.dart';
+import 'package:smart_sales/View/Screens/Items/items_viewmodel.dart';
 import 'package:smart_sales/View/Widgets/Common/common_button.dart';
 import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/error_dialog.dart';
@@ -122,7 +124,6 @@ class _CustomFABState extends State<CustomFAB> {
         HawkFabMenuItem(
           label: "exit".tr,
           ontap: () async {
-            // locator.get<ReadData>().box.clear();
             await locator.get<SharedStorage>().prefs.remove("user");
             context.read<UserState>().setLoggedUser(input: UserModel());
             Navigator.of(context).pushReplacementNamed('/');
@@ -152,25 +153,14 @@ class _CustomFABState extends State<CustomFAB> {
           description: "operations_not_uploaded_yet".tr,
         );
       } else {
-        switch (await locator
-            .get<CheckAllowanceRepo>()
-            .requestCheckAllowance(context)) {
-          case 0:
-            throw "can't_get_yet".tr;
-          case 7:
-            throw "no_request_found".tr;
-          case 1:
-            {
-              await context
-                  .read<ItemsViewmodel>()
-                  .refillItems(context: context, user: user);
-              await context
-                  .read<ClientsState>()
-                  .refillClients(context: context, user: user);
-            }
-            break;
-          default:
-        }
+        await context.read<ItemsViewmodel>().reloadItems(
+              context: context,
+              user: user,
+            );
+        await context.read<ClientsState>().reloadClients(
+              context: context,
+              user: user,
+            );
         responseSnackbar(
           context,
           "reload_successful".tr,
@@ -195,17 +185,21 @@ class _CustomFABState extends State<CustomFAB> {
       isDialOpen.value = false;
       showLoaderDialog(context);
       final user = context.read<UserState>().user;
+      final OptionsModel transAllStors = context
+          .read<OptionsState>()
+          .options
+          .firstWhere((option) => option.optionId == 6);
+      final OptionsModel transAllAm = context
+          .read<OptionsState>()
+          .options
+          .firstWhere((option) => option.optionId == 5);
       compare(
-        await locator.get<ItemRepo>().requestItems(
-              ip: user.ipAddress,
-              ipPassword: user.ipPassword,
-              storeId: user.defStorId,
-            ),
-        await locator.get<CustomersRepo>().requestCustomers(
-              ipAddress: user.ipAddress,
-              employerId: user.defEmployAccId,
-              ipPassword: user.ipPassword,
-            ),
+        itemsListFromJson(
+            input: await context.read<ItemsViewmodel>().fetchItems(
+                user: user, transAllStors: transAllStors.optionValue == 1)),
+        customersListFromJson(
+            input: await context.read<ClientsState>().fetchClients(
+                transAllAm: transAllAm.optionValue == 1, user: user)),
       );
       await context.read<ItemsViewmodel>().saveItems();
       await context.read<ClientsState>().saveClients();
@@ -266,14 +260,6 @@ class _CustomFABState extends State<CustomFAB> {
       }
     }
   }
-
-  // saveData({
-  //   required List<ItemsModel> items,
-  //   required List<ClientModel> customers,
-  // }) async {
-  //   await locator.get<SaveData>().saveItemsData(input: items);
-  //   await locator.get<SaveData>().saveCustomersData(input: customers);
-  // }
 
   compare(List<ItemsModel> items, List<ClientsModel> customers) {
     final currentCustomers = context.read<ClientsState>().clients;

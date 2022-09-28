@@ -9,9 +9,8 @@ import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/Services/Repositories/check_allowance_repo.dart';
 import 'package:smart_sales/Services/Repositories/customers_repo.dart';
 import 'package:smart_sales/Services/Repositories/delete_repo.dart';
-import 'package:smart_sales/Services/Repositories/general_repository.dart';
+import 'package:smart_sales/Services/Repositories/dio_repository.dart';
 import 'package:smart_sales/Services/Repositories/info_repo.dart';
-import 'package:smart_sales/Services/Repositories/items_repo.dart';
 import 'package:smart_sales/Services/Repositories/login_repo.dart';
 import 'package:smart_sales/Services/Repositories/options_repo.dart';
 import 'package:smart_sales/Services/Repositories/powers_repo.dart';
@@ -22,8 +21,7 @@ final locator = GetIt.instance;
 
 void inject() {
   //REPOSITORIES///
-  locator.registerLazySingleton<GeneralRepository>(() => GeneralRepository());
-  locator.registerLazySingleton<ItemRepo>(() => ItemRepo());
+  locator.registerLazySingleton<DioRepository>(() => DioRepository());
   locator.registerLazySingleton<CustomersRepo>(() => CustomersRepo());
   locator.registerLazySingleton<LoginRepo>(() => LoginRepo());
   locator.registerLazySingleton<UploadReceipts>(() => UploadReceipts());

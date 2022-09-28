@@ -1,15 +1,22 @@
+// ignore: file_names
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Resources/enums_manager.dart';
 import 'package:smart_sales/App/Util/locator.dart';
 import 'package:smart_sales/Data/Database/Commands/save_data.dart';
+import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
 import 'package:smart_sales/Data/Models/item_model.dart';
 import 'package:smart_sales/Data/Models/options_model.dart';
 import 'package:smart_sales/Data/Models/type_model.dart';
 import 'package:smart_sales/Data/Models/user_model.dart';
 import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/Provider/options_state.dart';
-import 'package:smart_sales/Services/Repositories/general_repository.dart';
+import 'package:smart_sales/Provider/powers_state.dart';
+import 'package:smart_sales/Provider/stor_state.dart';
+import 'package:smart_sales/Provider/user_state.dart';
+import 'package:smart_sales/Services/Repositories/dio_repository.dart';
 import 'package:smart_sales/View/Screens/Receipts/receipt_viewmodel.dart';
 
 class ItemsViewmodel extends ChangeNotifier {
@@ -20,14 +27,98 @@ class ItemsViewmodel extends ChangeNotifier {
   int compareValue = 0;
   String searchWord = "";
   FilterType filterType = FilterType.more;
-  void fillTypeQty({required List<TypeModel> input}) {
-    types = input;
+
+  Future<void> fetchTypes({required bool transAllStors}) async {
+    final response = transAllStors == true
+        ? await DioRepository.to.get(path: '/get_data_types_qtys')
+        : null;
+    await SharedStorage.to.prefs.setString("types", response);
   }
 
-  void fillItems({required List<ItemsModel> input}) {
-    items = input;
-    lastFetchDate = DateTime.now().toString();
-    notifyListeners();
+  Future<String> fetchItems({
+    required bool transAllStors,
+    required UserModel user,
+  }) async {
+    SharedStorage.to.prefs.setBool("loaded_items", false);
+    final response = transAllStors == false
+        ? await DioRepository.to.get(
+            path: '/get_data_items_with_stor_id',
+            data: {
+              "stor_id": user.defStorId,
+            },
+          )
+        : await DioRepository.to.get(
+            path: '/get_data_items',
+          );
+    await SharedStorage.to.prefs.setString("items", response);
+    return response;
+  }
+
+  Future<void> fetchData({
+    required BuildContext context,
+    required UserModel user,
+  }) async {
+    final OptionsModel transAllStors = context
+        .read<OptionsState>()
+        .options
+        .firstWhere((option) => option.optionId == 6);
+    await context.read<OptionsState>().reloadOptions();
+    await context.read<PowersState>().reloadPowers(context);
+    await fetchTypes(transAllStors: transAllStors.optionValue == 1);
+    await fetchItems(transAllStors: transAllStors.optionValue == 1, user: user);
+  }
+
+  Future<void> loadItems({
+    required BuildContext context,
+  }) async {
+    final storage = SharedStorage.to.prefs;
+    items = itemsListFromJson(input: storage.getString("items").toString());
+    if (storage.getString("types") != null) {
+      types = typeModelFromJson(storage.getString("types")!);
+      if ((SharedStorage.to.prefs.getBool("loaded_items") ?? false) == false) {
+        List<ItemsModel> tempItems = [];
+        for (var stor in context.read<StoreState>().stors) {
+          for (var currentItem in items) {
+            TypeModel tempType = types.firstWhere(
+                (type) => (type.typeId == currentItem.typeId &&
+                    type.storId == stor.storId), orElse: () {
+              return TypeModel(
+                qtyId: 0,
+                typeId: currentItem.typeId,
+                itemId: 1,
+                storId: stor.storId,
+                curQty0: 0,
+                noInQty: 0,
+              );
+            });
+            tempItems.add(
+              currentItem.copyWith(
+                curQty0: (tempType.curQty0 / currentItem.unitConvert),
+                curQty: (tempType.curQty0 / currentItem.unitConvert),
+                storId: tempType.storId,
+              ),
+            );
+          }
+        }
+        items = List.from(tempItems);
+        SharedStorage.to.prefs.setBool("loaded_items", true);
+        await locator.get<SaveData>().saveItemsData(
+              input: items,
+            );
+      }
+    }
+  }
+
+  Future<List<ItemsModel>> reloadItems({
+    required BuildContext context,
+    required UserModel user,
+  }) async {
+    await fetchData(
+      context: context,
+      user: user,
+    );
+    await loadItems(context: context);
+    return items;
   }
 
   void addToSelectedItems({
@@ -53,38 +144,10 @@ class ItemsViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> refillItems({
-    required BuildContext context,
-    required UserModel user,
-  }) async {
-    final OptionsModel transAllStors = context
-        .read<OptionsState>()
-        .options
-        .firstWhere((option) => option.optionId == 6);
-    items = transAllStors.optionValue == 0
-        ? itemsListFromJson(
-            input: await locator.get<GeneralRepository>().get(
-              path: '/get_data_items_with_stor_id',
-              data: {
-                "stor_id": user.defStorId,
-              },
-            ),
-          )
-        : itemsListFromJson(
-            input: await locator.get<GeneralRepository>().get(
-                  path: '/get_data_items',
-                ),
-          );
-    await locator.get<SaveData>().saveItemsData(
-          input: items,
-        );
-  }
-
   void reset() {
     selectedItems.clear();
     compareValue = 0;
     searchWord = "";
-    filterType = FilterType.more;
   }
 
   Future<void> saveItems() async {
@@ -163,29 +226,40 @@ class ItemsViewmodel extends ChangeNotifier {
         );
   }
 
-  List<ItemsModel> filterItems() {
+  List<ItemsModel> filterPower({required BuildContext context}) {
+    if (context.read<PowersState>().allowMultiStorFat) {
+      return items;
+    } else {
+      return items
+          .where((element) =>
+              element.storId == context.read<UserState>().user.defStorId)
+          .toList();
+    }
+  }
+
+  List<ItemsModel> filterItems({required BuildContext context}) {
+    final List<ItemsModel> powerFilteredList = filterPower(context: context);
     List<ItemsModel> resultList = [];
     if (searchWord != "" && searchWord != "null") {
-      if (searchWord.contains(" ")) {
-        final List<String> searchWords = searchWord.toLowerCase().split(" ");
-        List<ItemsModel> proccessedList = [];
-        for (var searchWord in searchWords) {
-          for (var item in items) {
-            if (item.itemName.toLowerCase().split(" ").contains(searchWord)) {
-              proccessedList.add(item);
-            }
-          }
-        }
-        resultList = proccessedList;
+      if (searchWord.contains(" ") &&
+          searchWord[0] != " " &&
+          searchWord[searchWord.length - 1] != " ") {
+        List<String> searchWords = searchWord.toLowerCase().split(" ");
+        searchWords.removeWhere((element) => element == "");
+        log(searchWords.toString());
+        resultList = powerFilteredList
+            .where((item) => searchWords
+                .every((word) => item.itemName.split(' ').contains(word)))
+            .toList();
       } else {
-        resultList = items
+        resultList = powerFilteredList
             .where((element) => element.itemName
                 .toLowerCase()
                 .contains(searchWord.toLowerCase()))
             .toList();
       }
     } else {
-      resultList = items;
+      resultList = powerFilteredList;
     }
     switch (filterType) {
       case FilterType.less:
@@ -219,7 +293,7 @@ class ItemsViewmodel extends ChangeNotifier {
     required BuildContext context,
     required bool canTap,
   }) {
-    List<ItemsModel> filteredItems = filterItems();
+    List<ItemsModel> filteredItems = filterItems(context: context);
     if (filteredItems.isNotEmpty && canTap) {
       if (context.read<GeneralState>().currentReceipt["selected_stor_id"] ==
           null) {

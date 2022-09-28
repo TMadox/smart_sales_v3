@@ -8,7 +8,7 @@ import 'package:smart_sales/App/Resources/enums_manager.dart';
 import 'package:smart_sales/App/Util/colors.dart';
 import 'package:smart_sales/View/Screens/Items/items_source.dart';
 import 'package:smart_sales/App/Resources/values_manager.dart';
-import 'package:smart_sales/View/Screens/Items/Items_viewmodel.dart';
+import 'package:smart_sales/View/Screens/Items/items_viewmodel.dart';
 import 'package:smart_sales/Provider/powers_state.dart';
 import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
 import 'package:provider/provider.dart';
@@ -88,7 +88,7 @@ class _ItemsViewState extends State<ItemsView> {
                     5,
                   ),
                   child: FormBuilderDropdown<FilterType>(
-                    initialValue: FilterType.more,
+                    initialValue: itemsState.filterType,
                     name: "filter",
                     iconEnabledColor: Colors.transparent,
                     onChanged: (value) {

@@ -9,7 +9,7 @@ import 'package:smart_sales/Data/Models/item_model.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/Provider/powers_state.dart';
 import 'package:smart_sales/Provider/general_state.dart';
-import 'package:smart_sales/View/Screens/Items/Items_viewmodel.dart';
+import 'package:smart_sales/View/Screens/Items/items_viewmodel.dart';
 import 'package:smart_sales/View/Screens/Receipts/receipt_viewmodel.dart';
 import 'package:smart_sales/View/Widgets/Common/alert_snackbar.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/error_dialog.dart';

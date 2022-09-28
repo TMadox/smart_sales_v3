@@ -333,10 +333,12 @@ class LocalizationManager extends Translations {
     "shift end time": "Shift End Time",
     "banking": "Banking",
     "use shifts": "Use Shifts",
+    "repeated": "Repeated",
   };
 
   final Map<String, String> arabic = {
-    "cancel":"الغاء",
+    "repeated": "مكررة",
+    "cancel": "الغاء",
     "allow shift": "استخدام مواقيت عمل",
     "banking": "مصرفي",
     "shift start time": "وقت بداية الشيفت",

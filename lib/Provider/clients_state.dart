@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Util/locator.dart';
 import 'package:smart_sales/Data/Database/Commands/save_data.dart';
+import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
 import 'package:smart_sales/Data/Models/client_model.dart';
 import 'package:smart_sales/Data/Models/options_model.dart';
 import 'package:smart_sales/Data/Models/user_model.dart';
 import 'package:smart_sales/Provider/options_state.dart';
-import 'package:smart_sales/Services/Repositories/general_repository.dart';
+import 'package:smart_sales/Services/Repositories/dio_repository.dart';
 
 class ClientsState extends ChangeNotifier {
   List<ClientsModel> clients = [];
@@ -29,14 +30,28 @@ class ClientsState extends ChangeNotifier {
         );
   }
 
-  void fillCustomers({
-    required List<ClientsModel> input,
-  }) {
-    lastCustomerFetchDate = DateTime.now().toString();
-    clients = input;
+  Future<String> fetchClients({
+    required bool transAllAm,
+    required UserModel user,
+  }) async {
+    final response = transAllAm == false
+        ? await DioRepository.to.get(
+            path: '/get_data_am_by_employ_acc_id',
+            data: {"employ_acc_id": user.defEmployAccId},
+          )
+        : await DioRepository.to.get(
+            path: '/get_data_am',
+          );
+    await SharedStorage.to.prefs.setString("customers", response);
+    return response;
   }
 
-  Future<void> refillClients({
+  void loadClients() {
+    clients = customersListFromJson(
+        input: SharedStorage.to.prefs.getString("customers") ?? "[]");
+  }
+
+  Future<List<ClientsModel>> reloadClients({
     required BuildContext context,
     required UserModel user,
   }) async {
@@ -44,21 +59,9 @@ class ClientsState extends ChangeNotifier {
         .read<OptionsState>()
         .options
         .firstWhere((option) => option.optionId == 5);
-    clients = transAllAm.optionValue == 0
-        ? customersListFromJson(
-            input: await locator.get<GeneralRepository>().get(
-              path: '/get_data_am_by_employ_acc_id',
-              data: {"employ_acc_id": user.defEmployAccId},
-            ),
-          )
-        : customersListFromJson(
-            input: await locator.get<GeneralRepository>().get(
-                  path: '/get_data_am',
-                ),
-          );
-    await locator.get<SaveData>().saveCustomersData(
-          input: clients,
-        );
+    await fetchClients(transAllAm: transAllAm.optionValue == 1, user: user);
+    loadClients();
+    return clients;
   }
 
   Future<void> saveClients() async {

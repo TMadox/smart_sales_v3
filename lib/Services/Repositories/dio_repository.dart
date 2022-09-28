@@ -2,9 +2,11 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_sales/App/Util/locator.dart';
 
-class GeneralRepository {
+class DioRepository {
   final Dio _dio = Dio();
+  static DioRepository get to => locator.get();
 
   init({
     required BuildContext context,
@@ -37,9 +39,10 @@ class GeneralRepository {
       data: data,
       queryParameters: parameters,
     );
-    if (response.data == "[]" || response.data == -1 || response.data == -30) {
-      throw "خطا في العملية";
-    }
+    return response.data;
+    // if (response.data == "[]" || response.data == -1 || response.data == -30) {
+    //   throw "خطا في العملية";
+    // }
   }
 
   Future get({

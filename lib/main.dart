@@ -17,7 +17,7 @@ import 'package:smart_sales/Provider/kinds_state.dart';
 import 'package:smart_sales/Provider/mow_state.dart';
 import 'package:smart_sales/Provider/stor_state.dart';
 import 'package:smart_sales/View/Screens/Inventory/inventory_viewmodel.dart';
-import 'package:smart_sales/View/Screens/Items/Items_viewmodel.dart';
+import 'package:smart_sales/View/Screens/Items/items_viewmodel.dart';
 import 'package:smart_sales/Provider/clients_state.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:smart_sales/Provider/info_state.dart';

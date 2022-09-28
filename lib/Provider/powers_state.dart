@@ -1,9 +1,9 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:smart_sales/App/Util/locator.dart';
+import 'package:provider/provider.dart';
 import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
 import 'package:smart_sales/Data/Models/power_model.dart';
+import 'package:smart_sales/Provider/user_state.dart';
+import 'package:smart_sales/Services/Repositories/dio_repository.dart';
 
 class PowersState extends ChangeNotifier {
   List<PowersModel> userPowersList = [];
@@ -18,12 +18,23 @@ class PowersState extends ChangeNotifier {
   late bool allowSellQtyLessThanZero;
   late bool allowMultiStorFat;
 
-  void fillPowers() {
-    userPowersList = powersModelFromMap(
-        locator.get<SharedStorage>().prefs.getString("user_powers")!);
-    generalPowersList = powersModelFromMap(
-        locator.get<SharedStorage>().prefs.getString("powers")!);
+  Future<void> fetchPowers(BuildContext context) async {
+    final generalPowers = await DioRepository.to.get(path: '/get_data_powers');
+    final userPowers = await DioRepository.to.get(
+      path: '/get_user_powers_by_user_id',
+      data: {
+        "user_id": context.read<UserState>().user.userId,
+      },
+    );
+    await SharedStorage.to.prefs.setString("powers", generalPowers);
+    await SharedStorage.to.prefs.setString("user_powers", userPowers);
+  }
 
+  void loadPowers() {
+    userPowersList =
+        powersModelFromMap(SharedStorage.to.prefs.getString("user_powers")!);
+    generalPowersList =
+        powersModelFromMap(SharedStorage.to.prefs.getString("powers")!);
     showPurchasePrices = userPowersList.firstWhere(
           (element) => element.powerId == 746,
           orElse: () {
@@ -80,6 +91,10 @@ class PowersState extends ChangeNotifier {
               .powerState ==
           1;
     }
-    log(allowMultiStorFat.toString());
+  }
+
+  Future<void> reloadPowers(BuildContext buildContext) async {
+    await fetchPowers(buildContext);
+    loadPowers();
   }
 }

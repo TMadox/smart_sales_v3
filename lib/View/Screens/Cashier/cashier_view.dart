@@ -20,7 +20,7 @@ import 'package:smart_sales/View/Screens/Cashier/Widget/chashier_dialog_body.dar
 import 'package:smart_sales/View/Screens/Cashier/Widget/details_table.dart';
 import 'package:smart_sales/View/Screens/Cashier/Widget/search_bar.dart';
 import 'package:smart_sales/View/Screens/Cashier/cashier_viewmodel.dart';
-import 'package:smart_sales/View/Screens/Items/Items_viewmodel.dart';
+import 'package:smart_sales/View/Screens/Items/items_viewmodel.dart';
 import 'package:smart_sales/View/Widgets/Common/alert_snackbar.dart';
 import 'package:smart_sales/View/Screens/Cashier/Widget/cashier_save_dialog.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/exit_dialog.dart';

@@ -12,7 +12,7 @@ import 'package:smart_sales/Data/Models/item_model.dart';
 import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/View/Screens/Inventory/Widgets/inventory_table.dart';
 import 'package:smart_sales/View/Screens/Inventory/inventory_viewmodel.dart';
-import 'package:smart_sales/View/Screens/Items/Items_viewmodel.dart';
+import 'package:smart_sales/View/Screens/Items/items_viewmodel.dart';
 import 'package:smart_sales/View/Screens/Receipts/receipt_viewmodel.dart';
 import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/exit_dialog.dart';

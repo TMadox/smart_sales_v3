@@ -10,7 +10,7 @@ import 'package:smart_sales/App/Util/locator.dart';
 import 'package:smart_sales/Data/Database/Commands/save_data.dart';
 import 'package:smart_sales/Provider/expenses_state.dart';
 import 'package:smart_sales/Provider/mow_state.dart';
-import 'package:smart_sales/View/Screens/Items/Items_viewmodel.dart';
+import 'package:smart_sales/View/Screens/Items/items_viewmodel.dart';
 import 'package:smart_sales/Provider/clients_state.dart';
 
 class GeneralState extends ChangeNotifier {
@@ -32,6 +32,15 @@ class GeneralState extends ChangeNotifier {
 
   void setFirstOperId({required String key, required int id}) {
     finalReceipts[key] = {"oper_id": id};
+  }
+
+  int getStartingId(BuildContext context, int sectionNo) {
+    if (finalReceipts[sectionNo] == null) {
+      return 0;
+    } else {
+      return context.read<GeneralState>().finalReceipts[sectionNo]["oper_id"] ??
+          0;
+    }
   }
 
   void setfinalReceipts(Map input) {
@@ -486,7 +495,7 @@ class GeneralState extends ChangeNotifier {
     required int completeStatus,
   }) {
     Map receipt = receiptsList[index];
-    receipt["is_sender_complete_status"] = 1;
+    receipt["is_sender_complete_status"] = completeStatus;
     receipt["upload_code"] = code;
     receiptsList[index] = receipt;
     notifyListeners();

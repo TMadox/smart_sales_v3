@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -11,7 +13,6 @@ import 'package:smart_sales/Data/Database/Secure/save_sensitive_data.dart';
 import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
 import 'package:smart_sales/Data/Models/client_model.dart';
 import 'package:smart_sales/Data/Models/info_model.dart';
-import 'package:smart_sales/Data/Models/item_model.dart';
 import 'package:smart_sales/Data/Models/options_model.dart';
 import 'package:smart_sales/Data/Models/power_model.dart';
 import 'package:smart_sales/Data/Models/user_model.dart';
@@ -19,9 +20,8 @@ import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/Services/Helpers/exceptions.dart';
 import 'package:smart_sales/Services/Repositories/customers_repo.dart';
-import 'package:smart_sales/Services/Repositories/general_repository.dart';
+import 'package:smart_sales/Services/Repositories/dio_repository.dart';
 import 'package:smart_sales/Services/Repositories/info_repo.dart';
-import 'package:smart_sales/Services/Repositories/items_repo.dart';
 import 'package:smart_sales/Services/Repositories/login_repo.dart';
 import 'package:smart_sales/Services/Repositories/options_repo.dart';
 import 'package:smart_sales/Services/Repositories/powers_repo.dart';
@@ -68,7 +68,7 @@ class LoginViewmodel extends ChangeNotifier {
               ref: locator.get<DeviceParam>().deviceId.toString(),
             )
             .then((user) async {
-          locator.get<GeneralRepository>().init(
+          locator.get<DioRepository>().init(
                 context: context,
                 ipPassword: user.ipPassword,
                 ipAddress: user.ipAddress,
@@ -80,57 +80,56 @@ class LoginViewmodel extends ChangeNotifier {
               optionsList.firstWhere((option) => option.optionId == 5);
           await saveDataLocally(
             items: transAllStors.optionValue == 0
-                ? await locator.get<GeneralRepository>().get(
+                ? await locator.get<DioRepository>().get(
                     path: '/get_data_items_with_stor_id',
                     data: {
                       "stor_id": user.defStorId,
                     },
                   )
-                : await locator.get<GeneralRepository>().get(
+                : await locator.get<DioRepository>().get(
                       path: '/get_data_items',
                     ),
             types: transAllStors.optionValue == 1
                 ? await locator
-                    .get<GeneralRepository>()
+                    .get<DioRepository>()
                     .get(path: '/get_data_types_qtys')
                 : null,
             user: userStringFromModel(input: user),
             options: optionsList,
             info: await getInfo(user: user),
             customers: transAllAm.optionValue == 0
-                ? await locator.get<GeneralRepository>().get(
+                ? await locator.get<DioRepository>().get(
                     path: '/get_data_am_by_employ_acc_id',
                     data: {"employ_acc_id": user.defEmployAccId},
                   )
-                : await locator.get<GeneralRepository>().get(
+                : await locator.get<DioRepository>().get(
                       path: '/get_data_am',
                     ),
             userPowers: await getPower(user: user),
             stors: transAllStors.optionValue == 1.0
                 ? await locator
-                    .get<GeneralRepository>()
+                    .get<DioRepository>()
                     .get(path: '/get_data_stors')
                 : "[]",
-            kinds: await locator
-                .get<GeneralRepository>()
-                .get(path: '/get_data_kinds'),
-            mows: await locator
-                .get<GeneralRepository>()
-                .get(path: '/get_data_mow'),
+            kinds:
+                await locator.get<DioRepository>().get(path: '/get_data_kinds'),
+            mows: await locator.get<DioRepository>().get(path: '/get_data_mow'),
             expenses: await locator
-                .get<GeneralRepository>()
+                .get<DioRepository>()
                 .get(path: '/get_data_expense'),
             groups: await locator
-                .get<GeneralRepository>()
+                .get<DioRepository>()
                 .get(path: '/get_data_groups'),
             powers: await locator
-                .get<GeneralRepository>()
+                .get<DioRepository>()
                 .get(path: '/get_data_powers'),
           );
           storage.loggedBefore = true;
+          await storage.prefs.setBool("loaded_items", false);
           Navigator.of(context).pushReplacementNamed("splash");
         });
       } catch (e) {
+        log(e.toString());
         if (e is DioError) {
           String message = DioExceptions.fromDioError(e).toString();
           showErrorDialog(
@@ -149,17 +148,6 @@ class LoginViewmodel extends ChangeNotifier {
         EasyLoading.dismiss();
       }
     }
-  }
-
-  Future<List<ItemsModel>> getItems({
-    required UserModel user,
-    required bool getAllItems,
-  }) async {
-    return await locator.get<ItemRepo>().requestItems(
-          ip: user.ipAddress,
-          ipPassword: user.ipPassword,
-          storeId: getAllItems ? null : user.defStorId,
-        );
   }
 
   Future<List<ClientsModel>> getCustomers({required UserModel user}) async {

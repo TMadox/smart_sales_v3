@@ -11,7 +11,7 @@ import 'package:smart_sales/App/Util/routing.dart';
 import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
 import 'package:smart_sales/Data/Models/item_model.dart';
 import 'package:smart_sales/Provider/stor_state.dart';
-import 'package:smart_sales/View/Screens/Items/Items_viewmodel.dart';
+import 'package:smart_sales/View/Screens/Items/items_viewmodel.dart';
 import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/View/Screens/Receipts/Widgets/receipt_items_table.dart';
 import 'package:smart_sales/View/Screens/Receipts/receipt_viewmodel.dart';
