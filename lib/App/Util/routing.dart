@@ -4,7 +4,6 @@ import 'package:smart_sales/View/Screens/Cashier/cashier_view.dart';
 import 'package:smart_sales/View/Screens/Documents/documents.dart';
 import 'package:smart_sales/View/Screens/Inventory/inventory_view.dart';
 import 'package:smart_sales/View/Screens/Kinds/kinds_view.dart';
-import 'package:smart_sales/View/Screens/Printing/printing_view.dart';
 import 'package:smart_sales/View/Screens/Receipts/receipt_screen.dart';
 import 'package:smart_sales/View/Screens/Clients/clients_screen.dart';
 import 'package:smart_sales/View/Screens/Home/home_view.dart';
@@ -77,10 +76,10 @@ class AppRouter {
         return MaterialPageRoute(builder: (BuildContext context) {
           return const OperationsSettingsView();
         });
-      case Routes.printingRoute:
-        return MaterialPageRoute(builder: (BuildContext context) {
-          return const PrintingView();
-        });
+      // case Routes.printingRoute:
+      //   return MaterialPageRoute(builder: (BuildContext context) {
+      //     return const PrintingView();
+      //   });
       case Routes.serverSettingsRoute:
         return MaterialPageRoute(builder: (BuildContext context) {
           return const ServerSettingsView();
