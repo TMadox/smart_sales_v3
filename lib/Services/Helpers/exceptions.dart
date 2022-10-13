@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:get/get.dart';
 
 class DioExceptions implements Exception {
   DioExceptions.fromDioError(DioError dioError) {
@@ -20,7 +21,7 @@ class DioExceptions implements Exception {
         message = "Request to API server was canelled";
         break;
       case DioErrorType.other:
-        message = "Something went wrong";
+        message = dioError.error.toString().tr;
         break;
     }
   }

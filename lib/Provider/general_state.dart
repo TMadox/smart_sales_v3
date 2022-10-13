@@ -120,9 +120,9 @@ class GeneralState extends ChangeNotifier {
               id: element["unit_id"],
               qty: element["fat_qty"],
               unitMulti: element["unit_convert"],
-              storId: currentReceipt["selected_stor_id"],
-              sectionTypeNo: currentReceipt["section_type_no"] ??
+              storId: currentReceipt["selected_stor_id"] ??
                   context.read<UserState>().user.defStorId,
+              sectionTypeNo: currentReceipt["section_type_no"],
             );
       }
       currentReceipt.addAll({
@@ -147,6 +147,7 @@ class GeneralState extends ChangeNotifier {
               id: element["unit_id"],
               qty: element["fat_qty"],
               unitMulti: element["unit_convert"],
+              inStorId: currentReceipt["in_stor_id"],
               sectionTypeNo: currentReceipt["section_type_no"],
               storId: currentReceipt["selected_stor_id"] ??
                   context.read<UserState>().user.defStorId,
@@ -482,6 +483,10 @@ class GeneralState extends ChangeNotifier {
               ((currentReceipt["cash_value"] ?? 0.0) +
                   (currentReceipt["saraf_cash_value"] ?? 0.0));
     } else {
+      if (currentReceipt["pay_by_cash_only"] == 1) {
+        currentReceipt["cash_value"] =
+            currentReceipt["oper_net_value_with_tax"];
+      }
       currentReceipt["reside_value"] =
           currentReceipt["oper_net_value_with_tax"] -
               currentReceipt["cash_value"];

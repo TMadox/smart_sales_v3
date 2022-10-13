@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,15 +12,16 @@ import 'package:smart_sales/App/Util/routing.dart';
 import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
 import 'package:smart_sales/Data/Models/item_model.dart';
 import 'package:smart_sales/Provider/stor_state.dart';
+import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/View/Screens/Items/items_viewmodel.dart';
 import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/View/Screens/Receipts/Widgets/receipt_items_table.dart';
 import 'package:smart_sales/View/Screens/Receipts/receipt_viewmodel.dart';
 import 'package:smart_sales/View/Screens/Stors/stors_view.dart';
 import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
-import 'package:smart_sales/View/Widgets/Dialogs/exit_dialog.dart';
-import 'package:smart_sales/View/Widgets/Dialogs/warning_dialog.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/error_dialog.dart';
+import 'package:smart_sales/View/Widgets/Dialogs/exit_dialog.dart';
+import 'package:smart_sales/View/Widgets/Dialogs/general_dialog.dart';
 
 class StorTransfer extends StatefulWidget {
   const StorTransfer({
@@ -59,323 +61,325 @@ class _StorTransferState extends State<StorTransfer> {
     double height = screenHeight(context);
     final generalState = context.read<GeneralState>();
     return WillPopScope(
-          onWillPop: () async {
-            if (generalState.receiptItems.isNotEmpty) {
-              warningDialog(
-                context: context,
-                warningText: 'receipt_still_inprogress'.tr,
-                btnCancelText: 'exit'.tr,
-                btnOkText: 'stay'.tr,
-                onCancel: () {
-                  if ((locator
-                          .get<SharedStorage>()
-                          .prefs
-                          .getBool("request_visit") ??
-                      true)) {
-                    exitDialog(
-                      context: context,
-                      data: data,
-                    );
-                    return false;
-                  } else {
-                    Get.back();
-                  }
-                },
-              );
-              return false;
-            } else {
-              if ((storage.getBool("request_visit") ?? true)) {
+      onWillPop: () async {
+        if (generalState.receiptItems.isNotEmpty) {
+          generalDialog(
+            title: "warning".tr,
+            context: context,
+            message: 'receipt_still_inprogress'.tr,
+            onCancelText: 'exit'.tr,
+            onOkText: 'stay'.tr,
+            onCancel: () {
+              if ((locator
+                      .get<SharedStorage>()
+                      .prefs
+                      .getBool("request_visit") ??
+                  false)) {
                 exitDialog(
                   context: context,
                   data: data,
                 );
                 return false;
               } else {
-                return true;
+                Get.back();
               }
-            }
-          },
-          child: GestureDetector(
-            onTap: () {
-              FocusScope.of(context).requestFocus(FocusNode());
             },
-            child: SafeArea(
-              left: false,
-              right: false,
-              bottom: false,
-              child: Scaffold(
-                body: Center(
-                  child: SizedBox(
-                    width: width * 0.98,
-                    child: ListView(
-                      primary: true,
-                      children: [
-                        Container(
-                          decoration: const BoxDecoration(
-                            color: whiteHaze,
-                            borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(15),
-                              topLeft: Radius.circular(15),
+          );
+          return false;
+        } else {
+          if ((storage.getBool("request_visit") ?? false)) {
+            exitDialog(
+              context: context,
+              data: data,
+            );
+            return false;
+          } else {
+            return true;
+          }
+        }
+      },
+      child: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child: SafeArea(
+          left: false,
+          right: false,
+          bottom: false,
+          child: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: width * 0.98,
+                child: ListView(
+                  primary: true,
+                  children: [
+                    Container(
+                      decoration: const BoxDecoration(
+                        color: whiteHaze,
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(15),
+                          topLeft: Radius.circular(15),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              height: height * 0.09,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: width * 0.01,
+                              ),
+                              child: Center(
+                                child: AutoSizeText(
+                                  context
+                                      .read<StoreState>()
+                                      .stors
+                                      .firstWhere((stor) =>
+                                          context
+                                              .read<UserState>()
+                                              .user
+                                              .defStorId ==
+                                          stor.storId)
+                                      .storName
+                                      .toString(),
+                                  maxLines: 1,
+                                  style: GoogleFonts.cairo(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  height: height * 0.09,
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: width * 0.01,
+                          Expanded(
+                            flex: 3,
+                            child: Container(
+                              height: height * 0.09,
+                              decoration: const BoxDecoration(
+                                color: smaltBlue,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(
+                                    15,
                                   ),
-                                  child: Center(
-                                    child: AutoSizeText(
-                                      context
-                                          .read<StoreState>()
-                                          .stors
-                                          .firstWhere((stor) =>
-                                              context
-                                                      .read<GeneralState>()
-                                                      .currentReceipt[
-                                                  "selected_stor_id"] ==
-                                              stor.storId)
-                                          .storName
-                                          .toString(),
-                                      maxLines: 1,
-                                      style: GoogleFonts.cairo(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
+                                  topRight: Radius.circular(
+                                    15,
                                   ),
                                 ),
                               ),
-                              Expanded(
-                                flex: 3,
-                                child: Container(
-                                  height: height * 0.09,
-                                  decoration: const BoxDecoration(
-                                    color: smaltBlue,
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(
-                                        15,
-                                      ),
-                                      topRight: Radius.circular(
-                                        15,
-                                      ),
-                                    ),
-                                  ),
-                                  child: const Text(
-                                    "تحويل الي",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: atlantis,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
+                              child: const Text(
+                                "تحويل الي",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: atlantis,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              Expanded(
-                                child: Container(
-                                  height: height * 0.09,
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: width * 0.01,
-                                  ),
-                                  child: Center(
-                                    child: InkWell(
-                                      onTap: () {
-                                        Navigator.of(context).pushNamed(
-                                          Routes.storsRoute,
-                                          arguments: const StorsView(
-                                            canTap: true,
-                                            choosingReceivingStor: true,
-                                            canPushReplace: false,
-                                          ),
-                                        );
-                                      },
-                                      child: Consumer<GeneralState>(
-                                        builder: (context, state, widget) {
-                                          return AutoSizeText(
-                                            state.currentReceipt[
-                                                    "receiving_stor_name"] ??
-                                                "اختر المخزن المستلم",
-                                            maxLines: 1,
-                                            style: GoogleFonts.cairo(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: height * 0.02,
-                        ),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: width * 0.01,
-                            vertical: height * 0.008,
-                          ),
-                          height: height * 0.09,
-                          decoration: const BoxDecoration(
-                            color: smaltBlue,
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(15),
-                              bottomRight: Radius.circular(15),
                             ),
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Expanded(
-                                child: CustomTextField(
-                                  inputType: TextInputType.number,
-                                  onSubmitted: (value) {
-                                    try {
-                                      ItemsModel item = context
-                                          .read<ItemsViewmodel>()
-                                          .items
-                                          .firstWhere(
-                                            (element) =>
-                                                element.unitBarcode ==
-                                                value.toString(),
-                                          );
-                                      context
-                                          .read<ReceiptViewmodel>()
-                                          .addNewItem(
-                                            context: context,
-                                            item: item,
-                                          );
-                                      searchController.clear();
-                                    } catch (e) {
-                                      searchController.clear();
-                                      if (e == 420) {
-                                        generalState.removeLastItem();
-                                        showErrorDialog(
-                                          context: context,
-                                          description:
-                                              'price_less_than_selling_price'
-                                                  .tr,
-                                          title: 'error'.tr,
-                                        );
-                                      } else {
-                                        showErrorDialog(
-                                          context: context,
-                                          description: 'bad_barcode'.tr,
-                                          title: 'error'.tr,
-                                        );
-                                      }
-                                    }
-                                  },
-                                  fillColor: Colors.white,
-                                  activated: true,
-                                  hintText: "search_barcode".tr,
-                                  editingController: searchController,
-                                  name: 'search',
-                                ),
+                          Expanded(
+                            child: Container(
+                              height: height * 0.09,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: width * 0.01,
                               ),
-                              Expanded(
-                                child: Center(
-                                  child: Selector<GeneralState, dynamic>(
-                                    builder: (context, state, widget) {
-                                      return AutoSizeText.rich(
-                                        TextSpan(
-                                          children: [
-                                            TextSpan(
-                                              text: "total_quantity".tr,
-                                              style: GoogleFonts.cairo(
-                                                color: atlantis,
-                                              ),
-                                            ),
-                                            TextSpan(
-                                              text: ": ",
-                                              style: GoogleFonts.cairo(
-                                                color: atlantis,
-                                              ),
-                                            ),
-                                            TextSpan(
-                                              text: state.toString(),
-                                              style: GoogleFonts.cairo(
-                                                color: Colors.white,
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                    selector: (context, state) =>
-                                        state.currentReceipt["items_count"],
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: Consumer<GeneralState>(
-                                  builder: (context, state, widget) {
-                                    double quantity = 0;
-                                    for (var element in state.receiptItems) {
-                                      double temp = element["free_qty"];
-                                      quantity += temp;
-                                    }
-                                    return AutoSizeText.rich(
-                                      TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text: "total_free_qty".tr,
-                                            style: GoogleFonts.cairo(
-                                                color: atlantis),
-                                          ),
-                                          TextSpan(
-                                            text: ": " + quantity.toString(),
-                                            style: GoogleFonts.cairo(
-                                              color: Colors.white,
-                                            ),
-                                          )
-                                        ],
+                              child: Center(
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.of(context).pushNamed(
+                                      Routes.storsRoute,
+                                      arguments: const StorsView(
+                                        canTap: true,
+                                        choosingReceivingStor: true,
+                                        canPushReplace: false,
                                       ),
                                     );
                                   },
+                                  child: Consumer<GeneralState>(
+                                    builder: (context, state, widget) {
+                                      return AutoSizeText(
+                                        state.currentReceipt[
+                                                "receiving_stor_name"] ??
+                                            "اختر المخزن المستلم",
+                                        maxLines: 1,
+                                        style: GoogleFonts.cairo(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      );
+                                    },
+                                  ),
                                 ),
                               ),
-                              Expanded(
-                                child: CustomTextField(
-                                  fillColor: Colors.white,
-                                  activated: true,
-                                  hintText: "notes".tr,
-                                  onChanged: (value) {
-                                    context
-                                        .read<GeneralState>()
-                                        .addNotes(value.toString());
-                                  },
-                                  name: 'notes',
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          height: height * 0.02,
-                        ),
-                        SizedBox(
-                          height: height * 0.54,
-                          child: ReceiptItemsTable(
-                            width: width,
-                            height: height,
-                            context: context,
-                            data: data,
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
+                    SizedBox(
+                      height: height * 0.02,
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: width * 0.01,
+                        vertical: height * 0.008,
+                      ),
+                      height: height * 0.09,
+                      decoration: const BoxDecoration(
+                        color: smaltBlue,
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(15),
+                          bottomRight: Radius.circular(15),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Expanded(
+                            child: CustomTextField(
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d+\.?\d{0,2}')),
+                                FilteringTextInputFormatter.deny("")
+                              ],
+                              onSubmitted: (value) {
+                                try {
+                                  ItemsModel item = context
+                                      .read<ItemsViewmodel>()
+                                      .items
+                                      .firstWhere(
+                                        (element) =>
+                                            element.unitBarcode ==
+                                            value.toString(),
+                                      );
+                                  context.read<ReceiptViewmodel>().addNewItem(
+                                        context: context,
+                                        item: item,
+                                      );
+                                  searchController.clear();
+                                } catch (e) {
+                                  searchController.clear();
+                                  if (e == 420) {
+                                    generalState.removeLastItem();
+                                    showErrorDialog(
+                                      context: context,
+                                      description:
+                                          'price_less_than_selling_price'.tr,
+                                      title: 'error'.tr,
+                                    );
+                                  } else {
+                                    showErrorDialog(
+                                      context: context,
+                                      description: 'bad_barcode'.tr,
+                                      title: 'error'.tr,
+                                    );
+                                  }
+                                }
+                              },
+                              fillColor: Colors.white,
+                              activated: true,
+                              hintText: "search_barcode".tr,
+                              editingController: searchController,
+                              name: 'search',
+                            ),
+                          ),
+                          Expanded(
+                            child: Center(
+                              child: Selector<GeneralState, dynamic>(
+                                builder: (context, state, widget) {
+                                  return AutoSizeText.rich(
+                                    TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: "total_quantity".tr,
+                                          style: GoogleFonts.cairo(
+                                            color: atlantis,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: ": ",
+                                          style: GoogleFonts.cairo(
+                                            color: atlantis,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: state.toString(),
+                                          style: GoogleFonts.cairo(
+                                            color: Colors.white,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                },
+                                selector: (context, state) =>
+                                    state.currentReceipt["items_count"],
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Consumer<GeneralState>(
+                              builder: (context, state, widget) {
+                                double quantity = 0;
+                                for (var element in state.receiptItems) {
+                                  double temp = element["free_qty"];
+                                  quantity += temp;
+                                }
+                                return AutoSizeText.rich(
+                                  TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: "total_free_qty".tr,
+                                        style:
+                                            GoogleFonts.cairo(color: atlantis),
+                                      ),
+                                      TextSpan(
+                                        text: ": " + quantity.toString(),
+                                        style: GoogleFonts.cairo(
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          Expanded(
+                            child: CustomTextField(
+                              fillColor: Colors.white,
+                              activated: true,
+                              hintText: "notes".tr,
+                              onChanged: (value) {
+                                context
+                                    .read<GeneralState>()
+                                    .addNotes(value.toString());
+                              },
+                              name: 'notes',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: height * 0.02,
+                    ),
+                    SizedBox(
+                      height: height * 0.54,
+                      child: ReceiptItemsTable(
+                        width: width,
+                        height: height,
+                        context: context,
+                        data: data,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
-        );
+        ),
+      ),
+    );
   }
 }

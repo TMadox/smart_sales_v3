@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -15,9 +16,9 @@ import 'package:smart_sales/View/Screens/Inventory/inventory_viewmodel.dart';
 import 'package:smart_sales/View/Screens/Items/items_viewmodel.dart';
 import 'package:smart_sales/View/Screens/Receipts/receipt_viewmodel.dart';
 import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
-import 'package:smart_sales/View/Widgets/Dialogs/exit_dialog.dart';
-import 'package:smart_sales/View/Widgets/Dialogs/warning_dialog.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/error_dialog.dart';
+import 'package:smart_sales/View/Widgets/Dialogs/exit_dialog.dart';
+import 'package:smart_sales/View/Widgets/Dialogs/general_dialog.dart';
 
 class InventoryView extends StatefulWidget {
   const InventoryView({Key? key}) : super(key: key);
@@ -61,276 +62,269 @@ class _InventoryViewState extends State<InventoryView> {
     double height = screenHeight(context);
     final generalState = context.read<GeneralState>();
     return WillPopScope(
-          onWillPop: () async {
-            if (generalState.receiptItems.isNotEmpty) {
-              warningDialog(
-                context: context,
-                warningText:
-                    'هناك فاتورة قيد الانشاء ستمسح ان تراجعت, هل تود الخروج؟',
-                btnCancelText: "exit".tr,
-                btnOkText: 'بقاء',
-                onCancel: () {
-                  if ((locator
-                          .get<SharedStorage>()
-                          .prefs
-                          .getBool("request_visit") ??
-                      true)) {
-                    exitDialog(
-                      context: context,
-                      data: data,
-                    );
-                    return false;
-                  } else {
-                    Get.back();
-                  }
-                },
-              );
-              return false;
-            } else {
-              if ((storage.getBool("request_visit") ?? true)) {
+      onWillPop: () async {
+        if (generalState.receiptItems.isNotEmpty) {
+          generalDialog(
+            title: "warning".tr,
+            context: context,
+            message: 'هناك فاتورة قيد الانشاء ستمسح ان تراجعت, هل تود الخروج؟',
+            onCancelText: "exit".tr,
+            onOkText: 'بقاء',
+            onCancel: () {
+              if ((locator
+                      .get<SharedStorage>()
+                      .prefs
+                      .getBool("request_visit") ??
+                  false)) {
                 exitDialog(
                   context: context,
                   data: data,
                 );
                 return false;
               } else {
-                return true;
+                Get.back();
               }
-            }
-          },
-          child: GestureDetector(
-            onTap: () {
-              FocusScope.of(context).requestFocus(FocusNode());
             },
-            child: Scaffold(
-              body: Center(
-                child: SizedBox(
-                  width: width * 0.98,
-                  child: ListView(
-                    primary: true,
+          );
+          return false;
+        } else {
+          if ((storage.getBool("request_visit") ?? false)) {
+            exitDialog(
+              context: context,
+              data: data,
+            );
+            return false;
+          } else {
+            return true;
+          }
+        }
+      },
+      child: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child: Scaffold(
+          body: Center(
+            child: SizedBox(
+              width: width * 0.98,
+              child: ListView(
+                primary: true,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            flex: 3,
-                            child: Container(
-                              height: height * 0.09,
-                              decoration: const BoxDecoration(
-                                color: smaltBlue,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(
-                                    15,
-                                  ),
-                                ),
+                      Expanded(
+                        flex: 3,
+                        child: Container(
+                          height: height * 0.09,
+                          decoration: const BoxDecoration(
+                            color: smaltBlue,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(
+                                15,
                               ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  AutoSizeText.rich(
-                                    TextSpan(children: [
-                                      TextSpan(
-                                        text: "date".tr,
-                                        style:
-                                            GoogleFonts.cairo(color: atlantis),
-                                      ),
-                                      TextSpan(
-                                        text: ": " +
-                                            CurrentDate.getCurrentDate()
-                                                .toString(),
-                                        style: GoogleFonts.cairo(
-                                          color: Colors.white,
-                                        ),
-                                      )
-                                    ]),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              AutoSizeText.rich(
+                                TextSpan(children: [
+                                  TextSpan(
+                                    text: "date".tr,
+                                    style: GoogleFonts.cairo(color: atlantis),
                                   ),
-                                  AutoSizeText.rich(
-                                    TextSpan(children: [
-                                      TextSpan(
-                                        text: "time".tr,
-                                        style:
-                                            GoogleFonts.cairo(color: atlantis),
-                                      ),
-                                      TextSpan(
-                                        text: ": " +
-                                            CurrentDate.getCurrentTime()
-                                                .toString(),
-                                        style: GoogleFonts.cairo(
-                                            color: Colors.white),
-                                      )
-                                    ]),
-                                  ),
-                                  AutoSizeText(
-                                    context
-                                            .read<ReceiptViewmodel>()
-                                            .operationName(
-                                              generalState.currentReceipt[
-                                                  "section_type_no"],
-                                            ) +
-                                        " "
-                                                "number"
-                                            .tr +
-                                        ": " +
-                                        generalState.currentReceipt["oper_id"]
-                                            .toString(),
+                                  TextSpan(
+                                    text: ": " +
+                                        CurrentDate.getCurrentDate().toString(),
                                     style: GoogleFonts.cairo(
-                                      color: atlantis,
+                                      color: Colors.white,
                                     ),
+                                  )
+                                ]),
+                              ),
+                              AutoSizeText.rich(
+                                TextSpan(children: [
+                                  TextSpan(
+                                    text: "time".tr,
+                                    style: GoogleFonts.cairo(color: atlantis),
                                   ),
-                                ],
+                                  TextSpan(
+                                    text: ": " +
+                                        CurrentDate.getCurrentTime().toString(),
+                                    style:
+                                        GoogleFonts.cairo(color: Colors.white),
+                                  )
+                                ]),
                               ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: height * 0.02,
-                      ),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: width * 0.01, vertical: height * 0.008),
-                        height: height * 0.09,
-                        decoration: const BoxDecoration(
-                          color: smaltBlue,
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(15),
-                            bottomRight: Radius.circular(15),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Expanded(
-                              child: CustomTextField(
-                                inputType: TextInputType.number,
-                                onSubmitted: (value) {
-                                  try {
-                                    ItemsModel item = context
-                                        .read<ItemsViewmodel>()
-                                        .items
-                                        .firstWhere(
-                                          (element) =>
-                                              element.unitBarcode ==
-                                              value.toString(),
-                                        );
-                                    context
-                                        .read<InventoryViewmodel>()
-                                        .addNewItem(
-                                          context: context,
-                                          item: item,
-                                        );
-                                    searchController.clear();
-                                  } catch (e) {
-                                    searchController.clear();
-                                    if (e == 420) {
-                                      generalState.removeLastItem();
-                                      showErrorDialog(
-                                        context: context,
-                                        description:
-                                            'price_less_than_selling_price'.tr,
-                                        title: "error".tr,
-                                      );
-                                    } else {
-                                      showErrorDialog(
-                                        context: context,
-                                        description: 'bad_barcode'.tr,
-                                        title: "error".tr,
-                                      );
-                                    }
-                                  }
-                                },
-                                fillColor: Colors.white,
-                                activated: true,
-                                hintText: "barcode_search".tr,
-                                editingController: searchController,
-                                name: 'search',
-                              ),
-                            ),
-                            Expanded(
-                              child: Center(
-                                child: Selector<GeneralState, dynamic>(
-                                  builder: (context, state, widget) {
-                                    return AutoSizeText.rich(
-                                      TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text: "total_quantity".tr + ": ",
-                                            style: GoogleFonts.cairo(
-                                                color: atlantis),
-                                          ),
-                                          TextSpan(
-                                            text: state.toString(),
-                                            style: GoogleFonts.cairo(
-                                                color: Colors.white),
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                  selector: (context, state) =>
-                                      state.currentReceipt["items_count"],
+                              AutoSizeText(
+                                context.read<ReceiptViewmodel>().operationName(
+                                          generalState.currentReceipt[
+                                              "section_type_no"],
+                                        ) +
+                                    " "
+                                            "number"
+                                        .tr +
+                                    ": " +
+                                    generalState.currentReceipt["oper_id"]
+                                        .toString(),
+                                style: GoogleFonts.cairo(
+                                  color: atlantis,
                                 ),
                               ),
-                            ),
-                            Expanded(
-                              child: Consumer<GeneralState>(
-                                builder: (context, state, widget) {
-                                  double quantity = 0;
-                                  for (var element in state.receiptItems) {
-                                    double temp = element["free_qty"];
-                                    quantity += temp;
-                                  }
-                                  return AutoSizeText.rich(
-                                    TextSpan(children: [
-                                      TextSpan(
-                                        text: "total_free_qty".tr,
-                                        style:
-                                            GoogleFonts.cairo(color: atlantis),
-                                      ),
-                                      TextSpan(
-                                        text: ": " + quantity.toString(),
-                                        style: GoogleFonts.cairo(
-                                            color: Colors.white),
-                                      )
-                                    ]),
-                                  );
-                                },
-                              ),
-                            ),
-                            Expanded(
-                              child: CustomTextField(
-                                fillColor: Colors.white,
-                                activated: true,
-                                hintText: "notes".tr,
-                                onChanged: (value) {
-                                  context
-                                      .read<GeneralState>()
-                                      .addNotes(value.toString());
-                                },
-                                name: 'notes',
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                      SizedBox(
-                        height: height * 0.02,
-                      ),
-                      SizedBox(
-                          height: height * 0.54,
-                          child: InventoryTable(
-                            width: width,
-                            height: height,
-                            context: context,
-                            data: data,
-                          )),
                     ],
                   ),
-                ),
+                  SizedBox(
+                    height: height * 0.02,
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: width * 0.01, vertical: height * 0.008),
+                    height: height * 0.09,
+                    decoration: const BoxDecoration(
+                      color: smaltBlue,
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(15),
+                        bottomRight: Radius.circular(15),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Expanded(
+                          child: CustomTextField(
+                             inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+                  FilteringTextInputFormatter.deny("")
+                ],
+                            onSubmitted: (value) {
+                              try {
+                                ItemsModel item = context
+                                    .read<ItemsViewmodel>()
+                                    .items
+                                    .firstWhere(
+                                      (element) =>
+                                          element.unitBarcode ==
+                                          value.toString(),
+                                    );
+                                context.read<InventoryViewmodel>().addNewItem(
+                                      context: context,
+                                      item: item,
+                                    );
+                                searchController.clear();
+                              } catch (e) {
+                                searchController.clear();
+                                if (e == 420) {
+                                  generalState.removeLastItem();
+                                  showErrorDialog(
+                                    context: context,
+                                    description:
+                                        'price_less_than_selling_price'.tr,
+                                    title: "error".tr,
+                                  );
+                                } else {
+                                  showErrorDialog(
+                                    context: context,
+                                    description: 'bad_barcode'.tr,
+                                    title: "error".tr,
+                                  );
+                                }
+                              }
+                            },
+                            fillColor: Colors.white,
+                            activated: true,
+                            hintText: "barcode_search".tr,
+                            editingController: searchController,
+                            name: 'search',
+                          ),
+                        ),
+                        Expanded(
+                          child: Center(
+                            child: Selector<GeneralState, dynamic>(
+                              builder: (context, state, widget) {
+                                return AutoSizeText.rich(
+                                  TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: "total_quantity".tr + ": ",
+                                        style:
+                                            GoogleFonts.cairo(color: atlantis),
+                                      ),
+                                      TextSpan(
+                                        text: state.toString(),
+                                        style: GoogleFonts.cairo(
+                                            color: Colors.white),
+                                      )
+                                    ],
+                                  ),
+                                );
+                              },
+                              selector: (context, state) =>
+                                  state.currentReceipt["items_count"],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Consumer<GeneralState>(
+                            builder: (context, state, widget) {
+                              double quantity = 0;
+                              for (var element in state.receiptItems) {
+                                double temp = element["free_qty"];
+                                quantity += temp;
+                              }
+                              return AutoSizeText.rich(
+                                TextSpan(children: [
+                                  TextSpan(
+                                    text: "total_free_qty".tr,
+                                    style: GoogleFonts.cairo(color: atlantis),
+                                  ),
+                                  TextSpan(
+                                    text: ": " + quantity.toString(),
+                                    style:
+                                        GoogleFonts.cairo(color: Colors.white),
+                                  )
+                                ]),
+                              );
+                            },
+                          ),
+                        ),
+                        Expanded(
+                          child: CustomTextField(
+                            fillColor: Colors.white,
+                            activated: true,
+                            hintText: "notes".tr,
+                            onChanged: (value) {
+                              context
+                                  .read<GeneralState>()
+                                  .addNotes(value.toString());
+                            },
+                            name: 'notes',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: height * 0.02,
+                  ),
+                  SizedBox(
+                      height: height * 0.54,
+                      child: InventoryTable(
+                        width: width,
+                        height: height,
+                        context: context,
+                        data: data,
+                      )),
+                ],
               ),
             ),
           ),
-        );
+        ),
+      ),
+    );
   }
 }

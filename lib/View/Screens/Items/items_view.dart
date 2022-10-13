@@ -154,9 +154,9 @@ class _ItemsViewState extends State<ItemsView> {
                   padding: const EdgeInsets.all(5.0),
                   child: CustomTextField(
                     editingController: _controller,
-                    inputType: TextInputType.number,
                     inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
+                      FilteringTextInputFormatter.allow(
+                          RegExp(r'^\d+\.?\d{0,2}')),
                       FilteringTextInputFormatter.deny("")
                     ],
                     activated: true,

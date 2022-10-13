@@ -334,9 +334,20 @@ class LocalizationManager extends Translations {
     "banking": "Banking",
     "use shifts": "Use Shifts",
     "repeated": "Repeated",
+    "SocketException: Failed host lookup: 'sky3m.duckdns.org' (OS Error: No address associated with hostname, errno = 7)":
+        "SocketException: Failed host lookup: 'sky3m.duckdns.org' (OS Error: No address associated with hostname, errno = 7)",
+    "receipt is bending": "A receipt is still bending, do you want to exit?",
+    "types": "Types",
+    "offers": "Offers"
   };
 
   final Map<String, String> arabic = {
+    "offers": "العروض",
+    "types": "الانواع",
+    "receipt is bending":
+        'هناك فاتورة قيد الانشاء ستمسح ان تراجعت, هل تود الخروج؟',
+    "SocketException: Failed host lookup: 'sky3m.duckdns.org' (OS Error: No address associated with hostname, errno = 7)":
+        "لم يتعثر علي  الهوست المطلوب من رابط الدخول",
     "repeated": "مكررة",
     "cancel": "الغاء",
     "allow shift": "استخدام مواقيت عمل",

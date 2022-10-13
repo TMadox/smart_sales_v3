@@ -9,8 +9,9 @@ import 'package:smart_sales/View/Screens/Receipts/receipt_viewmodel.dart';
 import 'package:smart_sales/View/Widgets/Common/alert_snackbar.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/exit_dialog.dart';
 import 'package:smart_sales/View/Widgets/Common/options_button.dart';
+import 'package:smart_sales/View/Widgets/Dialogs/general_dialog.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/save_dialog.dart';
-import 'package:smart_sales/View/Widgets/Dialogs/warning_dialog.dart';
+
 import 'package:provider/provider.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/select_receipt_dialog.dart';
 
@@ -126,15 +127,16 @@ class OptionsColumn extends StatelessWidget {
             color: Colors.indigo,
             onPressed: () {
               if (receiptCreationState.selectedItems.isNotEmpty) {
-                warningDialog(
+                generalDialog(
+                  title: "warning".tr,
                   context: context,
                   onCancel: () {
-                    receiptCreationState.onDelete(context);
+                    receiptCreationState.onDeleteItem(context);
                     context.read<ReceiptViewmodel>().clearSelected();
                   },
-                  btnOkText: "back".tr,
-                  btnCancelText: "confirm".tr,
-                  warningText: "discard_confirm".tr,
+                  onOkText: "back".tr,
+                  onCancelText: "confirm".tr,
+                  message: "discard_confirm".tr,
                 );
               } else {
                 showAlertSnackbar(
@@ -153,17 +155,17 @@ class OptionsColumn extends StatelessWidget {
             color: Colors.red,
             onPressed: () {
               if (context.read<GeneralState>().receiptItems.isNotEmpty) {
-                warningDialog(
+                generalDialog(
                   context: context,
-                  warningText: 'receipt_still_inprogress'.tr,
-                  btnCancelText: 'exit'.tr,
-                  btnOkText: 'stay'.tr,
+                  message: 'receipt_still_inprogress'.tr,
+                  onCancelText: 'exit'.tr,
+                  onOkText: 'stay'.tr,
                   onCancel: () {
                     if ((locator
                             .get<SharedStorage>()
                             .prefs
                             .getBool("request_visit") ??
-                        true)) {
+                        false)) {
                       exitDialog(
                         context: context,
                         data: data,
@@ -173,13 +175,14 @@ class OptionsColumn extends StatelessWidget {
                       Get.back();
                     }
                   },
+                  title: 'warning'.tr,
                 );
               } else {
                 if ((locator
                         .get<SharedStorage>()
                         .prefs
                         .getBool("request_visit") ??
-                    true)) {
+                    false)) {
                   exitDialog(
                     context: context,
                     data: data,

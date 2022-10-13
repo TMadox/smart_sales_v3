@@ -92,70 +92,70 @@ class _OperationsPageState extends State<OperationsPage> {
                             imagePath: "assets/order.png",
                             title: "selling_order".tr,
                           ),
-                          OperationButton(
-                            visible:
-                                storage.getBool("allow_purchase_receipt") ??
-                                    true,
-                            onPressed: () {
-                              Get.to(
-                                () => const MowView(
-                                  canTap: true,
-                                  sectionTypeNo: 3,
-                                  canPushReplace: false,
-                                ),
-                              );
-                            },
-                            imagePath: "assets/purchase_receipt.png",
-                            title: "purchase_receipt".tr,
-                          ),
-                          OperationButton(
-                            visible: storage
-                                    .getBool("allow_purchase_return_receipt") ??
-                                true,
-                            onPressed: () {
-                              Get.to(
-                                () => const MowView(
-                                  canTap: true,
-                                  sectionTypeNo: 4,
-                                  canPushReplace: false,
-                                ),
-                              );
-                            },
-                            imagePath: "assets/purchase_return_receipt.png",
-                            title: "purchase_return_receipt".tr,
-                          ),
-                          OperationButton(
-                            visible: storage.getBool("allow_cashier_receipt") ??
-                                true,
-                            onPressed: () {
-                              Navigator.of(context).pushNamed(
-                                "clients",
-                                arguments: const ClientsScreen(
-                                  canPushReplace: false,
-                                  sectionType: 31,
-                                  canTap: true,
-                                ),
-                              );
-                            },
-                            imagePath: "assets/cashier_receipt.png",
-                            title: "cashier_receipt".tr,
-                          ),
-                          OperationButton(
-                            imagePath: "assets/puchase_order.png",
-                            title: "purchase_order".tr,
-                            onPressed: () {
-                              Navigator.of(context).pushNamed(
-                                "clients",
-                                arguments: const ClientsScreen(
-                                  canPushReplace: false,
-                                  sectionType: 18,
-                                  canTap: true,
-                                ),
-                              );
-                            },
-                            visible:
-                                storage.getBool("allow_purchase_order") ?? true,
-                          ),
+                          // OperationButton(
+                          //   visible:
+                          //       storage.getBool("allow_purchase_receipt") ??
+                          //           true,
+                          //   onPressed: () {
+                          //     Get.to(
+                          //       () => const MowView(
+                          //         canTap: true,
+                          //         sectionTypeNo: 3,
+                          //         canPushReplace: false,
+                          //       ),
+                          //     );
+                          //   },
+                          //   imagePath: "assets/purchase_receipt.png",
+                          //   title: "purchase_receipt".tr,
+                          // ),
+                          // OperationButton(
+                          //   visible: storage
+                          //           .getBool("allow_purchase_return_receipt") ??
+                          //       true,
+                          //   onPressed: () {
+                          //     Get.to(
+                          //       () => const MowView(
+                          //         canTap: true,
+                          //         sectionTypeNo: 4,
+                          //         canPushReplace: false,
+                          //       ),
+                          //     );
+                          //   },
+                          //   imagePath: "assets/purchase_return_receipt.png",
+                          //   title: "purchase_return_receipt".tr,
+                          // ),
+                          // OperationButton(
+                          //   visible: storage.getBool("allow_cashier_receipt") ??
+                          //       true,
+                          //   onPressed: () {
+                          //     Navigator.of(context).pushNamed(
+                          //       "clients",
+                          //       arguments: const ClientsScreen(
+                          //         canPushReplace: false,
+                          //         sectionType: 31,
+                          //         canTap: true,
+                          //       ),
+                          //     );
+                          //   },
+                          //   imagePath: "assets/cashier_receipt.png",
+                          //   title: "cashier_receipt".tr,
+                          // ),
+                          // OperationButton(
+                          //   imagePath: "assets/puchase_order.png",
+                          //   title: "purchase_order".tr,
+                          //   onPressed: () {
+                          //     Navigator.of(context).pushNamed(
+                          //       "clients",
+                          //       arguments: const ClientsScreen(
+                          //         canPushReplace: false,
+                          //         sectionType: 18,
+                          //         canTap: true,
+                          //       ),
+                          //     );
+                          //   },
+                          //   visible:
+                          //       storage.getBool("allow_purchase_order") ?? true,
+                          // ),
                           OperationButton(
                             imagePath: "assets/stor_transfer.png",
                             title: "stor_transfer".tr,

@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
 import 'package:smart_sales/App/Resources/values_manager.dart';
@@ -36,7 +37,10 @@ class SecondRow extends StatelessWidget {
             builder: (BuildContext context, state, Widget? child) =>
                 CustomTextField(
               hintText: "enter_amount".tr,
-              inputType: TextInputType.number,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+                FilteringTextInputFormatter.deny("")
+              ],
               editingController: controller,
               validationMode: AutovalidateMode.onUserInteraction,
               validators: FormBuilderValidators.numeric(context),

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -13,7 +14,6 @@ import 'package:smart_sales/Provider/mow_state.dart';
 import 'package:smart_sales/Services/Repositories/upload_repo.dart';
 import 'package:smart_sales/Provider/clients_state.dart';
 import 'package:smart_sales/Provider/general_state.dart';
-import 'package:smart_sales/View/Widgets/Dialogs/loading_dialog.dart';
 
 void showReturnDialog({required BuildContext context, required Map receipt}) {
   showAnimatedDialog(
@@ -183,7 +183,7 @@ fullReturn({required BuildContext context, required Map receipt}) async {
     }
   }
   if (hasRemaining) {
-    showLoaderDialog(context);
+    EasyLoading.show();
     for (var element in products) {
       element["fat_qty"] = element["qty_remain"];
       element["free_qty"] = element["free_qty_remain"];
@@ -225,7 +225,7 @@ fullReturn({required BuildContext context, required Map receipt}) async {
       await locator.get<SaveData>().saveReceiptsData(
           input: context.read<GeneralState>().receiptsList, context: context);
     }
-    Navigator.of(context).pop();
+    EasyLoading.dismiss();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text("full_return_text".tr),

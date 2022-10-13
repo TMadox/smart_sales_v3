@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smart_sales/App/Util/colors.dart';
@@ -87,7 +88,11 @@ class _BottomInfoState extends State<BottomInfo> {
                       controller: discountController,
                       textAlign: TextAlign.center,
                       style: GoogleFonts.cairo(),
-                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                            RegExp(r'^\d+\.?\d{0,2}')),
+                        FilteringTextInputFormatter.deny("")
+                      ],
                       onTap: () {
                         discountController.selection = TextSelection(
                             baseOffset: 0,
@@ -133,7 +138,11 @@ class _BottomInfoState extends State<BottomInfo> {
                   child: Center(
                     child: TextFormField(
                       controller: taxController,
-                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                            RegExp(r'^\d+\.?\d{0,2}')),
+                        FilteringTextInputFormatter.deny("")
+                      ],
                       textAlign: TextAlign.center,
                       style: GoogleFonts.cairo(),
                       onTap: () {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Util/date.dart';
 import 'package:smart_sales/App/Util/device.dart';
@@ -11,7 +12,10 @@ import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/Provider/options_state.dart';
 import 'package:smart_sales/Provider/powers_state.dart';
 import 'package:smart_sales/Provider/user_state.dart';
+import 'package:smart_sales/View/Screens/Cashier/cashier_controller.dart';
+import 'package:smart_sales/View/Screens/Cashier/cashier_view.dart';
 import 'package:smart_sales/View/Screens/Documents/document_viewmodel.dart';
+import 'package:smart_sales/View/Screens/Items/items_viewmodel.dart';
 
 class ClientsViewmodel {
   num getStartingId({
@@ -71,13 +75,15 @@ class ClientsViewmodel {
       "tax_per": 0.0,
       "tax_value": 0.0,
       "total_tax": 0.0,
+      "pay_by_cash_only": client.payByCash,
+      "force_cash": client.payByCash == 1,
       "oper_net_value_with_tax": 0.0,
       "oper_profit": 0.0,
       "is_form_for_fat": 1,
       "is_form_has_affect_on_stock": 1,
       "is_form_for_output_stock": 1,
       "selected_stor_id": selectedStorId,
-      "stor_id": loggedUser.defStorId,
+      "stor_id": selectedStorId,
       "comp_id": loggedUser.compId,
       "branch_id": loggedUser.branchId,
       "is_saved_in_server": 1,
@@ -119,8 +125,22 @@ class ClientsViewmodel {
         await Navigator.of(context)
             .pushNamed(Routes.inventoryRoute, arguments: client);
       } else if (sectionTypeNo == 31) {
-        await Navigator.of(context)
-            .pushNamed(Routes.cashierRoute, arguments: client);
+        Get.to(
+          () => CashierView(
+            client: client,
+          ),
+          binding: BindingsBuilder(
+            () => Get.lazyPut(
+              () => CashierController(
+                items: context.read<ItemsViewmodel>().items,
+              ),
+            ),
+          ),
+        );
+        // await Navigator.of(context).pushNamed(
+        //   Routes.cashierRoute,
+        //   arguments: client,
+        // );
       } else {
         await Navigator.of(context)
             .pushNamed("ReceiptCreation", arguments: client);

@@ -295,7 +295,7 @@ class _MowViewState extends State<MowView> {
       "is_form_for_fat": 1,
       "is_form_has_affect_on_stock": 1,
       "is_form_for_output_stock": 1,
-      "stor_id": loggedUser.defStorId,
+      "stor_id": selectedStoreId,
       "comp_id": loggedUser.compId,
       "branch_id": loggedUser.branchId,
       "is_saved_in_server": 1,

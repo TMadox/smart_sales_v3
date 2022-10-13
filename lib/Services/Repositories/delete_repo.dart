@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_sales/App/Util/device.dart';
@@ -34,7 +33,6 @@ class DeleteRepo {
           sendTimeout: 15000,
         ),
       );
-      log(response.data.toString());
       if (response.data == "not ok" || response.data == "not found") {
         foundError = true;
       } else {

@@ -196,7 +196,7 @@ class _OperationsSettingsViewState extends State<OperationsSettingsView> {
             ),
             tiles: [
               SettingsTile.switchTile(
-                initialValue: storage.getBool("request_visit") ?? true,
+                initialValue: storage.getBool("request_visit") ?? false,
                 onToggle: (value) {
                   setState(() {
                     storage.setBool("request_visit", value);

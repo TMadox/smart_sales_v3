@@ -29,10 +29,12 @@ class ItemsViewmodel extends ChangeNotifier {
   FilterType filterType = FilterType.more;
 
   Future<void> fetchTypes({required bool transAllStors}) async {
-    final response = transAllStors == true
-        ? await DioRepository.to.get(path: '/get_data_types_qtys')
-        : null;
-    await SharedStorage.to.prefs.setString("types", response);
+    if (transAllStors) {
+      final response = await DioRepository.to.get(path: '/get_data_types_qtys');
+      await SharedStorage.to.prefs.setString("types", response);
+    } else {
+      await SharedStorage.to.prefs.remove("types");
+    }
   }
 
   Future<String> fetchItems({
@@ -54,16 +56,15 @@ class ItemsViewmodel extends ChangeNotifier {
     return response;
   }
 
-  Future<void> fetchData({
+  Future<void> fetchAllData({
     required BuildContext context,
     required UserModel user,
   }) async {
-    final OptionsModel transAllStors = context
-        .read<OptionsState>()
-        .options
-        .firstWhere((option) => option.optionId == 6);
-    await context.read<OptionsState>().reloadOptions();
+    final OptionsModel transAllStors =
+        (await context.read<OptionsState>().reloadOptions())
+            .firstWhere((option) => option.optionId == 6);
     await context.read<PowersState>().reloadPowers(context);
+    log("trans all store:" + transAllStors.optionValue.toString());
     await fetchTypes(transAllStors: transAllStors.optionValue == 1);
     await fetchItems(transAllStors: transAllStors.optionValue == 1, user: user);
   }
@@ -113,7 +114,7 @@ class ItemsViewmodel extends ChangeNotifier {
     required BuildContext context,
     required UserModel user,
   }) async {
-    await fetchData(
+    await fetchAllData(
       context: context,
       user: user,
     );
@@ -176,6 +177,7 @@ class ItemsViewmodel extends ChangeNotifier {
     required num qty,
     required double unitMulti,
     required int sectionTypeNo,
+    int? inStorId,
     required num storId,
   }) async {
     ItemsModel currentItem = items.firstWhere(
@@ -220,6 +222,50 @@ class ItemsViewmodel extends ChangeNotifier {
           });
           break;
         }
+      case 5:
+        {
+          items
+              .firstWhere(
+                  (element) => element.unitId == id && element.storId == storId)
+              .curQty = itemQty - qty;
+          items
+              .where(
+            (element) => (element.typeId == currentItem.typeId &&
+                element.unitId != currentItem.unitId &&
+                element.storId == storId),
+          )
+              .forEach((element) {
+            element.curQty =
+                (element.curQty - (totalReceiptQty / element.unitConvert));
+          });
+///////////////
+          currentItem = items.firstWhere(
+            (element) => element.unitId == id && element.storId == inStorId,
+          );
+          itemQty = currentItem.curQty;
+          totalReceiptQty = qty * currentItem.unitConvert;
+          log(items
+              .firstWhere((element) =>
+                  element.unitId == id && element.storId == inStorId)
+              .curQty
+              .toString());
+          items
+              .firstWhere((element) =>
+                  element.unitId == id && element.storId == inStorId)
+              .curQty += qty;
+          items
+              .where(
+            (element) => (element.typeId == currentItem.typeId &&
+                element.unitId != currentItem.unitId &&
+                element.storId == inStorId),
+          )
+              .forEach((element) {
+            element.curQty =
+                (element.curQty + (totalReceiptQty / element.unitConvert));
+          });
+
+          break;
+        }
     }
     await locator.get<SaveData>().saveItemsData(
           input: items,
@@ -246,7 +292,6 @@ class ItemsViewmodel extends ChangeNotifier {
           searchWord[searchWord.length - 1] != " ") {
         List<String> searchWords = searchWord.toLowerCase().split(" ");
         searchWords.removeWhere((element) => element == "");
-        log(searchWords.toString());
         resultList = powerFilteredList
             .where((item) => searchWords
                 .every((word) => item.itemName.split(' ').contains(word)))

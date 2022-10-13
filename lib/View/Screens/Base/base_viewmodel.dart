@@ -20,7 +20,7 @@ import 'package:smart_sales/View/Screens/Items/items_viewmodel.dart';
 import 'package:smart_sales/View/Screens/Receipts/receipt_viewmodel.dart';
 import 'package:smart_sales/View/Widgets/Common/alert_snackbar.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/exit_dialog.dart';
-import 'package:smart_sales/View/Widgets/Dialogs/warning_dialog.dart';
+import 'package:smart_sales/View/Widgets/Dialogs/general_dialog.dart';
 
 abstract class BaseViewmodel {
   int getStartingId({required BuildContext context, required int sectionNo}) {
@@ -76,7 +76,7 @@ abstract class BaseViewmodel {
     }
   }
 
-  Future<void> onDelete(BuildContext context) async {
+  Future<void> onDeleteItem(BuildContext context) async {
     context.read<GeneralState>().removeFromListReceiptItems(
           inputs: context.read<ReceiptViewmodel>().selectedItems,
         );
@@ -85,14 +85,14 @@ abstract class BaseViewmodel {
   bool onExit({required BuildContext context, required Map data}) {
     final generalState = context.read<GeneralState>();
     if (generalState.receiptItems.isNotEmpty) {
-      warningDialog(
+      generalDialog(
         context: context,
-        warningText: 'receipt_still_inprogress'.tr,
-        btnCancelText: "exit".tr,
-        btnOkText: 'stay'.tr,
+        message: 'receipt_still_inprogress'.tr,
+        onCancelText: "exit".tr,
+        onOkText: 'stay'.tr,
         onCancel: () {
           if ((locator.get<SharedStorage>().prefs.getBool("request_visit") ??
-              true)) {
+              false)) {
             exitDialog(
               context: context,
               data: data,
@@ -102,11 +102,12 @@ abstract class BaseViewmodel {
             Get.back();
           }
         },
+        title: 'warning'.tr,
       );
       return false;
     } else {
       if ((locator.get<SharedStorage>().prefs.getBool("request_visit") ??
-          true)) {
+          false)) {
         exitDialog(
           context: context,
           data: data,

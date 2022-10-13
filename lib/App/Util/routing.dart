@@ -102,7 +102,7 @@ class AppRouter {
       case Routes.cashierRoute:
         return MaterialPageRoute(builder: (BuildContext context) {
           return CashierView(
-            customer: settings.arguments as ClientsModel,
+            client: settings.arguments as ClientsModel,
           );
         });
       case Routes.kindsRoute:

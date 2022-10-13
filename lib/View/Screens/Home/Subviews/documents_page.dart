@@ -116,38 +116,38 @@ class _DocumentsPageState extends State<DocumentsPage> {
                                     "allow_expenses_seizure_document") ??
                                 true,
                           ),
-                          OperationButton(
-                            imagePath: "assets/mow_payment.png",
-                            title: "mow_payment_document".tr,
-                            onPressed: () {
-                              Get.to(
-                                () => const MowView(
-                                  canTap: true,
-                                  sectionTypeNo: 104,
-                                  canPushReplace: false,
-                                ),
-                              );
-                            },
-                            visible:
-                                storage.getBool("allow_mow_payment_document") ??
-                                    true,
-                          ),
-                          OperationButton(
-                            imagePath: "assets/mow_seizure.png",
-                            title: "mow_seizure_document".tr,
-                            onPressed: () {
-                              Get.to(
-                                () => const MowView(
-                                  canTap: true,
-                                  sectionTypeNo: 103,
-                                  canPushReplace: false,
-                                ),
-                              );
-                            },
-                            visible:
-                                storage.getBool("allow_mow_seizure_document") ??
-                                    true,
-                          ),
+                          // OperationButton(
+                          //   imagePath: "assets/mow_payment.png",
+                          //   title: "mow_payment_document".tr,
+                          //   onPressed: () {
+                          //     Get.to(
+                          //       () => const MowView(
+                          //         canTap: true,
+                          //         sectionTypeNo: 104,
+                          //         canPushReplace: false,
+                          //       ),
+                          //     );
+                          //   },
+                          //   visible:
+                          //       storage.getBool("allow_mow_payment_document") ??
+                          //           true,
+                          // ),
+                          // OperationButton(
+                          //   imagePath: "assets/mow_seizure.png",
+                          //   title: "mow_seizure_document".tr,
+                          //   onPressed: () {
+                          //     Get.to(
+                          //       () => const MowView(
+                          //         canTap: true,
+                          //         sectionTypeNo: 103,
+                          //         canPushReplace: false,
+                          //       ),
+                          //     );
+                          //   },
+                          //   visible:
+                          //       storage.getBool("allow_mow_seizure_document") ??
+                          //           true,
+                          // ),
                         ],
                       ),
                     ),

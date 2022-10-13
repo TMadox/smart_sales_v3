@@ -1,6 +1,3 @@
-import 'dart:developer';
-
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -11,45 +8,45 @@ import 'package:smart_sales/App/Util/locator.dart';
 import 'package:smart_sales/App/Util/routing.dart';
 import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
 import 'package:smart_sales/Data/Models/client_model.dart';
-import 'package:smart_sales/Data/Models/item_model.dart';
 import 'package:smart_sales/Data/Models/kinds_model.dart';
 import 'package:smart_sales/Provider/general_state.dart';
-import 'package:smart_sales/Provider/kinds_state.dart';
 import 'package:smart_sales/View/Screens/Cashier/Widget/bottom_info.dart';
 import 'package:smart_sales/View/Screens/Cashier/Widget/chashier_dialog_body.dart';
 import 'package:smart_sales/View/Screens/Cashier/Widget/details_table.dart';
+import 'package:smart_sales/View/Screens/Cashier/Widget/groups_column.dart';
+import 'package:smart_sales/View/Screens/Cashier/Widget/offers_column.dart';
+import 'package:smart_sales/View/Screens/Cashier/Widget/products_box.dart';
 import 'package:smart_sales/View/Screens/Cashier/Widget/search_bar.dart';
-import 'package:smart_sales/View/Screens/Cashier/cashier_viewmodel.dart';
-import 'package:smart_sales/View/Screens/Items/items_viewmodel.dart';
+import 'package:smart_sales/View/Screens/Cashier/Widget/types_column.dart';
+import 'package:smart_sales/View/Screens/Cashier/cashier_controller.dart';
 import 'package:smart_sales/View/Widgets/Common/alert_snackbar.dart';
 import 'package:smart_sales/View/Screens/Cashier/Widget/cashier_save_dialog.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/exit_dialog.dart';
-import 'package:smart_sales/View/Widgets/Dialogs/warning_dialog.dart';
+import 'package:smart_sales/View/Widgets/Dialogs/general_dialog.dart';
 
 class CashierView extends StatefulWidget {
-  final ClientsModel customer;
-  const CashierView({Key? key, required this.customer}) : super(key: key);
+  final ClientsModel client;
+  const CashierView({Key? key, required this.client}) : super(key: key);
 
   @override
   State<CashierView> createState() => _CashierViewState();
 }
 
 class _CashierViewState extends State<CashierView> {
-  final CashierViewmodel _cashierViewmodel = CashierViewmodel();
+  final CashierController cashierController = Get.find<CashierController>();
   KindsModel? selectedModel;
   Map data = {};
-  String searchWord = "";
   final SharedPreferences storage = locator.get<SharedStorage>().prefs;
   @override
   void initState() {
     data.addAll({
       "extend_time": DateTime.now().toString(),
       "section_type_no": 9999,
-      "user_name": widget.customer.amName,
-      "credit_before": widget.customer.curBalance ?? 0.0,
-      "cst_tax": widget.customer.taxFileNo ?? ".....",
-      "employ_id": widget.customer.employAccId,
-      "basic_acc_id": widget.customer.accId,
+      "user_name": widget.client.amName,
+      "credit_before": widget.client.curBalance ?? 0.0,
+      "cst_tax": widget.client.taxFileNo ?? ".....",
+      "employ_id": widget.client.employAccId,
+      "basic_acc_id": widget.client.accId,
     });
     super.initState();
   }
@@ -61,17 +58,18 @@ class _CashierViewState extends State<CashierView> {
     return WillPopScope(
       onWillPop: () async {
         if (generalState.receiptItems.isNotEmpty) {
-          warningDialog(
+          generalDialog(
             context: context,
-            warningText: 'receipt_still_inprogress'.tr,
-            btnCancelText: 'exit'.tr,
-            btnOkText: 'stay'.tr,
+            message: 'receipt_still_inprogress'.tr,
+            onCancelIcon: const Icon(Icons.exit_to_app),
+            onCancelText: 'exit'.tr,
+            onOkText: 'stay'.tr,
             onCancel: () {
               if ((locator
                       .get<SharedStorage>()
                       .prefs
                       .getBool("request_visit") ??
-                  true)) {
+                  false)) {
                 exitDialog(
                   context: context,
                   data: data,
@@ -81,11 +79,12 @@ class _CashierViewState extends State<CashierView> {
                 Get.back();
               }
             },
+            title: 'warning'.tr,
           );
           return false;
         } else {
           if ((locator.get<SharedStorage>().prefs.getBool("request_visit") ??
-              true)) {
+              false)) {
             exitDialog(
               context: context,
               data: data,
@@ -111,20 +110,13 @@ class _CashierViewState extends State<CashierView> {
                 children: [
                   StatefulBuilder(
                     builder: (context, state) {
-                      List<ItemsModel> filteredItems =
-                          _cashierViewmodel.filterItems(
-                              input: context.read<ItemsViewmodel>().items,
-                              kindsModel: selectedModel,
-                              searchWord: searchWord);
                       return Expanded(
                         child: Column(
                           children: [
                             SearchBar(
                               data: data,
                               onChanged: (value) {
-                                state(() {
-                                  searchWord = value ?? "";
-                                });
+                                cashierController.setSearchWord(value ?? "");
                               },
                               generalState: generalState,
                               storage: storage,
@@ -138,136 +130,53 @@ class _CashierViewState extends State<CashierView> {
                               },
                             ),
                             Expanded(
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: Colors.green, width: 2),
-                                        borderRadius: const BorderRadius.all(
-                                          Radius.circular(15),
+                              child: Obx(
+                                () {
+                                  cashierController.selectedKindId.value;
+                                  return Row(
+                                    children: [
+                                      if (!(storage.getBool(
+                                              "show_cashier_details") ??
+                                          true))
+                                        Expanded(
+                                          child: GroupsColumn(
+                                            cashierController:
+                                                cashierController,
+                                          ),
+                                        ),
+                                      SizedBox(
+                                        width: screenWidth(context) * 0.005,
+                                      ),
+                                      Expanded(
+                                        child: TypesColumn(
+                                          cashierController: cashierController,
                                         ),
                                       ),
-                                      child: ListView.builder(
-                                        itemCount: context
-                                            .read<KindsState>()
-                                            .kinds
-                                            .length,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          final KindsModel kindsModel = context
-                                              .read<KindsState>()
-                                              .kinds[index];
-                                          return InkWell(
-                                            onTap: () {
-                                              state(() {
-                                                selectedModel = kindsModel;
-                                              });
-                                            },
-                                            child: Card(
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(15.0),
-                                                side: BorderSide(
-                                                  color: kindsModel ==
-                                                          selectedModel
-                                                      ? Colors.green
-                                                      : Colors.transparent,
-                                                ),
-                                              ),
-                                              child: Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    vertical:
-                                                        screenWidth(context) *
-                                                            0.05),
-                                                child: Center(
-                                                  child: AutoSizeText(
-                                                    kindsModel.kindName,
-                                                    style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        },
+                                      SizedBox(
+                                        width: screenWidth(context) * 0.005,
                                       ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: screenHeight(context) * 0.01,
-                                  ),
-                                  Expanded(
-                                    flex: 3,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: Colors.green,
-                                          width: 2,
-                                        ),
-                                        borderRadius: const BorderRadius.all(
-                                          Radius.circular(15),
+                                      Expanded(
+                                        flex: 3,
+                                        child: ProductsBox(
+                                          cashierController: cashierController,
                                         ),
                                       ),
-                                      child: GridView.builder(
-                                        gridDelegate:
-                                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                                crossAxisCount: 3),
-                                        itemCount: filteredItems.length,
-                                        itemBuilder: (
-                                          BuildContext context,
-                                          int index,
-                                        ) {
-                                          final ItemsModel item =
-                                              filteredItems[index];
-                                          return InkWell(
-                                            onTap: () {
-                                              _cashierViewmodel
-                                                  .addOrIncrementItem(
-                                                context: context,
-                                                item: item,
-                                                generalState: generalState,
-                                              );
-                                              state(
-                                                () {},
-                                              );
-                                            },
-                                            child: Card(
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(15.0),
-                                                side: BorderSide(
-                                                  color: context
-                                                          .read<GeneralState>()
-                                                          .receiptItems
-                                                          .where((element) =>
-                                                              element[
-                                                                  "unit_id"] ==
-                                                              item.unitId)
-                                                          .isNotEmpty
-                                                      ? Colors.green
-                                                      : Colors.white,
-                                                ),
-                                              ),
-                                              child: Center(
-                                                child: AutoSizeText(
-                                                  item.itemName.toString(),
-                                                  textAlign: TextAlign.center,
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                      if (!(storage.getBool(
+                                              "show_cashier_details") ??
+                                          true)) ...[
+                                        SizedBox(
+                                          width: screenWidth(context) * 0.005,
+                                        ),
+                                        Expanded(
+                                          child: OffersColumn(
+                                            cashierController:
+                                                cashierController,
+                                          ),
+                                        )
+                                      ]
+                                    ],
+                                  );
+                                },
                               ),
                             ),
                             SizedBox(
@@ -305,10 +214,8 @@ class _CashierViewState extends State<CashierView> {
                                         ),
                                         onSave: () async {
                                           Get.back();
-                                          log(generalState.currentReceipt
-                                              .toString());
                                           EasyLoading.show();
-                                          await _cashierViewmodel
+                                          await cashierController
                                               .onFinishOperation(
                                             context: context,
                                             doShare: false,
@@ -316,8 +223,9 @@ class _CashierViewState extends State<CashierView> {
                                           EasyLoading.dismiss();
                                           Navigator.of(context)
                                               .pushNamedAndRemoveUntil(
-                                                  Routes.homeRoute,
-                                                  (route) => false);
+                                            Routes.homeRoute,
+                                            (route) => false,
+                                          );
                                         },
                                         onCancel: () {
                                           Get.back();
@@ -325,7 +233,7 @@ class _CashierViewState extends State<CashierView> {
                                         onPrint: () async {
                                           Get.back();
                                           EasyLoading.show();
-                                          await _cashierViewmodel
+                                          await cashierController
                                               .onFinishOperation(
                                             context: context,
                                             doPrint: true,
@@ -341,7 +249,7 @@ class _CashierViewState extends State<CashierView> {
                                         onShare: () async {
                                           Get.back();
                                           EasyLoading.show();
-                                          await _cashierViewmodel
+                                          await cashierController
                                               .onFinishOperation(
                                             context: context,
                                             doShare: true,

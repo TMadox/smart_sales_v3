@@ -151,11 +151,13 @@ class _StorsViewState extends State<StorsView> {
                                         } else {
                                           context
                                               .read<GeneralState>()
-                                              .changeReceiptValue(input: {
-                                            "receiving_stor_name":
-                                                stor.storName,
-                                            "receiving_stor_id": stor.storId,
-                                          });
+                                              .changeReceiptValue(
+                                            input: {
+                                              "receiving_stor_name":
+                                                  stor.storName,
+                                              "receiving_stor_id": stor.storId,
+                                            },
+                                          );
                                           Get.back();
                                         }
                                       }
@@ -262,6 +264,7 @@ class _StorsViewState extends State<StorsView> {
         "receiving_stor_name": selectedStor.storName,
         "receiving_stor_id": selectedStor.storId,
         "stor_id": loggedUser.defStorId,
+        "in_stor_id": selectedStor.storId,
         "comp_id": loggedUser.compId,
         "branch_id": loggedUser.branchId,
         "is_saved_in_server": 1,

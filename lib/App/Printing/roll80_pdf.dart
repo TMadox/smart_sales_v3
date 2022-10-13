@@ -669,7 +669,7 @@ Future<pw.Page> roll80Pdf({
                   : pw.SizedBox(),
               pw.Divider(),
               pw.Text(
-                receipt["notes"],
+                receipt["notes"] ?? "",
                 textDirection: pw.TextDirection.rtl,
                 textAlign: pw.TextAlign.center,
                 style: pw.TextStyle(

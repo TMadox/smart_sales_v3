@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class CommonButton extends StatelessWidget {
   final String title;
-  final Icon icon;
-  final Color color;
+  final Widget icon;
+  final Color? color;
   final Color? titleColor;
 
   final void Function()? onPressed;
