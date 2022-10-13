@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
@@ -69,7 +70,11 @@ class _RegisterViewState extends State<RegisterView> {
                               return null;
                             },
                             activated: true,
-                            inputType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'^\d+\.?\d{0,2}')),
+                              FilteringTextInputFormatter.deny("")
+                            ],
                             name: "tel1",
                             hintText: "الهاتف",
                           ),

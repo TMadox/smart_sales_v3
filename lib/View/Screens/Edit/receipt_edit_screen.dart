@@ -11,8 +11,9 @@ import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/View/Screens/Receipts/Widgets/bottom_table.dart';
 import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/exit_dialog.dart';
-import 'package:smart_sales/View/Widgets/Dialogs/warning_dialog.dart';
+
 import 'package:smart_sales/View/Screens/Edit/Widgets/receipt_edit_items.dart';
+import 'package:smart_sales/View/Widgets/Dialogs/general_dialog.dart';
 
 class ReceiptEditScreen extends StatefulWidget {
   final ClientsModel customer;
@@ -49,18 +50,19 @@ class _ReceiptEditScreenState extends State<ReceiptEditScreen> {
     return WillPopScope(
       onWillPop: () async {
         if (generalState.receiptItems.isNotEmpty) {
-          warningDialog(
-              context: context,
-              warningText:
-                  'هناك فاتورة قيد الانشاء ستمسح ان تراجعت, هل تود الخروج؟',
-              btnCancelText: "exit".tr,
-              btnOkText: 'بقاء',
-              onCancel: () {
-                exitDialog(
-                  context: context,
-                  data: data,
-                );
-              });
+          generalDialog(
+            context: context,
+            message: "receipt is bending".tr,
+            onCancelText: "exit".tr,
+            onOkText: 'stay'.tr,
+            onCancel: () {
+              exitDialog(
+                context: context,
+                data: data,
+              );
+            },
+            title: 'warning'.tr,
+          );
           return false;
         } else {
           exitDialog(
@@ -143,7 +145,7 @@ class _ReceiptEditScreenState extends State<ReceiptEditScreen> {
                               ]),
                             ),
                             AutoSizeText(
-                              "فاتورة مردود",
+                              "return_receipt".tr,
                               style: GoogleFonts.cairo(
                                 color: atlantis,
                               ),

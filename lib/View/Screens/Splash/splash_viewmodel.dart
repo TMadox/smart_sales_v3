@@ -115,6 +115,11 @@ class SplashViewmodel extends ChangeNotifier {
   }) async {
     final List<Map> receiptsList = List<Map>.from(
         json.decode(locator.get<ReadData>().readReceiptsData() ?? "[]"));
+    for (var element in receiptsList) {
+      if (element["is_sender_complete_status"] == 2) {
+        element["is_sender_complete_status"] = 0;
+      }
+    }
     final List<OptionsModel> optionsList = optionsListFromJson(
         input: locator.get<ReadData>().readOptionsData() ?? "[]");
     final info =
@@ -125,6 +130,7 @@ class SplashViewmodel extends ChangeNotifier {
     final mows = mowModelFromMap(reference.prefs.getString("mows")!);
     final expenses =
         expenseModelFromMap(reference.prefs.getString("expenses")!);
+
     final groups = groupModelFromJson(reference.prefs.getString("groups")!);
     context.read<SettingsViewmodel>().getStoredPrintingData();
     await injectData(

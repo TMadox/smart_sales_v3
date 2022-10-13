@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +17,6 @@ import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/Provider/options_state.dart';
 import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/Services/Helpers/exceptions.dart';
-import 'package:smart_sales/Services/Repositories/check_allowance_repo.dart';
 import 'package:smart_sales/Services/Repositories/delete_repo.dart';
 import 'package:smart_sales/View/Screens/Home/home_viewmodel.dart';
 import 'package:smart_sales/View/Screens/Items/items_viewmodel.dart';
@@ -27,7 +24,6 @@ import 'package:smart_sales/View/Widgets/Common/common_button.dart';
 import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/error_dialog.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/general_snackbar.dart';
-import 'package:smart_sales/View/Widgets/Dialogs/loading_dialog.dart';
 
 class CustomFAB extends StatefulWidget {
   final Widget child;
@@ -137,53 +133,55 @@ class _CustomFABState extends State<CustomFAB> {
   }
 
   retrieveNewInfo(BuildContext context) async {
-    try {
-      isDialOpen.value = false;
-      EasyLoading.show();
-      final user = context.read<UserState>().user;
-      if (context.read<GeneralState>().receiptsList.isNotEmpty &&
-          context
-              .read<GeneralState>()
-              .receiptsList
-              .where((element) => element["is_sender_complete_status"] == 0)
-              .isNotEmpty) {
-        showErrorDialog(
-          context: context,
-          title: "error".tr,
-          description: "operations_not_uploaded_yet".tr,
-        );
-      } else {
-        await context.read<ItemsViewmodel>().reloadItems(
-              context: context,
-              user: user,
-            );
-        await context.read<ClientsState>().reloadClients(
-              context: context,
-              user: user,
-            );
-        responseSnackbar(
-          context,
-          "reload_successful".tr,
-        );
-      }
-    } catch (e) {
-      if (e is DioError) {
-        String message = DioExceptions.fromDioError(e).toString();
-        showErrorDialog(
-            context: context, description: message, title: "error".tr);
-      } else {
-        showErrorDialog(
-            context: context, description: e.toString(), title: "error".tr);
-      }
-    } finally {
-      EasyLoading.dismiss();
+    // try {
+    //   isDialOpen.value = false;
+    //   EasyLoading.show();
+    final user = context.read<UserState>().user;
+    if (context.read<GeneralState>().receiptsList.isNotEmpty) {
+      showErrorDialog(
+        context: context,
+        title: "error".tr,
+        description: "operations_not_uploaded_yet".tr,
+      );
+    } else {
+      await context.read<ItemsViewmodel>().reloadItems(
+            context: context,
+            user: user,
+          );
+      await context.read<ClientsState>().reloadClients(
+            context: context,
+            user: user,
+          );
+      responseSnackbar(
+        context,
+        "reload_successful".tr,
+      );
     }
+    // } catch (e) {
+    //   if (e is DioError) {
+    //     String message = DioExceptions.fromDioError(e).toString();
+    //     showErrorDialog(
+    //       context: context,
+    //       description: message,
+    //       title: "error".tr,
+    //     );
+    //   } else {
+    //     e.printInfo();
+    //     showErrorDialog(
+    //       context: context,
+    //       description: e.toString(),
+    //       title: "error".tr,
+    //     );
+    //   }
+    // } finally {
+    //   EasyLoading.dismiss();
+    // }
   }
 
   Future<void> updateInfo({required BuildContext context}) async {
     try {
       isDialOpen.value = false;
-      showLoaderDialog(context);
+      EasyLoading.show();
       final user = context.read<UserState>().user;
       final OptionsModel transAllStors = context
           .read<OptionsState>()
@@ -195,15 +193,21 @@ class _CustomFABState extends State<CustomFAB> {
           .firstWhere((option) => option.optionId == 5);
       compare(
         itemsListFromJson(
-            input: await context.read<ItemsViewmodel>().fetchItems(
-                user: user, transAllStors: transAllStors.optionValue == 1)),
+          input: await context.read<ItemsViewmodel>().fetchItems(
+                user: user,
+                transAllStors: transAllStors.optionValue == 1,
+              ),
+        ),
         customersListFromJson(
-            input: await context.read<ClientsState>().fetchClients(
-                transAllAm: transAllAm.optionValue == 1, user: user)),
+          input: await context.read<ClientsState>().fetchClients(
+                transAllAm: transAllAm.optionValue == 1,
+                user: user,
+              ),
+        ),
       );
       await context.read<ItemsViewmodel>().saveItems();
       await context.read<ClientsState>().saveClients();
-      Get.back();
+      EasyLoading.dismiss();
       responseSnackbar(context, "update_successful".tr);
     } catch (e) {
       Get.back();

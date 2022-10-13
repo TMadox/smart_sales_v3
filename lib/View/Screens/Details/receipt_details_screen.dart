@@ -3,6 +3,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 // ignore: implementation_imports
 import 'package:collection/src/iterable_extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smart_sales/App/Util/colors.dart';
@@ -11,7 +12,6 @@ import 'package:smart_sales/App/Printing/create_pdf.dart';
 import 'package:smart_sales/App/Resources/values_manager.dart';
 import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/View/Widgets/Common/options_button.dart';
-import 'package:smart_sales/View/Widgets/Dialogs/loading_dialog.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/return_dialog.dart';
 import 'package:provider/provider.dart';
 
@@ -218,7 +218,7 @@ class _ReceiptDetailsScreenState extends State<ReceiptDetailsScreen> {
                                   height: height * 0.06,
                                   color: Colors.purple,
                                   onPressed: () async {
-                                    showLoaderDialog(context);
+                                    EasyLoading.show();
                                     if (widget.receipt["section_type_no"] ==
                                             1 ||
                                         widget.receipt["section_type_no"] ==
@@ -233,7 +233,7 @@ class _ReceiptDetailsScreenState extends State<ReceiptDetailsScreen> {
                                         receipt: widget.receipt,
                                       );
                                     }
-                                    Get.back();
+                                    EasyLoading.dismiss();
                                     // Navigator.pushNamed(
                                     //     context, Routes.printingRoute);
                                   },
@@ -437,7 +437,7 @@ class _ReceiptDetailsScreenState extends State<ReceiptDetailsScreen> {
       case 4:
         return "purchase_return_receipt".tr;
       case 5:
-        return "stor_trans".tr;
+        return "stor_transfer".tr;
       case 17:
         return "selling_order".tr;
       case 18:

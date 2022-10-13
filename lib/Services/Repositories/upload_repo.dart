@@ -13,11 +13,8 @@ class UploadReceipts {
     var now = DateTime.now();
     List<Map> receipts = context.read<GeneralState>().receiptsList;
     bool foundError = false;
-    for (Map receipt in receipts.where(
-      (element) =>
-          (element["is_sender_complete_status"] == 0) &&
-          (element["upload_code"] != -19),
-    )) {
+    for (Map receipt in receipts
+        .where((element) => (element["is_sender_complete_status"] != 1))) {
       final List products = json.decode(
         receipt["products"] ?? "[]",
       );
@@ -48,6 +45,11 @@ class UploadReceipts {
           case -30:
             {
               error = "السرفر مشغول";
+              break;
+            }
+          case "[]":
+            {
+              error = "يوجد خطأ في الرفع";
               break;
             }
           default:

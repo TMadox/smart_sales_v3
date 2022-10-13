@@ -7,7 +7,7 @@ import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
 import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/exit_dialog.dart';
-import 'package:smart_sales/View/Widgets/Dialogs/warning_dialog.dart';
+import 'package:smart_sales/View/Widgets/Dialogs/general_dialog.dart';
 
 class SearchBar extends StatelessWidget {
   final Map data;
@@ -31,17 +31,18 @@ class SearchBar extends StatelessWidget {
         FloatingActionButton(
           onPressed: () {
             if (context.read<GeneralState>().receiptItems.isNotEmpty) {
-              warningDialog(
+              generalDialog(
+                title: "warning".tr,
                 context: context,
-                warningText: 'receipt_still_inprogress'.tr,
-                btnCancelText: 'exit'.tr,
-                btnOkText: 'stay'.tr,
+                message: 'receipt_still_inprogress'.tr,
+                onCancelText: 'exit'.tr,
+                onOkText: 'stay'.tr,
                 onCancel: () {
                   if ((locator
                           .get<SharedStorage>()
                           .prefs
                           .getBool("request_visit") ??
-                      true)) {
+                      false)) {
                     exitDialog(
                       context: context,
                       data: data,
@@ -57,7 +58,7 @@ class SearchBar extends StatelessWidget {
                       .get<SharedStorage>()
                       .prefs
                       .getBool("request_visit") ??
-                  true)) {
+                  false)) {
                 exitDialog(
                   context: context,
                   data: data,

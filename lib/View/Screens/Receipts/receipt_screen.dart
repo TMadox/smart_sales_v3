@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -18,9 +19,9 @@ import 'package:smart_sales/View/Screens/Receipts/Widgets/bottom_table.dart';
 import 'package:smart_sales/View/Screens/Receipts/Widgets/receipt_items_table.dart';
 import 'package:smart_sales/View/Screens/Receipts/receipt_viewmodel.dart';
 import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
-import 'package:smart_sales/View/Widgets/Dialogs/exit_dialog.dart';
-import 'package:smart_sales/View/Widgets/Dialogs/warning_dialog.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/error_dialog.dart';
+import 'package:smart_sales/View/Widgets/Dialogs/exit_dialog.dart';
+import 'package:smart_sales/View/Widgets/Dialogs/general_dialog.dart';
 
 class ReceiptScreen extends StatefulWidget {
   final ClientsModel customer;
@@ -61,17 +62,19 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
     return WillPopScope(
       onWillPop: () async {
         if (generalState.receiptItems.isNotEmpty) {
-          warningDialog(
+          generalDialog(
+            title: "warning".tr,
             context: context,
-            warningText: 'receipt_still_inprogress'.tr,
-            btnCancelText: 'exit'.tr,
-            btnOkText: 'stay'.tr,
+            message: 'receipt_still_inprogress'.tr,
+            onCancelText: 'exit'.tr,
+            onCancelIcon: const Icon(Icons.exit_to_app),
+            onOkText: 'stay'.tr,
             onCancel: () {
               if ((locator
                       .get<SharedStorage>()
                       .prefs
                       .getBool("request_visit") ??
-                  true)) {
+                  false)) {
                 exitDialog(
                   context: context,
                   data: data,
@@ -84,7 +87,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
           );
           return false;
         } else {
-          if ((storage.getBool("request_visit") ?? true)) {
+          if ((storage.getBool("request_visit") ?? false)) {
             exitDialog(
               context: context,
               data: data,
@@ -250,45 +253,54 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                                       color: atlantis,
                                     ),
                                   ),
-                                  FloatingActionButton(
-                                    onPressed: () {
-                                      FocusScope.of(context)
-                                          .requestFocus(FocusNode());
-                                      setState(
-                                        () {
-                                          if (generalState.currentReceipt[
-                                                  "cash_value"] ==
-                                              generalState.currentReceipt[
-                                                  "oper_net_value_with_tax"]) {
-                                            generalState.changeReceiptValue(
-                                                input: {"cash_value": 0.0});
-                                            controllers[3].text =
-                                                0.0.toString();
-                                          } else {
-                                            generalState
-                                                .changeReceiptValue(input: {
-                                              "cash_value":
-                                                  generalState.currentReceipt[
-                                                      "oper_net_value_with_tax"]
-                                            });
-                                            controllers[3].text = generalState
-                                                .currentReceipt[
-                                                    "oper_net_value_with_tax"]
-                                                .toString();
-                                          }
-                                        },
-                                      );
-                                    },
-                                    child: Text(
-                                      generalState.currentReceipt[
-                                                  "cash_value"] ==
-                                              generalState.currentReceipt[
-                                                  "oper_net_value_with_tax"]
-                                          ? "cash".tr
-                                          : "instant".tr,
-                                      style: const TextStyle(fontSize: 10),
-                                    ),
-                                  )
+                                  Consumer<GeneralState>(
+                                      builder: (context, state, index) {
+                                    return FloatingActionButton(
+                                      backgroundColor:
+                                          (state.currentReceipt["force_cash"] ??
+                                                  false)
+                                              ? Colors.grey
+                                              : state.currentReceipt[
+                                                          "pay_by_cash_only"] ==
+                                                      1
+                                                  ? Colors.orange
+                                                  : Colors.blue,
+                                      onPressed: generalState
+                                              .currentReceipt["force_cash"]
+                                          ? null
+                                          : () {
+                                              FocusScope.of(context)
+                                                  .requestFocus(FocusNode());
+                                              if (generalState.currentReceipt[
+                                                      "pay_by_cash_only"] ==
+                                                  1) {
+                                                generalState.changeReceiptValue(
+                                                  input: {
+                                                    "pay_by_cash_only": 0,
+                                                    "cash_value": 0.0,
+                                                  },
+                                                );
+                                              } else {
+                                                generalState.changeReceiptValue(
+                                                  input: {
+                                                    "pay_by_cash_only": 1,
+                                                  },
+                                                );
+                                              }
+                                            },
+                                      child: Text(
+                                        state.currentReceipt[
+                                                    "pay_by_cash_only"] ==
+                                                1
+                                            ? "cash".tr
+                                            : "instant".tr,
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    );
+                                  })
                                 ],
                               ),
                             ),
@@ -317,7 +329,11 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                         children: [
                           Expanded(
                             child: CustomTextField(
-                              inputType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d+\.?\d{0,2}')),
+                                FilteringTextInputFormatter.deny("")
+                              ],
                               onSubmitted: (value) {
                                 try {
                                   ItemsModel item = context

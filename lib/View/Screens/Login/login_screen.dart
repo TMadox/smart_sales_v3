@@ -32,97 +32,92 @@ class _LoginScreenState extends State<LoginScreen> {
       //   log(response.data.toString());
       // }),
       body: Center(
-              child: FormBuilder(
-                key: _formKey,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton.icon(
-                            onPressed: () {
-                              showForgotPassword(context: context);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              primary: Colors.red,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            icon: const Icon(Icons.password),
-                            label: Text("forgot_password".tr),
-                          ),
-                          SizedBox(
-                            width: screenWidth(context) * 0.05,
-                          ),
-                          ElevatedButton.icon(
-                            onPressed: () {
-                              settingsDialog(context: context);
-                            },
-                            style: ElevatedButton.styleFrom(
-                                primary: Colors.blue,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10))),
-                            icon: const Icon(Icons.settings),
-                            label: Text("settings".tr),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: screenHeight(context) * 0.065,
-                      ),
-                      Consumer<UserState>(
-                        builder: (BuildContext context, value, Widget? child) =>
-                            SizedBox(
-                          width: screenWidth(context) * 0.9,
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: CustomTextField(
-                                  hintText: 'enter_username'.tr,
-                                  name: 'username',
-                                  activated: value.loginInfo.isNotEmpty,
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Expanded(
-                                child: CustomTextField(
-                                  hintText: 'enter_password'.tr,
-                                  name: 'password',
-                                  activated: value.loginInfo.isNotEmpty,
-                                ),
-                              )
-                            ],
-                          ),
+        child: FormBuilder(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        showForgotPassword(context: context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.red,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
+                      icon: const Icon(Icons.password),
+                      label: Text("forgot_password".tr),
+                    ),
+                    SizedBox(
+                      width: screenWidth(context) * 0.05,
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        settingsDialog(context: context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                          primary: Colors.blue,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10))),
+                      icon: const Icon(Icons.settings),
+                      label: Text("settings".tr),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: screenHeight(context) * 0.065,
+                ),
+                Consumer<UserState>(
+                  builder: (BuildContext context, value, Widget? child) =>
                       SizedBox(
-                        height: screenHeight(context) * 0.065,
-                      ),
-                      SizedBox(
-                        // width: ,
-                        child: CommonButton(
-                          title: "enter".tr,
-                          icon: const Icon(Icons.login),
-                          color: Colors.green,
-                          onPressed: () async {
-                            await context
-                                .read<LoginViewmodel>()
-                                .validateAndLogin(
-                                  context: context,
-                                  formKey: _formKey,
-                                );
-                          },
+                    width: screenWidth(context) * 0.9,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: CustomTextField(
+                            hintText: 'enter_username'.tr,
+                            name: 'username',
+                            activated: value.loginInfo.isNotEmpty,
+                          ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          child: CustomTextField(
+                            hintText: 'enter_password'.tr,
+                            name: 'password',
+                            activated: value.loginInfo.isNotEmpty,
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
+                SizedBox(
+                  height: screenHeight(context) * 0.065,
+                ),
+                CommonButton(
+                  title: "enter".tr,
+                  icon: const Icon(Icons.login),
+                  color: Colors.green,
+                  onPressed: () async {
+                    await context.read<LoginViewmodel>().validateAndLogin(
+                          context: context,
+                          formKey: _formKey,
+                        );
+                  },
+                ),
+              ],
             ),
+          ),
+        ),
+      ),
     );
   }
 }

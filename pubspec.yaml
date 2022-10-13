@@ -46,6 +46,7 @@ dependencies:
   retry: ^3.1.0
   screenshot: ^1.2.3
   settings_ui: ^2.0.2
+  flutter_treeview: ^1.0.7+1
   share_plus: ^4.0.4
   shared_preferences: ^2.0.11
   speed_dial_fab: ^2.1.1

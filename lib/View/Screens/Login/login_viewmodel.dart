@@ -1,5 +1,4 @@
-import 'dart:developer';
-
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -25,7 +24,7 @@ import 'package:smart_sales/Services/Repositories/info_repo.dart';
 import 'package:smart_sales/Services/Repositories/login_repo.dart';
 import 'package:smart_sales/Services/Repositories/options_repo.dart';
 import 'package:smart_sales/Services/Repositories/powers_repo.dart';
-import 'package:smart_sales/View/Widgets/Dialogs/error_dialog.dart';
+import 'package:smart_sales/View/Widgets/Dialogs/general_dialog.dart';
 
 class LoginViewmodel extends ChangeNotifier {
   final storage = locator.get<SharedStorage>();
@@ -67,81 +66,96 @@ class LoginViewmodel extends ChangeNotifier {
               username: formKey.currentState!.value["username"],
               ref: locator.get<DeviceParam>().deviceId.toString(),
             )
-            .then((user) async {
-          locator.get<DioRepository>().init(
-                context: context,
-                ipPassword: user.ipPassword,
-                ipAddress: user.ipAddress,
+            .then(
+          (user) async {
+            await locator.get<SaveSensitiveData>().saveSensitiveData(
+                  input: userStringFromModel(input: user),
+                );
+            locator.get<DioRepository>().init(
+                  context: context,
+                  ipPassword: user.ipPassword,
+                  ipAddress: user.ipAddress,
+                );
+            if (context.read<GeneralState>().receiptsList.isEmpty) {
+              final List<OptionsModel> optionsList =
+                  await getOptions(user: user);
+              final OptionsModel transAllStors =
+                  optionsList.firstWhere((option) => option.optionId == 6);
+              final OptionsModel transAllAm =
+                  optionsList.firstWhere((option) => option.optionId == 5);
+              await saveDataLocally(
+                items: transAllStors.optionValue == 0
+                    ? await locator.get<DioRepository>().get(
+                        path: '/get_data_items_with_stor_id',
+                        data: {
+                          "stor_id": user.defStorId,
+                        },
+                      )
+                    : await locator.get<DioRepository>().get(
+                          path: '/get_data_items',
+                        ),
+                types: transAllStors.optionValue == 1
+                    ? await locator
+                        .get<DioRepository>()
+                        .get(path: '/get_data_types_qtys')
+                    : null,
+                options: optionsList,
+                info: await getInfo(user: user),
+                customers: transAllAm.optionValue == 0
+                    ? await locator.get<DioRepository>().get(
+                        path: '/get_data_am_by_employ_acc_id',
+                        data: {"employ_acc_id": user.defEmployAccId},
+                      )
+                    : await locator.get<DioRepository>().get(
+                          path: '/get_data_am',
+                        ),
+                userPowers: await getPower(user: user),
+                stors: await locator
+                    .get<DioRepository>()
+                    .get(path: '/get_data_stors'),
+                kinds: await locator
+                    .get<DioRepository>()
+                    .get(path: '/get_data_kinds'),
+                mows: await locator
+                    .get<DioRepository>()
+                    .get(path: '/get_data_mow'),
+                expenses: await locator
+                    .get<DioRepository>()
+                    .get(path: '/get_data_expense'),
+                groups: await locator
+                    .get<DioRepository>()
+                    .get(path: '/get_data_groups'),
+                powers: await locator
+                    .get<DioRepository>()
+                    .get(path: '/get_data_powers'),
               );
-          final List<OptionsModel> optionsList = await getOptions(user: user);
-          final OptionsModel transAllStors =
-              optionsList.firstWhere((option) => option.optionId == 6);
-          final OptionsModel transAllAm =
-              optionsList.firstWhere((option) => option.optionId == 5);
-          await saveDataLocally(
-            items: transAllStors.optionValue == 0
-                ? await locator.get<DioRepository>().get(
-                    path: '/get_data_items_with_stor_id',
-                    data: {
-                      "stor_id": user.defStorId,
-                    },
-                  )
-                : await locator.get<DioRepository>().get(
-                      path: '/get_data_items',
-                    ),
-            types: transAllStors.optionValue == 1
-                ? await locator
-                    .get<DioRepository>()
-                    .get(path: '/get_data_types_qtys')
-                : null,
-            user: userStringFromModel(input: user),
-            options: optionsList,
-            info: await getInfo(user: user),
-            customers: transAllAm.optionValue == 0
-                ? await locator.get<DioRepository>().get(
-                    path: '/get_data_am_by_employ_acc_id',
-                    data: {"employ_acc_id": user.defEmployAccId},
-                  )
-                : await locator.get<DioRepository>().get(
-                      path: '/get_data_am',
-                    ),
-            userPowers: await getPower(user: user),
-            stors: transAllStors.optionValue == 1.0
-                ? await locator
-                    .get<DioRepository>()
-                    .get(path: '/get_data_stors')
-                : "[]",
-            kinds:
-                await locator.get<DioRepository>().get(path: '/get_data_kinds'),
-            mows: await locator.get<DioRepository>().get(path: '/get_data_mow'),
-            expenses: await locator
-                .get<DioRepository>()
-                .get(path: '/get_data_expense'),
-            groups: await locator
-                .get<DioRepository>()
-                .get(path: '/get_data_groups'),
-            powers: await locator
-                .get<DioRepository>()
-                .get(path: '/get_data_powers'),
-          );
-          storage.loggedBefore = true;
-          await storage.prefs.setBool("loaded_items", false);
-          Navigator.of(context).pushReplacementNamed("splash");
-        });
+            }
+            storage.loggedBefore = true;
+            await storage.prefs.setBool("loaded_items", false);
+            Navigator.of(context).pushReplacementNamed("splash");
+          },
+        );
       } catch (e) {
-        log(e.toString());
         if (e is DioError) {
           String message = DioExceptions.fromDioError(e).toString();
-          showErrorDialog(
+          generalDialog(
+            dialogType: DialogType.ERROR,
             context: context,
-            description: message,
             title: "error".tr,
+            message: message,
+            onOkText: "ok".tr,
+            onOkColor: Colors.green,
+            onOkIcon: const Icon(Icons.check),
           );
         } else {
-          showErrorDialog(
+          generalDialog(
+            dialogType: DialogType.ERROR,
             context: context,
-            description: e.toString(),
             title: "error".tr,
+            message: e.toString(),
+            onOkText: "ok".tr,
+            onOkColor: Colors.green,
+            onOkIcon: const Icon(Icons.check),
           );
         }
       } finally {
@@ -180,7 +194,6 @@ class LoginViewmodel extends ChangeNotifier {
   }
 
   saveDataLocally({
-    required String user,
     required String items,
     required String customers,
     required InfoModel info,
@@ -194,7 +207,6 @@ class LoginViewmodel extends ChangeNotifier {
     required String groups,
     String? types,
   }) async {
-    await locator.get<SaveSensitiveData>().saveSensitiveData(input: user);
     await locator.get<SaveData>().saveOptionsData(input: options);
     await locator.get<SaveData>().saveInfoData(info: info);
     await locator.get<SaveData>().savePowersInfo(powers: userPowers);

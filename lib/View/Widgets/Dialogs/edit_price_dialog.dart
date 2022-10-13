@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:get/get.dart';
@@ -6,7 +7,7 @@ import 'package:smart_sales/App/Resources/values_manager.dart';
 import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_sales/View/Widgets/Dialogs/error_dialog.dart';
+import 'package:smart_sales/View/Widgets/Dialogs/general_dialog.dart';
 
 void showEditPriceDialog(
     {required BuildContext context,
@@ -93,10 +94,14 @@ void showEditPriceDialog(
                       context.read<GeneralState>().changeItemValue(
                           item: item,
                           input: {"original_price": double.parse(itemPrice)});
-                      showErrorDialog(
+                      generalDialog(
                         context: context,
-                        description: e.toString(),
+                        dialogType: DialogType.ERROR,
                         title: "error".tr,
+                        onOkColor: Colors.green,
+                        message: e.toString(),
+                        onOkIcon: const Icon(Icons.check_circle),
+                        onOkText: 'ok'.tr,
                       );
                     }
                   },

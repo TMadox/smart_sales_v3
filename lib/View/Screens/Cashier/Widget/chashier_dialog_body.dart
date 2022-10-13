@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
@@ -121,7 +122,11 @@ class _ChashierDialogBodyState extends State<ChashierDialogBody> {
                         activated: true,
                         isDense: true,
                         hintText: "cash".tr,
-                        inputType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                              RegExp(r'^\d+\.?\d{0,2}')),
+                          FilteringTextInputFormatter.deny("")
+                        ],
                         onTap: () {
                           cashController.selection = TextSelection(
                             baseOffset: 0,
@@ -186,7 +191,11 @@ class _ChashierDialogBodyState extends State<ChashierDialogBody> {
                       child: CustomTextField(
                         isDense: true,
                         activated: true,
-                        inputType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                              RegExp(r'^\d+\.?\d{0,2}')),
+                          FilteringTextInputFormatter.deny("")
+                        ],
                         editingController: masrafiController,
                         hintText: "banking".tr,
                         name: "saraf_cash_value",

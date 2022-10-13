@@ -1,4 +1,3 @@
-
 import 'package:auto_size_text/auto_size_text.dart';
 // ignore: implementation_imports
 import 'package:flutter/material.dart';
@@ -10,6 +9,7 @@ import 'package:smart_sales/App/Util/colors.dart';
 import 'package:smart_sales/Data/Models/client_model.dart';
 import 'package:smart_sales/Provider/clients_state.dart';
 import 'package:smart_sales/Provider/general_state.dart';
+import 'package:smart_sales/Provider/options_state.dart';
 import 'package:smart_sales/Provider/stor_state.dart';
 import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/View/Screens/Clients/clients_source.dart';
@@ -88,6 +88,12 @@ class _ClientsScreenState extends State<ClientsScreen> {
                                 .read<GeneralState>()
                                 .currentReceipt["selected_stor_id"] ??
                             selectedStoreId,
+                        enabled: context
+                                .read<OptionsState>()
+                                .options
+                                .firstWhere((element) => element.optionId == 6)
+                                .optionValue ==
+                            1,
                         hint: Text("choose_stor".tr),
                         onChanged: (value) {
                           if (value != null) {

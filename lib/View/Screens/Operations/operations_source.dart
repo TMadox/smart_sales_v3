@@ -27,9 +27,7 @@ class OperationsSource extends DataTableSource {
       receipt["oper_time"],
       receipt["cash_value"],
       OperationsViewmodel().receiptType(type: receipt["section_type_no"]),
-      receipt["is_sender_complete_status"] == 2
-          ? "repeated".tr
-          : receipt["is_sender_complete_status"] == 0
+      receipt["is_sender_complete_status"] == 0
               ? "select_receipt_dialog_No".tr
               : "select_receipt_dialog_yes".tr
     ];

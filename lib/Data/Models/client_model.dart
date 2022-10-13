@@ -34,6 +34,7 @@ class ClientsModel {
     this.priceId,
     this.employAccId,
     this.taxFileNo,
+    this.payByCash,
     this.taxRecordNo,
     this.maxCredit,
     this.curBalance,
@@ -48,6 +49,7 @@ class ClientsModel {
   final String? taxFileNo;
   final String? taxRecordNo;
   double? maxCredit;
+  final dynamic payByCash;
   double? curBalance;
 
   factory ClientsModel.fromMap(
@@ -58,6 +60,7 @@ class ClientsModel {
         amCode: json["am_code"] ?? 0,
         amName: json["am_name"] ?? "",
         accId: json["acc_id"] ?? 0,
+        payByCash: json["pay_by_cash_only"] ?? 0,
         priceId: json["price_id"] ?? 0,
         employAccId: json["employ_acc_id"] ?? 0,
         taxFileNo: json["tax_file_no"] ?? "......",
@@ -73,6 +76,7 @@ class ClientsModel {
         "acc_id": accId,
         "price_id": priceId,
         "employ_acc_id": employAccId,
+        "pay_by_cash_only": payByCash,
         "tax_file_no": taxFileNo,
         "tax_record_no": taxRecordNo,
         "max_credit": maxCredit,

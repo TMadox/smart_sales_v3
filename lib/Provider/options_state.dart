@@ -21,8 +21,9 @@ class OptionsState extends ChangeNotifier {
         input: SharedStorage.to.prefs.getString("options").toString());
   }
 
-  Future<void> reloadOptions() async {
+  Future<List<OptionsModel>> reloadOptions() async {
     await fetchOptions();
     loadOptions();
+    return options;
   }
 }

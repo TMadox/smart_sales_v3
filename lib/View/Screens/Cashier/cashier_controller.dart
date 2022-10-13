@@ -1,17 +1,48 @@
 import 'dart:developer';
-
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/Data/Models/item_model.dart';
-import 'package:smart_sales/Data/Models/kinds_model.dart';
 import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/Provider/powers_state.dart';
 import 'package:smart_sales/View/Screens/Base/base_viewmodel.dart';
 import 'package:smart_sales/View/Widgets/Common/alert_snackbar.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/error_dialog.dart';
 
-class CashierViewmodel extends BaseViewmodel {
+class CashierController extends GetxController with BaseViewmodel {
+  final selectedKindId = 0.obs;
+  final List<ItemsModel> items;
+  final filteredItems = Rx<List<ItemsModel>>([]);
+  String searchWord = '';
+
+  CashierController({
+    required this.items,
+  }) {
+    filteredItems.value = filterItems(
+      input: items,
+      kindsId: selectedKindId.value,
+      searchWord: searchWord,
+    );
+  }
+
+  void setSelectedKind({required int input}) {
+    selectedKindId.value = input;
+    filteredItems.value = filterItems(
+      input: items,
+      kindsId: selectedKindId.value,
+      searchWord: searchWord,
+    );
+  }
+
+  void setSearchWord(String input) {
+    searchWord = input;
+    filteredItems.value = filterItems(
+      input: items,
+      kindsId: selectedKindId.value,
+      searchWord: searchWord,
+    );
+  }
+
   void addOrIncrementItem({
     required BuildContext context,
     required ItemsModel item,
@@ -47,6 +78,11 @@ class CashierViewmodel extends BaseViewmodel {
           );
         }
       }
+      filteredItems.value = filterItems(
+        input: items,
+        searchWord: '',
+        kindsId: null,
+      );
     } catch (e) {
       log(e.toString());
       generalState.removeLastItem();
@@ -60,28 +96,26 @@ class CashierViewmodel extends BaseViewmodel {
 
   List<ItemsModel> filterItems({
     required List<ItemsModel> input,
-    required KindsModel? kindsModel,
+    required int? kindsId,
     required String searchWord,
   }) {
     final List<ItemsModel> items = input;
     if (searchWord != "") {
-      if (kindsModel == null) {
+      if (kindsId == null) {
         return input
             .where((element) => element.itemName.contains(searchWord))
             .toList();
       } else {
         return items
-            .where((element) => (element.kindId == kindsModel.kindId &&
+            .where((element) => (element.kindId == kindsId &&
                 element.itemName.contains(searchWord)))
             .toList();
       }
     } else {
-      if (kindsModel == null) {
+      if (kindsId == null) {
         return input;
       } else {
-        return items
-            .where((element) => element.kindId == kindsModel.kindId)
-            .toList();
+        return items.where((element) => element.kindId == kindsId).toList();
       }
     }
   }

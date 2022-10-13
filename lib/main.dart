@@ -27,7 +27,6 @@ import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/View/Screens/Documents/document_viewmodel.dart';
 import 'package:smart_sales/View/Screens/Login/login_viewmodel.dart';
-import 'package:smart_sales/View/Screens/Printing/printing_viewmodel.dart';
 import 'package:smart_sales/View/Screens/Receipts/receipt_viewmodel.dart';
 import 'package:smart_sales/View/Screens/Settings/settings_viewmodel.dart';
 import 'package:smart_sales/View/Screens/Splash/splash_viewmodel.dart';

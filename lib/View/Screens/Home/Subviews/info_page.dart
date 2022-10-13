@@ -107,19 +107,19 @@ class InfoPage extends StatelessWidget {
                       title: "expenses".tr,
                       visible: storage.getBool("allow_view_expenses") ?? true,
                     ),
-                    OperationButton(
-                      imagePath: "assets/mow.png",
-                      onPressed: () {
-                        Get.to(
-                          () => const MowView(
-                            canTap: false,
-                            canPushReplace: false,
-                          ),
-                        );
-                      },
-                      title: "mows".tr,
-                      visible: storage.getBool("allow_view_mows") ?? true,
-                    ),
+                    // OperationButton(
+                    //   imagePath: "assets/mow.png",
+                    //   onPressed: () {
+                    //     Get.to(
+                    //       () => const MowView(
+                    //         canTap: false,
+                    //         canPushReplace: false,
+                    //       ),
+                    //     );
+                    //   },
+                    //   title: "mows".tr,
+                    //   visible: storage.getBool("allow_view_mows") ?? true,
+                    // ),
                     OperationButton(
                       imagePath: "assets/group.png",
                       onPressed: () {
