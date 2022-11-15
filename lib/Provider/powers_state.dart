@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/Data/Models/power_model.dart';
 import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/Services/Repositories/dio_repository.dart';
@@ -26,15 +26,13 @@ class PowersState extends ChangeNotifier {
         "user_id": context.read<UserState>().user.userId,
       },
     );
-    await SharedStorage.to.prefs.setString("powers", generalPowers);
-    await SharedStorage.to.prefs.setString("user_powers", userPowers);
+    await GetStorage().write("powers", generalPowers);
+    await GetStorage().write("user_powers", userPowers);
   }
 
   void loadPowers() {
-    userPowersList =
-        powersModelFromMap(SharedStorage.to.prefs.getString("user_powers")!);
-    generalPowersList =
-        powersModelFromMap(SharedStorage.to.prefs.getString("powers")!);
+    userPowersList = powersModelFromMap(GetStorage().read("user_powers")!);
+    generalPowersList = powersModelFromMap(GetStorage().read("powers")!);
     showPurchasePrices = userPowersList.firstWhere(
           (element) => element.powerId == 746,
           orElse: () {

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:settings_ui/settings_ui.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_sales/App/Util/locator.dart';
-import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
 
 class ReceiptNamesView extends StatefulWidget {
@@ -17,14 +17,8 @@ class ReceiptNamesView extends StatefulWidget {
 
 class _ReceiptNamesViewState extends State<ReceiptNamesView> {
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
-  final instance = locator.get<SharedStorage>();
-  late SharedPreferences prefs;
-  @override
-  void initState() {
-    prefs = instance.prefs;
-    super.initState();
-  }
-
+  final instance = GetStorage();
+  final storage = GetStorage();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,12 +29,12 @@ class _ReceiptNamesViewState extends State<ReceiptNamesView> {
         onWillPop: () async {
           _formKey.currentState!.save();
           Map values = _formKey.currentState!.value;
-          await prefs.setBool(
+          await storage.write(
               "use_custom_names", values["use_custom_names"] ?? false);
-          await prefs.setString("1", values["1"] ?? '');
-          await prefs.setString("2", values["2"] ?? '');
-          await prefs.setString("101", values["101"] ?? '');
-          await prefs.setString("102", values["102"] ?? '');
+          await storage.write("1", values["1"] ?? '');
+          await storage.write("2", values["2"] ?? '');
+          await storage.write("101", values["101"] ?? '');
+          await storage.write("102", values["102"] ?? '');
           return true;
         },
         child: LayoutBuilder(
@@ -55,8 +49,7 @@ class _ReceiptNamesViewState extends State<ReceiptNamesView> {
                   SettingsSection(
                     title: FormBuilderCheckbox(
                       name: "use_custom_names",
-                      initialValue:
-                          instance.prefs.getBool("use_custom_names") ?? false,
+                      initialValue: storage.read("use_custom_names") ?? false,
                       title: Text(
                         "custom_names".tr,
                         style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
@@ -73,7 +66,7 @@ class _ReceiptNamesViewState extends State<ReceiptNamesView> {
                           width: width * 0.3,
                           child: CustomTextField(
                             activated: true,
-                            initialValue: prefs.getString("1"),
+                            initialValue: storage.read("1"),
                             validators: (p0) {
                               return null;
                             },
@@ -92,7 +85,7 @@ class _ReceiptNamesViewState extends State<ReceiptNamesView> {
                           width: width * 0.3,
                           child: CustomTextField(
                             activated: true,
-                            initialValue: prefs.getString("2"),
+                            initialValue: storage.read("2"),
                             validators: (p0) {
                               return null;
                             },
@@ -111,7 +104,7 @@ class _ReceiptNamesViewState extends State<ReceiptNamesView> {
                           width: width * 0.3,
                           child: CustomTextField(
                             activated: true,
-                            initialValue: prefs.getString("101"),
+                            initialValue: storage.read("101"),
                             validators: (p0) {
                               return null;
                             },
@@ -130,7 +123,7 @@ class _ReceiptNamesViewState extends State<ReceiptNamesView> {
                           width: width * 0.3,
                           child: CustomTextField(
                             activated: true,
-                            initialValue: prefs.getString("102"),
+                            initialValue: storage.read("102"),
                             validators: (p0) {
                               return null;
                             },
@@ -156,7 +149,7 @@ class _ReceiptNamesViewState extends State<ReceiptNamesView> {
 //                 FormBuilderCheckbox(
 //                   name: "use_custom_names",
 //                   initialValue:
-//                       instance.prefs.getBool("use_custom_names") ?? false,
+//                       storage.read("use_custom_names") ?? false,
 //                   title: Text(
 //                     "استخدام مسميات مختلفة للعمليا؟",
 //                     style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
@@ -171,7 +164,7 @@ class _ReceiptNamesViewState extends State<ReceiptNamesView> {
 //                     Expanded(
 //                         child: CustomTextField(
 //                             activated: true,
-//                             initialValue: prefs.getString("1"),
+//                             initialValue: storage.read("1"),
 //                             validators: (p0) {
 //                               return null;
 //                             },
@@ -188,7 +181,7 @@ class _ReceiptNamesViewState extends State<ReceiptNamesView> {
 //                     Expanded(
 //                         child: CustomTextField(
 //                             activated: true,
-//                             initialValue: prefs.getString("2"),
+//                             initialValue: storage.read("2"),
 //                             validators: (p0) {
 //                               return null;
 //                             },
@@ -205,7 +198,7 @@ class _ReceiptNamesViewState extends State<ReceiptNamesView> {
 //                     Expanded(
 //                         child: CustomTextField(
 //                             activated: true,
-//                             initialValue: prefs.getString("101"),
+//                             initialValue: storage.read("101"),
 //                             validators: (p0) {
 //                               return null;
 //                             },
@@ -222,7 +215,7 @@ class _ReceiptNamesViewState extends State<ReceiptNamesView> {
 //                     Expanded(
 //                       child: CustomTextField(
 //                         activated: true,
-//                         initialValue: prefs.getString("102"),
+//                         initialValue: storage.read("102"),
 //                         validators: (p0) {
 //                           return null;
 //                         },

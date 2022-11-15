@@ -7,7 +7,7 @@ import 'package:hawk_fab_menu/hawk_fab_menu.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Util/locator.dart';
 import 'package:smart_sales/App/Util/routing.dart';
-import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/Data/Models/client_model.dart';
 import 'package:smart_sales/Data/Models/item_model.dart';
 import 'package:smart_sales/Data/Models/options_model.dart';
@@ -120,7 +120,7 @@ class _CustomFABState extends State<CustomFAB> {
         HawkFabMenuItem(
           label: "exit".tr,
           ontap: () async {
-            await locator.get<SharedStorage>().prefs.remove("user");
+            await GetStorage().remove("user");
             context.read<UserState>().setLoggedUser(input: UserModel());
             Navigator.of(context).pushReplacementNamed('/');
           },

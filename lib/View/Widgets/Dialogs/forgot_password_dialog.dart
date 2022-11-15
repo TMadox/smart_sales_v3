@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/View/Widgets/Common/common_button.dart';
 import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
@@ -65,9 +65,7 @@ void showForgotPassword({
                       context
                           .read<UserState>()
                           .setLoginInfo(input: _formKey.currentState!.value);
-                      SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
-                      await prefs.setString("ip_password",
+                      await GetStorage().write("ip_password",
                           _formKey.currentState!.value["ip_password"]);
                       Navigator.of(context).pop();
                     }

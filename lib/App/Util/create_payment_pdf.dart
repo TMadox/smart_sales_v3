@@ -6,7 +6,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:smart_sales/App/Printing/create_pdf.dart';
 import 'package:smart_sales/App/Resources/values_manager.dart';
 import 'package:smart_sales/App/Util/locator.dart';
-import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/Provider/info_state.dart';
 import 'package:provider/provider.dart';
 
@@ -18,7 +18,7 @@ createPaymentPDF({
   var data = await rootBundle.load("fonts/arial.ttf");
   var arabic = pw.Font.ttf(data);
   final pdf = pw.Document();
-  final storage = locator.get<SharedStorage>().prefs;
+  final storage = GetStorage();
   String title = await chooseTitle(
     sectionTypeNo: receipt["section_type_no"],
     prefs: storage,
@@ -31,7 +31,7 @@ createPaymentPDF({
           textDirection: pw.TextDirection.rtl,
           child: pw.Column(
             children: [
-              storage.getBool("doc_company_name") ?? true
+              storage.read("doc_company_name") ?? true
                   ? pw.Container(
                       width: double.infinity,
                       child: pw.Text(
@@ -55,7 +55,7 @@ createPaymentPDF({
                       ),
                     )
                   : pw.SizedBox(),
-              storage.getBool("doc_company_address") ?? true
+              storage.read("doc_company_address") ?? true
                   ? pw.Column(children: [
                       pw.SizedBox(
                         height: 10,
@@ -85,7 +85,7 @@ createPaymentPDF({
                       ),
                     ])
                   : pw.SizedBox(),
-              storage.getBool("doc_company_tax") ?? true
+              storage.read("doc_company_tax") ?? true
                   ? pw.Column(
                       children: [
                         pw.SizedBox(height: 10),
@@ -370,7 +370,7 @@ createPaymentPDF({
                     )
                   ]),
               pw.Divider(),
-              storage.getBool("doc_credit_before") ?? true
+              storage.read("doc_credit_before") ?? true
                   ? pw.Column(children: [
                       pw.Row(
                           mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
@@ -407,7 +407,7 @@ createPaymentPDF({
                       ),
                     ])
                   : pw.SizedBox(),
-              storage.getBool("doc_credit_after") ?? true
+              storage.read("doc_credit_after") ?? true
                   ? pw.Column(
                       children: [
                         pw.Row(

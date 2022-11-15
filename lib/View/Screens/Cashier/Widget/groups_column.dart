@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:smart_sales/App/Util/colors.dart';
 import 'package:smart_sales/Data/Models/group_model.dart';
 import 'package:smart_sales/Provider/groups_state.dart';
 import 'package:smart_sales/View/Screens/Cashier/cashier_controller.dart';
@@ -18,7 +19,7 @@ class GroupsColumn extends StatelessWidget {
       clipBehavior: Clip.antiAliasWithSaveLayer,
       decoration: BoxDecoration(
         color: Colors.grey[300],
-        border: Border.all(color: Colors.green, width: 2),
+        border: Border.all(color: darkBlue, width: 2),
         borderRadius: const BorderRadius.all(
           Radius.circular(15),
         ),
@@ -34,7 +35,7 @@ class GroupsColumn extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
-            color: Colors.green,
+            color: darkBlue,
           ),
           Expanded(
             child: ListView.builder(
@@ -52,7 +53,7 @@ class GroupsColumn extends StatelessWidget {
                       side: BorderSide(
                         color: kindsModel.groupId ==
                                 cashierController.selectedKindId.value
-                            ? Colors.green
+                            ? darkBlue
                             : Colors.transparent,
                       ),
                     ),

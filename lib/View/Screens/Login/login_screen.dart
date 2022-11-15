@@ -45,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         showForgotPassword(context: context);
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.red,
+                        backgroundColor: Colors.red,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -61,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         settingsDialog(context: context);
                       },
                       style: ElevatedButton.styleFrom(
-                          primary: Colors.blue,
+                          backgroundColor: Colors.blue,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10))),
                       icon: const Icon(Icons.settings),

@@ -8,6 +8,7 @@ import 'package:smart_sales/App/Util/colors.dart';
 import 'package:smart_sales/App/Util/date.dart';
 import 'package:smart_sales/Data/Models/client_model.dart';
 import 'package:smart_sales/Provider/general_state.dart';
+import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/View/Screens/Receipts/Widgets/bottom_table.dart';
 import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/exit_dialog.dart';
@@ -36,7 +37,7 @@ class _ReceiptEditScreenState extends State<ReceiptEditScreen> {
       "user_name": widget.customer.amName,
       "credit_before": widget.customer.curBalance ?? 0.0,
       "cst_tax": widget.customer.taxFileNo ?? ".....",
-      "employ_id": widget.customer.employAccId,
+      "employ_id": context.read<UserState>().user.defEmployAccId,
       "basic_acc_id": widget.customer.accId,
     });
     super.initState();

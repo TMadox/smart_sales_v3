@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smart_sales/App/Util/locator.dart';
-import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/View/Screens/Home/Widgets/operation_button.dart';
 import 'package:smart_sales/View/Screens/Register/register_view.dart';
 
@@ -13,7 +13,7 @@ class RecordsPage extends StatefulWidget {
 }
 
 class _RecordsPageState extends State<RecordsPage> {
-  final storage = locator.get<SharedStorage>().prefs;
+  final storage = GetStorage();
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +50,7 @@ class _RecordsPageState extends State<RecordsPage> {
                                 () => const RegisterView(),
                               );
                             },
-                            visible: storage.getBool("allow_new_rec") ?? true,
+                            visible: storage.read("allow_new_rec") ?? true,
                           )
                         ],
                       ),

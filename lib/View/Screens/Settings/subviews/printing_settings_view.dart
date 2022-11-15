@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
 import 'package:smart_sales/App/Util/locator.dart';
-import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/View/Screens/Settings/subviews/printing_sorting_view.dart';
 
 class ElementsSettingsView extends StatefulWidget {
@@ -16,7 +16,7 @@ class ElementsSettingsView extends StatefulWidget {
 }
 
 class _ElementsSettingsViewState extends State<ElementsSettingsView> {
-  final storage = locator.get<SharedStorage>().prefs;
+  final storage = GetStorage();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +47,7 @@ class _ElementsSettingsViewState extends State<ElementsSettingsView> {
                 trailing: SizedBox(
                   width: screenWidth(context) * 0.3,
                   child: FormBuilderDropdown(
-                    initialValue: storage.getString("paper_size") ?? "roll80",
+                    initialValue: storage.read("paper_size") ?? "roll80",
                     items: const [
                       DropdownMenuItem(
                         child: Center(child: Text("A4")),
@@ -75,7 +75,7 @@ class _ElementsSettingsViewState extends State<ElementsSettingsView> {
                       ),
                     ],
                     onChanged: (v) {
-                      storage.setString("paper_size", v.toString());
+                      storage.write("paper_size", v.toString());
                     },
                     isDense: true,
                     decoration: const InputDecoration(
@@ -96,10 +96,10 @@ class _ElementsSettingsViewState extends State<ElementsSettingsView> {
                   "company_name".tr,
                   style: GoogleFonts.cairo(),
                 ),
-                initialValue: storage.getBool("company_name") ?? true,
+                initialValue: storage.read("company_name") ?? true,
                 onToggle: (bool value) {
                   setState(() {
-                    storage.setBool("company_name", value);
+                    storage.write("company_name", value);
                   });
                 },
               ),
@@ -108,10 +108,10 @@ class _ElementsSettingsViewState extends State<ElementsSettingsView> {
                   "company_address".tr,
                   style: GoogleFonts.cairo(),
                 ),
-                initialValue: storage.getBool("company_address") ?? true,
+                initialValue: storage.read("company_address") ?? true,
                 onToggle: (bool value) {
                   setState(() {
-                    storage.setBool("company_address", value);
+                    storage.write("company_address", value);
                   });
                 },
               ),
@@ -120,10 +120,10 @@ class _ElementsSettingsViewState extends State<ElementsSettingsView> {
                   "company_tax".tr,
                   style: GoogleFonts.cairo(),
                 ),
-                initialValue: storage.getBool("company_tax") ?? true,
+                initialValue: storage.read("company_tax") ?? true,
                 onToggle: (bool value) {
                   setState(() {
-                    storage.setBool("company_tax", value);
+                    storage.write("company_tax", value);
                   });
                 },
               ),
@@ -137,10 +137,10 @@ class _ElementsSettingsViewState extends State<ElementsSettingsView> {
                   "receipt_number".tr,
                   style: GoogleFonts.cairo(),
                 ),
-                initialValue: storage.getBool("receipt_number") ?? true,
+                initialValue: storage.read("receipt_number") ?? true,
                 onToggle: (bool value) {
                   setState(() {
-                    storage.setBool("receipt_number", value);
+                    storage.write("receipt_number", value);
                   });
                 },
               ),
@@ -149,10 +149,10 @@ class _ElementsSettingsViewState extends State<ElementsSettingsView> {
                   "receipt_date".tr,
                   style: GoogleFonts.cairo(),
                 ),
-                initialValue: storage.getBool("receipt_date") ?? true,
+                initialValue: storage.read("receipt_date") ?? true,
                 onToggle: (bool value) {
                   setState(() {
-                    storage.setBool("receipt_date", value);
+                    storage.write("receipt_date", value);
                   });
                 },
               ),
@@ -161,10 +161,10 @@ class _ElementsSettingsViewState extends State<ElementsSettingsView> {
                   "employee_name".tr,
                   style: GoogleFonts.cairo(),
                 ),
-                initialValue: storage.getBool("employee_name") ?? true,
+                initialValue: storage.read("employee_name") ?? true,
                 onToggle: (bool value) {
                   setState(() {
-                    storage.setBool("employee_name", value);
+                    storage.write("employee_name", value);
                   });
                 },
               ),
@@ -173,10 +173,10 @@ class _ElementsSettingsViewState extends State<ElementsSettingsView> {
                   "customer_name".tr,
                   style: GoogleFonts.cairo(),
                 ),
-                initialValue: storage.getBool("customer_name") ?? true,
+                initialValue: storage.read("customer_name") ?? true,
                 onToggle: (bool value) {
                   setState(() {
-                    storage.setBool("customer_name", value);
+                    storage.write("customer_name", value);
                   });
                 },
               ),
@@ -185,10 +185,10 @@ class _ElementsSettingsViewState extends State<ElementsSettingsView> {
                   "customer_tax".tr,
                   style: GoogleFonts.cairo(),
                 ),
-                initialValue: storage.getBool("customer_tax") ?? true,
+                initialValue: storage.read("customer_tax") ?? true,
                 onToggle: (bool value) {
                   setState(() {
-                    storage.setBool("customer_tax", value);
+                    storage.write("customer_tax", value);
                   });
                 },
               ),
@@ -197,10 +197,10 @@ class _ElementsSettingsViewState extends State<ElementsSettingsView> {
                   "paid_amount".tr,
                   style: GoogleFonts.cairo(),
                 ),
-                initialValue: storage.getBool("paid_amount") ?? true,
+                initialValue: storage.read("paid_amount") ?? true,
                 onToggle: (bool value) {
                   setState(() {
-                    storage.setBool("paid_amount", value);
+                    storage.write("paid_amount", value);
                   });
                 },
               ),
@@ -209,10 +209,10 @@ class _ElementsSettingsViewState extends State<ElementsSettingsView> {
                   "remaining_amount".tr,
                   style: GoogleFonts.cairo(),
                 ),
-                initialValue: storage.getBool("remaining_amount") ?? true,
+                initialValue: storage.read("remaining_amount") ?? true,
                 onToggle: (bool value) {
                   setState(() {
-                    storage.setBool("remaining_amount", value);
+                    storage.write("remaining_amount", value);
                   });
                 },
               ),
@@ -221,10 +221,10 @@ class _ElementsSettingsViewState extends State<ElementsSettingsView> {
                   "credit_before".tr,
                   style: GoogleFonts.cairo(),
                 ),
-                initialValue: storage.getBool("credit_before") ?? true,
+                initialValue: storage.read("credit_before") ?? true,
                 onToggle: (bool value) {
                   setState(() {
-                    storage.setBool("credit_before", value);
+                    storage.write("credit_before", value);
                   });
                 },
               ),
@@ -233,10 +233,10 @@ class _ElementsSettingsViewState extends State<ElementsSettingsView> {
                   "credit_after".tr,
                   style: GoogleFonts.cairo(),
                 ),
-                initialValue: storage.getBool("credit_after") ?? true,
+                initialValue: storage.read("credit_after") ?? true,
                 onToggle: (bool value) {
                   setState(() {
-                    storage.setBool("credit_after", value);
+                    storage.write("credit_after", value);
                   });
                 },
               ),
@@ -250,10 +250,10 @@ class _ElementsSettingsViewState extends State<ElementsSettingsView> {
                   "company_name".tr,
                   style: GoogleFonts.cairo(),
                 ),
-                initialValue: storage.getBool("doc_company_name") ?? true,
+                initialValue: storage.read("doc_company_name") ?? true,
                 onToggle: (bool value) {
                   setState(() {
-                    storage.setBool("doc_company_name", value);
+                    storage.write("doc_company_name", value);
                   });
                 },
               ),
@@ -262,10 +262,10 @@ class _ElementsSettingsViewState extends State<ElementsSettingsView> {
                   "company_address".tr,
                   style: GoogleFonts.cairo(),
                 ),
-                initialValue: storage.getBool("doc_company_address") ?? true,
+                initialValue: storage.read("doc_company_address") ?? true,
                 onToggle: (bool value) {
                   setState(() {
-                    storage.setBool("doc_company_address", value);
+                    storage.write("doc_company_address", value);
                   });
                 },
               ),
@@ -274,10 +274,10 @@ class _ElementsSettingsViewState extends State<ElementsSettingsView> {
                   "company_tax".tr,
                   style: GoogleFonts.cairo(),
                 ),
-                initialValue: storage.getBool("doc_company_tax") ?? true,
+                initialValue: storage.read("doc_company_tax") ?? true,
                 onToggle: (bool value) {
                   setState(() {
-                    storage.setBool("doc_company_tax", value);
+                    storage.write("doc_company_tax", value);
                   });
                 },
               ),
@@ -286,10 +286,10 @@ class _ElementsSettingsViewState extends State<ElementsSettingsView> {
                   "credit_before".tr,
                   style: GoogleFonts.cairo(),
                 ),
-                initialValue: storage.getBool("doc_credit_before") ?? true,
+                initialValue: storage.read("doc_credit_before") ?? true,
                 onToggle: (bool value) {
                   setState(() {
-                    storage.setBool("doc_credit_before", value);
+                    storage.write("doc_credit_before", value);
                   });
                 },
               ),
@@ -298,10 +298,10 @@ class _ElementsSettingsViewState extends State<ElementsSettingsView> {
                   "credit_after".tr,
                   style: GoogleFonts.cairo(),
                 ),
-                initialValue: storage.getBool("doc_credit_after") ?? true,
+                initialValue: storage.read("doc_credit_after") ?? true,
                 onToggle: (bool value) {
                   setState(() {
-                    storage.setBool("doc_credit_after", value);
+                    storage.write("doc_credit_after", value);
                   });
                 },
               ),

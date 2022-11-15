@@ -9,10 +9,9 @@ import 'package:smart_sales/App/Resources/screen_size.dart';
 import 'package:smart_sales/App/Util/colors.dart';
 import 'package:smart_sales/App/Util/locator.dart';
 import 'package:smart_sales/App/Util/routing.dart';
-import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/Data/Models/item_model.dart';
 import 'package:smart_sales/Provider/stor_state.dart';
-import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/View/Screens/Items/items_viewmodel.dart';
 import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/View/Screens/Receipts/Widgets/receipt_items_table.dart';
@@ -37,7 +36,7 @@ class _StorTransferState extends State<StorTransfer> {
       List.generate(4, (i) => TextEditingController(text: 0.0.toString()));
   TextEditingController searchController = TextEditingController();
   late Map data = {};
-  final storage = locator.get<SharedStorage>().prefs;
+  final storage = GetStorage();
   @override
   void initState() {
     data.addAll({
@@ -70,11 +69,7 @@ class _StorTransferState extends State<StorTransfer> {
             onCancelText: 'exit'.tr,
             onOkText: 'stay'.tr,
             onCancel: () {
-              if ((locator
-                      .get<SharedStorage>()
-                      .prefs
-                      .getBool("request_visit") ??
-                  false)) {
+              if ((GetStorage().read("request_visit") ?? false)) {
                 exitDialog(
                   context: context,
                   data: data,
@@ -87,7 +82,7 @@ class _StorTransferState extends State<StorTransfer> {
           );
           return false;
         } else {
-          if ((storage.getBool("request_visit") ?? false)) {
+          if ((storage.read("request_visit") ?? false)) {
             exitDialog(
               context: context,
               data: data,
@@ -121,100 +116,114 @@ class _StorTransferState extends State<StorTransfer> {
                           topLeft: Radius.circular(15),
                         ),
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Container(
-                              height: height * 0.09,
-                              padding: EdgeInsets.symmetric(
-                                horizontal: width * 0.01,
+                      child: Consumer<GeneralState>(
+                          builder: (context, state, widget) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Container(
+                                height: height * 0.09,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: width * 0.01,
+                                ),
+                                child: Center(
+                                  child: InkWell(
+                                    onTap: () {
+                                      Navigator.of(context).pushNamed(
+                                        Routes.storsRoute,
+                                        arguments: const StorsView(
+                                          canTap: true,
+                                          choosingSourceStor: true,
+                                          canPushReplace: true,
+                                        ),
+                                      );
+                                    },
+                                    child: AutoSizeText(
+                                      context
+                                          .read<StoreState>()
+                                          .stors
+                                          .firstWhere((stor) =>
+                                              state.currentReceipt["stor_id"] ==
+                                              stor.storId)
+                                          .storName
+                                          .toString(),
+                                      maxLines: 1,
+                                      style: GoogleFonts.cairo(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ),
-                              child: Center(
-                                child: AutoSizeText(
-                                  context
-                                      .read<StoreState>()
-                                      .stors
-                                      .firstWhere((stor) =>
-                                          context
-                                              .read<UserState>()
-                                              .user
-                                              .defStorId ==
-                                          stor.storId)
-                                      .storName
-                                      .toString(),
-                                  maxLines: 1,
-                                  style: GoogleFonts.cairo(
-                                    color: Colors.black,
+                            ),
+                            Expanded(
+                              flex: 3,
+                              child: Container(
+                                height: height * 0.09,
+                                decoration: const BoxDecoration(
+                                  color: smaltBlue,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(
+                                      15,
+                                    ),
+                                    topRight: Radius.circular(
+                                      15,
+                                    ),
+                                  ),
+                                ),
+                                child: const Text(
+                                  "تحويل الي",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: atlantis,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                          Expanded(
-                            flex: 3,
-                            child: Container(
-                              height: height * 0.09,
-                              decoration: const BoxDecoration(
-                                color: smaltBlue,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(
-                                    15,
-                                  ),
-                                  topRight: Radius.circular(
-                                    15,
-                                  ),
+                            Expanded(
+                              child: Container(
+                                height: height * 0.09,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: width * 0.01,
                                 ),
-                              ),
-                              child: const Text(
-                                "تحويل الي",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: atlantis,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Container(
-                              height: height * 0.09,
-                              padding: EdgeInsets.symmetric(
-                                horizontal: width * 0.01,
-                              ),
-                              child: Center(
-                                child: InkWell(
-                                  onTap: () {
-                                    Navigator.of(context).pushNamed(
-                                      Routes.storsRoute,
-                                      arguments: const StorsView(
-                                        canTap: true,
-                                        choosingReceivingStor: true,
-                                        canPushReplace: false,
-                                      ),
-                                    );
-                                  },
-                                  child: Consumer<GeneralState>(
-                                    builder: (context, state, widget) {
-                                      return AutoSizeText(
-                                        state.currentReceipt[
-                                                "receiving_stor_name"] ??
-                                            "اختر المخزن المستلم",
-                                        maxLines: 1,
-                                        style: GoogleFonts.cairo(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
+                                child: Center(
+                                  child: InkWell(
+                                    onTap: () {
+                                      Navigator.of(context).pushNamed(
+                                        Routes.storsRoute,
+                                        arguments: const StorsView(
+                                          canTap: true,
+                                          choosingSourceStor: false,
+                                          canPushReplace: true,
                                         ),
                                       );
                                     },
+                                    child: AutoSizeText(
+                                      context
+                                          .read<StoreState>()
+                                          .stors
+                                          .firstWhere((stor) =>
+                                              state.currentReceipt[
+                                                  "in_stor_id"] ==
+                                              stor.storId)
+                                          .storName
+                                          .toString(),
+                                      maxLines: 1,
+                                      style: GoogleFonts.cairo(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        );
+                      }),
                     ),
                     SizedBox(
                       height: height * 0.02,

@@ -56,7 +56,7 @@ class ClientsViewmodel {
       "extend_time": DateTime.now().toString(),
       "section_type_no": sectionTypeNo,
       "oper_time": CurrentDate.getCurrentTime(),
-      "employ_id": client.employAccId,
+      "employ_id": loggedUser.defEmployAccId,
       "cst_tax": client.taxFileNo,
       "cash_value": 0.0,
       "created_user_id": loggedUser.userId,
@@ -137,10 +137,6 @@ class ClientsViewmodel {
             ),
           ),
         );
-        // await Navigator.of(context).pushNamed(
-        //   Routes.cashierRoute,
-        //   arguments: client,
-        // );
       } else {
         await Navigator.of(context)
             .pushNamed("ReceiptCreation", arguments: client);

@@ -1,12 +1,12 @@
 import 'package:smart_sales/App/Util/locator.dart';
-import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
+import 'package:get_storage/get_storage.dart';
 
 class ReadSensitiveData {
-  final storage = locator.get<SharedStorage>().prefs;
+  final storage = GetStorage();
   String? user;
   Future<String?> readSensitiveData() async {
-    if (storage.containsKey("user")) {
-      user = storage.getString("user");
+    if (storage.hasData("user")) {
+      user = storage.read("user");
       return user;
     } else {
       return null;

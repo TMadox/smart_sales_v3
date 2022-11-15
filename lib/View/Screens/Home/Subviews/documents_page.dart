@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Util/locator.dart';
-import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/Data/Models/client_model.dart';
 import 'package:smart_sales/View/Screens/Clients/clients_screen.dart';
 import 'package:smart_sales/View/Screens/Documents/document_viewmodel.dart';
 import 'package:smart_sales/View/Screens/Expenses/expenses_view.dart';
 import 'package:smart_sales/View/Screens/Home/Widgets/operation_button.dart';
-import 'package:smart_sales/View/Screens/Mow/mow_view.dart';
 
 class DocumentsPage extends StatefulWidget {
   const DocumentsPage({Key? key}) : super(key: key);
@@ -18,7 +17,7 @@ class DocumentsPage extends StatefulWidget {
 }
 
 class _DocumentsPageState extends State<DocumentsPage> {
-  final storage = locator.get<SharedStorage>().prefs;
+  final storage = GetStorage();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -63,8 +62,7 @@ class _DocumentsPageState extends State<DocumentsPage> {
                               );
                             },
                             visible:
-                                storage.getBool("allow_payment_document") ??
-                                    true,
+                                storage.read("allow_payment_document") ?? true,
                           ),
                           OperationButton(
                             imagePath: "assets/collection_document.png",
@@ -83,7 +81,7 @@ class _DocumentsPageState extends State<DocumentsPage> {
                               );
                             },
                             visible:
-                                storage.getBool("allow_collection_document") ??
+                                storage.read("allow_collection_document") ??
                                     true,
                           ),
                           OperationButton(
@@ -98,8 +96,7 @@ class _DocumentsPageState extends State<DocumentsPage> {
                               );
                             },
                             visible:
-                                storage.getBool("allow_expenses_document") ??
-                                    true,
+                                storage.read("allow_expenses_document") ?? true,
                           ),
                           OperationButton(
                             imagePath: "assets/expenses_seizure.png",
@@ -112,8 +109,8 @@ class _DocumentsPageState extends State<DocumentsPage> {
                                 ),
                               );
                             },
-                            visible: storage.getBool(
-                                    "allow_expenses_seizure_document") ??
+                            visible: storage
+                                    .read("allow_expenses_seizure_document") ??
                                 true,
                           ),
                           // OperationButton(
@@ -129,7 +126,7 @@ class _DocumentsPageState extends State<DocumentsPage> {
                           //     );
                           //   },
                           //   visible:
-                          //       storage.getBool("allow_mow_payment_document") ??
+                          //       storage.read("allow_mow_payment_document") ??
                           //           true,
                           // ),
                           // OperationButton(
@@ -145,7 +142,7 @@ class _DocumentsPageState extends State<DocumentsPage> {
                           //     );
                           //   },
                           //   visible:
-                          //       storage.getBool("allow_mow_seizure_document") ??
+                          //       storage.read("allow_mow_seizure_document") ??
                           //           true,
                           // ),
                         ],

@@ -8,7 +8,7 @@ import 'package:smart_sales/App/Util/device.dart';
 import 'package:smart_sales/App/Util/locator.dart';
 import 'package:smart_sales/App/Util/select_cst_class.dart';
 import 'package:smart_sales/Data/Database/Commands/save_data.dart';
-import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/Data/Models/item_model.dart';
 import 'package:smart_sales/Provider/clients_state.dart';
 import 'package:smart_sales/Provider/options_state.dart';
@@ -91,8 +91,7 @@ abstract class BaseViewmodel {
         onCancelText: "exit".tr,
         onOkText: 'stay'.tr,
         onCancel: () {
-          if ((locator.get<SharedStorage>().prefs.getBool("request_visit") ??
-              false)) {
+          if ((GetStorage().read("request_visit") ?? false)) {
             exitDialog(
               context: context,
               data: data,
@@ -106,8 +105,7 @@ abstract class BaseViewmodel {
       );
       return false;
     } else {
-      if ((locator.get<SharedStorage>().prefs.getBool("request_visit") ??
-          false)) {
+      if ((GetStorage().read("request_visit") ?? false)) {
         exitDialog(
           context: context,
           data: data,
@@ -234,7 +232,11 @@ abstract class BaseViewmodel {
         );
   }
 
-  void addNewItem({required BuildContext context, required ItemsModel item}) {
+  void addNewItem({
+    required BuildContext context,
+    required ItemsModel item,
+    num? qty,
+  }) {
     context.read<GeneralState>().addItem(
       item: {
         "fat_det_id": context.read<ItemsViewmodel>().items.indexOf(item),
@@ -243,7 +245,7 @@ abstract class BaseViewmodel {
         "unit_name": item.unitName,
         "barcode": item.unitBarcode,
         "fat_item_no": 1,
-        "fat_qty": 1.0,
+        "fat_qty": qty ?? 1.0,
         "original_qty": item.curQty,
         "original_qty_after": item.curQty,
         "fat_price": context.read<ClientsState>().currentClient == null
@@ -262,7 +264,8 @@ abstract class BaseViewmodel {
                 customerClass:
                     context.read<ClientsState>().currentClient!.priceId!,
               ),
-        "fat_qty_controller": TextEditingController(text: 1.toString()),
+        "fat_qty_controller":
+            TextEditingController(text: (qty ?? 1.0).toString()),
         "fat_disc_value_controller":
             TextEditingController(text: 0.0.toString()),
         "free_qty_controller": TextEditingController(text: 0.toString()),

@@ -161,8 +161,7 @@ class _GeneralState extends State<Receipts> {
                                                                 .pop();
                                                           },
                                                           style: ElevatedButton.styleFrom(
-                                                              primary:
-                                                                  Colors.blue,
+                                                              backgroundColor: Colors.blue,
                                                               shape: RoundedRectangleBorder(
                                                                   borderRadius:
                                                                       BorderRadius
@@ -177,7 +176,7 @@ class _GeneralState extends State<Receipts> {
                                                         },
                                                         style: ElevatedButton
                                                             .styleFrom(
-                                                          primary: Colors.red,
+                                                          backgroundColor: Colors.red,
                                                           shape:
                                                               RoundedRectangleBorder(
                                                             borderRadius:

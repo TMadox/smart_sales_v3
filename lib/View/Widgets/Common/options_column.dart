@@ -3,7 +3,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:smart_sales/App/Util/locator.dart';
 import 'package:smart_sales/App/Util/routing.dart';
-import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/View/Screens/Receipts/receipt_viewmodel.dart';
 import 'package:smart_sales/View/Widgets/Common/alert_snackbar.dart';
@@ -161,11 +161,7 @@ class OptionsColumn extends StatelessWidget {
                   onCancelText: 'exit'.tr,
                   onOkText: 'stay'.tr,
                   onCancel: () {
-                    if ((locator
-                            .get<SharedStorage>()
-                            .prefs
-                            .getBool("request_visit") ??
-                        false)) {
+                    if (GetStorage().read("request_visit") ?? false) {
                       exitDialog(
                         context: context,
                         data: data,
@@ -178,11 +174,7 @@ class OptionsColumn extends StatelessWidget {
                   title: 'warning'.tr,
                 );
               } else {
-                if ((locator
-                        .get<SharedStorage>()
-                        .prefs
-                        .getBool("request_visit") ??
-                    false)) {
+                if ((GetStorage().read("request_visit") ?? false)) {
                   exitDialog(
                     context: context,
                     data: data,

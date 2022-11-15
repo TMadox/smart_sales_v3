@@ -41,7 +41,7 @@ void showReturnDialog({required BuildContext context, required Map receipt}) {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                      primary: Colors.green,
+                      backgroundColor: Colors.green,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10))),
                   child: Text(
@@ -59,7 +59,7 @@ void showReturnDialog({required BuildContext context, required Map receipt}) {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                      primary: Colors.green,
+                      backgroundColor: Colors.green,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10))),
                   child: Text(
@@ -74,7 +74,7 @@ void showReturnDialog({required BuildContext context, required Map receipt}) {
                     newReceipt(context: context, receipt: receipt);
                   },
                   style: ElevatedButton.styleFrom(
-                      primary: Colors.green,
+                      backgroundColor: Colors.green,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10))),
                   child: Text(
@@ -89,7 +89,7 @@ void showReturnDialog({required BuildContext context, required Map receipt}) {
                     Navigator.of(context).pop();
                   },
                   style: ElevatedButton.styleFrom(
-                      primary: Colors.green,
+                      backgroundColor: Colors.green,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10))),
                   child: Text(

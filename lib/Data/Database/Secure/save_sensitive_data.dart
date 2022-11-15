@@ -1,11 +1,11 @@
 import 'package:smart_sales/App/Util/locator.dart';
-import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
+import 'package:get_storage/get_storage.dart';
 
 class SaveSensitiveData {
-  final storage = locator.get<SharedStorage>().prefs;
+  final storage = GetStorage();
   Future<void> saveSensitiveData({
     required String input,
   }) async {
-    await storage.setString("user", input);
+    await storage.write("user", input);
   }
 }

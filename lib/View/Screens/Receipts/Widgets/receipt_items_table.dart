@@ -164,7 +164,6 @@ class _ReceiptItemsTableState extends State<ReceiptItemsTable> {
                                             keyValue: 'fat_det_id',
                                             width: widget.width,
                                             generalState: generalState,
-                                            height: widget.height,
                                           ),
                                         ),
                                         DataCell(
@@ -174,7 +173,6 @@ class _ReceiptItemsTableState extends State<ReceiptItemsTable> {
                                             keyValue: 'unit_convert',
                                             width: widget.width,
                                             generalState: generalState,
-                                            height: widget.height,
                                           ),
                                         ),
                                         DataCell(
@@ -184,7 +182,6 @@ class _ReceiptItemsTableState extends State<ReceiptItemsTable> {
                                             keyValue: 'name',
                                             width: widget.width,
                                             generalState: generalState,
-                                            height: widget.height,
                                           ),
                                         ),
                                         DataCell(
@@ -196,7 +193,6 @@ class _ReceiptItemsTableState extends State<ReceiptItemsTable> {
                                                 item["fat_qty_controller"],
                                             width: widget.width,
                                             generalState: generalState,
-                                            height: widget.height,
                                           ),
                                         ),
                                       ]
@@ -208,7 +204,6 @@ class _ReceiptItemsTableState extends State<ReceiptItemsTable> {
                                             keyValue: 'fat_det_id',
                                             width: widget.width,
                                             generalState: generalState,
-                                            height: widget.height,
                                           ),
                                         ),
                                         DataCell(
@@ -218,7 +213,6 @@ class _ReceiptItemsTableState extends State<ReceiptItemsTable> {
                                             keyValue: 'unit_convert',
                                             width: widget.width,
                                             generalState: generalState,
-                                            height: widget.height,
                                           ),
                                         ),
                                         DataCell(
@@ -228,7 +222,6 @@ class _ReceiptItemsTableState extends State<ReceiptItemsTable> {
                                             keyValue: 'name',
                                             width: widget.width,
                                             generalState: generalState,
-                                            height: widget.height,
                                           ),
                                         ),
                                         DataCell(
@@ -240,7 +233,6 @@ class _ReceiptItemsTableState extends State<ReceiptItemsTable> {
                                                 item["fat_qty_controller"],
                                             width: widget.width,
                                             generalState: generalState,
-                                            height: widget.height,
                                           ),
                                         ),
                                         DataCell(
@@ -254,7 +246,6 @@ class _ReceiptItemsTableState extends State<ReceiptItemsTable> {
                                                 item["fat_price_controller"],
                                             width: widget.width,
                                             generalState: generalState,
-                                            height: widget.height,
                                           ),
                                         ),
                                         DataCell(
@@ -268,7 +259,6 @@ class _ReceiptItemsTableState extends State<ReceiptItemsTable> {
                                                 "fat_disc_value_controller"],
                                             width: widget.width,
                                             generalState: generalState,
-                                            height: widget.height,
                                           ),
                                         ),
                                         DataCell(
@@ -278,7 +268,6 @@ class _ReceiptItemsTableState extends State<ReceiptItemsTable> {
                                             keyValue: 'fat_value',
                                             width: widget.width,
                                             generalState: generalState,
-                                            height: widget.height,
                                           ),
                                         ),
                                         DataCell(
@@ -292,7 +281,6 @@ class _ReceiptItemsTableState extends State<ReceiptItemsTable> {
                                                 item["free_qty_controller"],
                                             width: widget.width,
                                             generalState: generalState,
-                                            height: widget.height,
                                           ),
                                         ),
                                       ],

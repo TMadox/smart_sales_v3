@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
 import 'package:smart_sales/App/Resources/values_manager.dart';
+import 'package:smart_sales/Provider/clients_state.dart';
 import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
 
@@ -55,11 +56,80 @@ class _ChashierDialogBodyState extends State<ChashierDialogBody> {
         width: screenWidth(context),
         child: Column(
           children: [
+            Card(
+              margin: EdgeInsets.zero,
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ListTile(
+                          dense: true,
+                          visualDensity:
+                              const VisualDensity(horizontal: 0, vertical: -3),
+                          title: Text(
+                            "customer".tr,
+                            style: const TextStyle(fontSize: 18),
+                          ),
+                          trailing: Text(
+                            context
+                                .read<ClientsState>()
+                                .currentClient!
+                                .amName
+                                .toString(),
+                            style: const TextStyle(fontSize: 18),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: ListTile(
+                          visualDensity:
+                              const VisualDensity(horizontal: 0, vertical: -3),
+                          dense: true,
+                          title: Text(
+                            "phone".tr,
+                            style: const TextStyle(fontSize: 18),
+                          ),
+                          trailing: const Text(
+                            "",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ListTile(
+                          visualDensity:
+                              const VisualDensity(horizontal: 0, vertical: -3),
+                          dense: true,
+                          title: Text(
+                            "address".tr,
+                            style: const TextStyle(fontSize: 18),
+                          ),
+                          trailing: const Text(
+                            "",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ),
+                      ),
+                      const Expanded(
+                        child: SizedBox(),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
             Row(
               children: [
                 Expanded(
                   child: ListTile(
                     dense: true,
+                    visualDensity:
+                        const VisualDensity(horizontal: 0, vertical: -3),
                     title: Text(
                       "total".tr,
                     ),
@@ -71,21 +141,25 @@ class _ChashierDialogBodyState extends State<ChashierDialogBody> {
                   ),
                 ),
                 Expanded(
-                  child: Consumer<GeneralState>(builder: (
-                    context,
-                    state,
-                    widget,
-                  ) {
-                    return ListTile(
-                      dense: true,
-                      title: Text(
-                        "remaining".tr,
-                      ),
-                      trailing: Text(
-                        state.currentReceipt["reside_value"].toString(),
-                      ),
-                    );
-                  }),
+                  child: Consumer<GeneralState>(
+                    builder: (
+                      context,
+                      state,
+                      widget,
+                    ) {
+                      return ListTile(
+                        dense: true,
+                        visualDensity:
+                            const VisualDensity(horizontal: 0, vertical: -3),
+                        title: Text(
+                          "remaining".tr,
+                        ),
+                        trailing: Text(
+                          state.currentReceipt["reside_value"].toString(),
+                        ),
+                      );
+                    },
+                  ),
                 )
               ],
             ),
@@ -94,6 +168,8 @@ class _ChashierDialogBodyState extends State<ChashierDialogBody> {
                 Expanded(
                   child: ListTile(
                     dense: true,
+                    visualDensity:
+                        const VisualDensity(horizontal: 0, vertical: -3),
                     title: Row(
                       children: [
                         Expanded(
@@ -122,6 +198,7 @@ class _ChashierDialogBodyState extends State<ChashierDialogBody> {
                         activated: true,
                         isDense: true,
                         hintText: "cash".tr,
+                        inputType: TextInputType.number,
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(
                               RegExp(r'^\d+\.?\d{0,2}')),
@@ -149,6 +226,8 @@ class _ChashierDialogBodyState extends State<ChashierDialogBody> {
                 Expanded(
                   child: ListTile(
                     dense: true,
+                    visualDensity:
+                        const VisualDensity(horizontal: 0, vertical: -3),
                     title: Text(
                       "credit_before".tr,
                     ),
@@ -165,6 +244,8 @@ class _ChashierDialogBodyState extends State<ChashierDialogBody> {
                 Expanded(
                   child: ListTile(
                     dense: true,
+                    visualDensity:
+                        const VisualDensity(horizontal: 0, vertical: -3),
                     title: Row(
                       children: [
                         Expanded(
@@ -191,6 +272,7 @@ class _ChashierDialogBodyState extends State<ChashierDialogBody> {
                       child: CustomTextField(
                         isDense: true,
                         activated: true,
+                        inputType: TextInputType.number,
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(
                               RegExp(r'^\d+\.?\d{0,2}')),
@@ -212,21 +294,25 @@ class _ChashierDialogBodyState extends State<ChashierDialogBody> {
                   ),
                 ),
                 Expanded(
-                  child: Consumer<GeneralState>(builder: (
-                    context,
-                    state,
-                    widget,
-                  ) {
-                    return ListTile(
-                      dense: true,
-                      title: Text(
-                        "credit_after".tr,
-                      ),
-                      trailing: Text(
-                        state.currentReceipt["credit_after"].toString(),
-                      ),
-                    );
-                  }),
+                  child: Consumer<GeneralState>(
+                    builder: (
+                      context,
+                      state,
+                      widget,
+                    ) {
+                      return ListTile(
+                        dense: true,
+                        visualDensity:
+                            const VisualDensity(horizontal: 0, vertical: -3),
+                        title: Text(
+                          "credit_after".tr,
+                        ),
+                        trailing: Text(
+                          state.currentReceipt["credit_after"].toString(),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ],
             )

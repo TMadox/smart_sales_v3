@@ -205,7 +205,7 @@ class _ExpensesViewState extends State<ExpensesView> {
       "extend_time": DateTime.now().toString(),
       "section_type_no": widget.sectionTypeNo,
       "oper_time": CurrentDate.getCurrentTime(),
-      "employ_id": expense.genAccId,
+      "employ_id": loggedUser.defEmployAccId,
       "cst_tax": "",
       "cash_value": 0.0,
       "created_user_id": loggedUser.userId,

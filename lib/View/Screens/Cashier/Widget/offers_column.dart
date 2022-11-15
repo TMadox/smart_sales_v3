@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_sales/App/Resources/screen_size.dart';
+import 'package:smart_sales/App/Util/colors.dart';
 import 'package:smart_sales/Data/Models/kinds_model.dart';
 import 'package:smart_sales/Provider/kinds_state.dart';
 import 'package:smart_sales/View/Screens/Cashier/cashier_controller.dart';
@@ -18,26 +18,35 @@ class OffersColumn extends StatelessWidget {
     return Container(
       clipBehavior: Clip.antiAliasWithSaveLayer,
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.green, width: 2),
+        border: Border.all(color: darkBlue, width: 2),
         borderRadius: const BorderRadius.all(
           Radius.circular(15),
         ),
       ),
       child: Column(
         children: [
-          Container(
+          SizedBox(
             width: double.infinity,
-            child: Text(
-              "offers".tr,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.white,
+            child: Neumorphic(
+              child: Text(
+                "offers".tr,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              style: NeumorphicStyle(
+                color: darkBlue,
+                boxShape: NeumorphicBoxShape.roundRect(BorderRadius.zero),
+                shape: NeumorphicShape.concave,
+                surfaceIntensity: 50,
+                shadowDarkColor: Colors.black,
               ),
             ),
-            color: Colors.green,
           ),
           Expanded(
             child: ListView.builder(
+              primary: false,
               itemCount: context.read<KindsState>().kinds.length,
               itemBuilder: (BuildContext context, int index) {
                 final KindsModel kindsModel =
@@ -52,15 +61,21 @@ class OffersColumn extends StatelessWidget {
                       side: BorderSide(
                         color: kindsModel.kindId ==
                                 cashierController.selectedKindId.value
-                            ? Colors.green
+                            ? darkBlue
                             : Colors.transparent,
                       ),
                     ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          vertical: screenWidth(context) * 0.05),
+                    child: SizedBox(
+                      height: 150,
                       child: Center(
-                        child: Text("dummy data"),
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: Image.asset("assets/download.jpg"),
+                            ),
+                            const Text("dummy data"),
+                          ],
+                        ),
                       ),
                     ),
                   ),

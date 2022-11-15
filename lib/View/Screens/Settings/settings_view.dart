@@ -9,10 +9,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
+import 'package:smart_sales/App/Resources/strings_manager.dart';
 import 'package:smart_sales/App/Util/device.dart';
 import 'package:smart_sales/App/Util/locator.dart';
 import 'package:smart_sales/App/Util/routing.dart';
-import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
 
@@ -24,7 +25,7 @@ class SettingsView extends StatefulWidget {
 }
 
 class _SettingsViewState extends State<SettingsView> {
-  final storage = locator.get<SharedStorage>();
+  final storage = GetStorage();
   String password = "";
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
   @override
@@ -45,12 +46,12 @@ class _SettingsViewState extends State<SettingsView> {
       body: WillPopScope(onWillPop: () async {
         if (_formKey.currentState!.validate()) {
           _formKey.currentState!.save();
-          await storage.prefs.setString(
+          await storage.write(
               "ip_password", _formKey.currentState!.value["ip_password"]);
-          await storage.prefs.setString(
+          await storage.write(
               "ip_address", _formKey.currentState!.value["ip_address"]);
-          await storage.prefs
-              .setString("user_id", _formKey.currentState!.value["user_id"]);
+          await storage.write(
+              "user_id", _formKey.currentState!.value["user_id"]);
           context.read<UserState>().setLoginInfo(
                 input: _formKey.currentState!.value,
               );
@@ -103,7 +104,7 @@ class _SettingsViewState extends State<SettingsView> {
                       trailing: SizedBox(
                         width: width * 0.3,
                         child: CustomTextField(
-                          initialValue: storage.ipAddress,
+                          initialValue: storage.read(StringsManager.ipAddress),
                           name: 'ip_address',
                           hintText: 'رابط التعريف',
                           validators: FormBuilderValidators.required(context),
@@ -120,7 +121,7 @@ class _SettingsViewState extends State<SettingsView> {
                       trailing: SizedBox(
                         width: width * 0.3,
                         child: CustomTextField(
-                          initialValue: storage.ipPassword,
+                          initialValue: storage.read(StringsManager.ipPassword),
                           validators: FormBuilderValidators.required(context),
                           name: 'ip_password',
                           hintText: '',
@@ -137,7 +138,7 @@ class _SettingsViewState extends State<SettingsView> {
                       trailing: SizedBox(
                         width: width * 0.3,
                         child: CustomTextField(
-                          initialValue: storage.userId,
+                          initialValue: storage.read(StringsManager.userId),
                           validators: FormBuilderValidators.required(context),
                           name: 'user_id',
                           hintText: '',
@@ -185,10 +186,9 @@ class _SettingsViewState extends State<SettingsView> {
                       leading: const Icon(
                         CupertinoIcons.alarm,
                       ),
-                      initialValue:
-                          storage.prefs.getBool("allow_shift") ?? false,
+                      initialValue: storage.read("allow_shift") ?? false,
                       onToggle: (value) {
-                        storage.prefs.setBool("allow_shift", value);
+                        storage.write("allow_shift", value);
                       },
                       title: Text(
                         "use shift".tr,
@@ -207,11 +207,11 @@ class _SettingsViewState extends State<SettingsView> {
                         child: FormBuilderDateTimePicker(
                           name: "start_time",
                           initialValue: DateTime.parse(
-                              storage.prefs.getString("shift_start_time") ??
+                              storage.read("shift_start_time") ??
                                   DateFormat("yyyy-MM-dd", "en")
                                       .format(DateTime.now())),
                           initialDate: DateTime.parse(
-                              storage.prefs.getString("shift_start_time") ??
+                              storage.read("shift_start_time") ??
                                   DateFormat("yyyy-MM-dd", "en")
                                       .format(DateTime.now())),
                           decoration: const InputDecoration(
@@ -239,7 +239,7 @@ class _SettingsViewState extends State<SettingsView> {
                           locale: const Locale("en"),
                           inputType: InputType.time,
                           onChanged: (time) async {
-                            await storage.prefs.setString(
+                            await storage.write(
                               "shift_start_time",
                               time.toString(),
                             );
@@ -260,11 +260,11 @@ class _SettingsViewState extends State<SettingsView> {
                         child: FormBuilderDateTimePicker(
                           name: "end_time",
                           initialValue: DateTime.parse(
-                              storage.prefs.getString("shift_end_time") ??
+                              storage.read("shift_end_time") ??
                                   DateFormat("yyyy-MM-dd", "en")
                                       .format(DateTime.now())),
                           initialDate: DateTime.parse(
-                              storage.prefs.getString("shift_end_time") ??
+                              storage.read("shift_end_time") ??
                                   DateFormat("yyyy-MM-dd", "en")
                                       .format(DateTime.now())),
                           decoration: const InputDecoration(
@@ -292,7 +292,7 @@ class _SettingsViewState extends State<SettingsView> {
                           locale: const Locale("en"),
                           inputType: InputType.time,
                           onChanged: (time) async {
-                            await storage.prefs.setString(
+                            await storage.write(
                               "shift_end_time",
                               time.toString(),
                             );

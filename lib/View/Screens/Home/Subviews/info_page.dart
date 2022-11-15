@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/App/Util/routing.dart';
 import 'package:smart_sales/View/Screens/Clients/clients_screen.dart';
 import 'package:smart_sales/View/Screens/Expenses/expenses_view.dart';
 import 'package:smart_sales/View/Screens/Groups/groups_view.dart';
 import 'package:smart_sales/View/Screens/Home/Widgets/operation_button.dart';
-import 'package:smart_sales/View/Screens/Mow/mow_view.dart';
 import 'package:smart_sales/View/Screens/Stors/stors_view.dart';
 
 class InfoPage extends StatelessWidget {
-  final SharedPreferences storage;
+  final GetStorage storage;
   const InfoPage({
     Key? key,
     required this.storage,
@@ -46,7 +45,7 @@ class InfoPage extends StatelessWidget {
                             .pushNamed(Routes.itemsRoute, arguments: false);
                       },
                       title: "items".tr,
-                      visible: storage.getBool("allow_view_items") ?? true,
+                      visible: storage.read("allow_view_items") ?? true,
                     ),
                     OperationButton(
                       imagePath: "assets/operations.png",
@@ -54,7 +53,7 @@ class InfoPage extends StatelessWidget {
                         Navigator.of(context).pushNamed("reciepts");
                       },
                       title: "view_operations".tr,
-                      visible: storage.getBool("allow_view_operations") ?? true,
+                      visible: storage.read("allow_view_operations") ?? true,
                     ),
                     OperationButton(
                       imagePath: 'assets/clients.png',
@@ -69,7 +68,7 @@ class InfoPage extends StatelessWidget {
                         );
                       },
                       title: "clients".tr,
-                      visible: storage.getBool("allow_view_clients") ?? true,
+                      visible: storage.read("allow_view_clients") ?? true,
                     ),
                     OperationButton(
                       imagePath: "assets/stors.png",
@@ -78,13 +77,13 @@ class InfoPage extends StatelessWidget {
                           Routes.storsRoute,
                           arguments: const StorsView(
                             canTap: false,
-                            choosingReceivingStor: false,
+                            choosingSourceStor: false,
                             canPushReplace: false,
                           ),
                         );
                       },
                       title: "stors".tr,
-                      visible: storage.getBool("allow_view_stors") ?? true,
+                      visible: storage.read("allow_view_stors") ?? true,
                     ),
                     OperationButton(
                       imagePath: "assets/kinds.png",
@@ -92,7 +91,7 @@ class InfoPage extends StatelessWidget {
                         Navigator.of(context).pushNamed(Routes.kindsRoute);
                       },
                       title: "kinds".tr,
-                      visible: storage.getBool("allow_view_kinds") ?? true,
+                      visible: storage.read("allow_view_kinds") ?? true,
                     ),
                     OperationButton(
                       imagePath: "assets/expenses.png",
@@ -105,7 +104,7 @@ class InfoPage extends StatelessWidget {
                         );
                       },
                       title: "expenses".tr,
-                      visible: storage.getBool("allow_view_expenses") ?? true,
+                      visible: storage.read("allow_view_expenses") ?? true,
                     ),
                     // OperationButton(
                     //   imagePath: "assets/mow.png",
@@ -118,7 +117,7 @@ class InfoPage extends StatelessWidget {
                     //     );
                     //   },
                     //   title: "mows".tr,
-                    //   visible: storage.getBool("allow_view_mows") ?? true,
+                    //   visible: storage.read("allow_view_mows") ?? true,
                     // ),
                     OperationButton(
                       imagePath: "assets/group.png",
@@ -128,7 +127,7 @@ class InfoPage extends StatelessWidget {
                         );
                       },
                       title: "groups".tr,
-                      visible: storage.getBool("allow_view_groups") ?? true,
+                      visible: storage.read("allow_view_groups") ?? true,
                     ),
                   ],
                 ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_sales/App/Util/locator.dart';
-import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/Data/Models/options_model.dart';
 import 'package:smart_sales/Services/Repositories/dio_repository.dart';
 
@@ -13,12 +13,12 @@ class OptionsState extends ChangeNotifier {
   Future<void> fetchOptions() async {
     final response =
         await locator.get<DioRepository>().get(path: "/get_data_options");
-    await SharedStorage.to.prefs.setString("options", response);
+    await GetStorage().write("options", response);
   }
 
   void loadOptions() {
-    options = optionsListFromJson(
-        input: SharedStorage.to.prefs.getString("options").toString());
+    options =
+        optionsListFromJson(input: GetStorage().read("options").toString());
   }
 
   Future<List<OptionsModel>> reloadOptions() async {

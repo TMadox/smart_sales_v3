@@ -1,11 +1,9 @@
 import 'package:flutter/cupertino.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:smart_sales/App/Util/locator.dart';
-import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
+import 'package:get_storage/get_storage.dart';
 
 class SettingsViewmodel extends ChangeNotifier {
   bool isLoading = false;
-  final SharedPreferences storage = locator.get<SharedStorage>().prefs;
+  final GetStorage storage = GetStorage();
   List<String> headers = [];
   List<String> cells = [];
   final List<String> favoritesOptions = [
@@ -35,7 +33,7 @@ class SettingsViewmodel extends ChangeNotifier {
     "new_rec",
   ];
   void getStoredPrintingData() {
-    headers = storage.getStringList("headers") ??
+    headers = storage.read("headers") ??
         [
           "number",
           "date",
@@ -43,7 +41,7 @@ class SettingsViewmodel extends ChangeNotifier {
           "customer",
           "tax",
         ];
-    cells = storage.getStringList("cells") ??
+    cells = storage.read("cells") ??
         [
           "value",
           "price",
@@ -57,8 +55,8 @@ class SettingsViewmodel extends ChangeNotifier {
   }
 
   Future<void> saveNewDate() async {
-    await storage.setStringList("headers", headers);
-    await storage.setStringList("cells", cells);
+    await storage.write("headers", headers);
+    await storage.write("cells", cells);
   }
 
   void switchHeaderPosition({

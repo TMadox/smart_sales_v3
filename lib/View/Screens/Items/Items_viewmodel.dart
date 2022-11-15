@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Resources/enums_manager.dart';
 import 'package:smart_sales/App/Util/locator.dart';
 import 'package:smart_sales/Data/Database/Commands/save_data.dart';
-import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/Data/Models/item_model.dart';
 import 'package:smart_sales/Data/Models/options_model.dart';
 import 'package:smart_sales/Data/Models/type_model.dart';
@@ -31,9 +31,9 @@ class ItemsViewmodel extends ChangeNotifier {
   Future<void> fetchTypes({required bool transAllStors}) async {
     if (transAllStors) {
       final response = await DioRepository.to.get(path: '/get_data_types_qtys');
-      await SharedStorage.to.prefs.setString("types", response);
+      await GetStorage().write("types", response);
     } else {
-      await SharedStorage.to.prefs.remove("types");
+      await GetStorage().remove("types");
     }
   }
 
@@ -41,7 +41,7 @@ class ItemsViewmodel extends ChangeNotifier {
     required bool transAllStors,
     required UserModel user,
   }) async {
-    SharedStorage.to.prefs.setBool("loaded_items", false);
+    GetStorage().write("loaded_items", false);
     final response = transAllStors == false
         ? await DioRepository.to.get(
             path: '/get_data_items_with_stor_id',
@@ -52,7 +52,7 @@ class ItemsViewmodel extends ChangeNotifier {
         : await DioRepository.to.get(
             path: '/get_data_items',
           );
-    await SharedStorage.to.prefs.setString("items", response);
+    await GetStorage().write("items", response);
     return response;
   }
 
@@ -72,11 +72,11 @@ class ItemsViewmodel extends ChangeNotifier {
   Future<void> loadItems({
     required BuildContext context,
   }) async {
-    final storage = SharedStorage.to.prefs;
-    items = itemsListFromJson(input: storage.getString("items").toString());
-    if (storage.getString("types") != null) {
-      types = typeModelFromJson(storage.getString("types")!);
-      if ((SharedStorage.to.prefs.getBool("loaded_items") ?? false) == false) {
+    final storage = GetStorage();
+    items = itemsListFromJson(input: storage.read("items").toString());
+    if (storage.read("types") != null) {
+      types = typeModelFromJson(storage.read("types")!);
+      if ((GetStorage().read("loaded_items") ?? false) == false) {
         List<ItemsModel> tempItems = [];
         for (var stor in context.read<StoreState>().stors) {
           for (var currentItem in items) {
@@ -102,7 +102,7 @@ class ItemsViewmodel extends ChangeNotifier {
           }
         }
         items = List.from(tempItems);
-        SharedStorage.to.prefs.setBool("loaded_items", true);
+        GetStorage().write("loaded_items", true);
         await locator.get<SaveData>().saveItemsData(
               input: items,
             );

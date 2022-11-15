@@ -8,9 +8,10 @@ import 'package:smart_sales/App/Resources/screen_size.dart';
 import 'package:smart_sales/App/Util/colors.dart';
 import 'package:smart_sales/App/Util/date.dart';
 import 'package:smart_sales/App/Util/locator.dart';
-import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/Data/Models/item_model.dart';
 import 'package:smart_sales/Provider/general_state.dart';
+import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/View/Screens/Inventory/Widgets/inventory_table.dart';
 import 'package:smart_sales/View/Screens/Inventory/inventory_viewmodel.dart';
 import 'package:smart_sales/View/Screens/Items/items_viewmodel.dart';
@@ -35,7 +36,7 @@ class _InventoryViewState extends State<InventoryView> {
 
   late Map data = {};
 
-  final storage = locator.get<SharedStorage>().prefs;
+  final storage = GetStorage();
 
   @override
   void initState() {
@@ -45,7 +46,7 @@ class _InventoryViewState extends State<InventoryView> {
       "user_name": "غير معروف",
       "credit_before": 0.0,
       "cst_tax": ".....",
-      "employ_id": 0,
+      "employ_id": context.read<UserState>().user.defEmployAccId,
       "basic_acc_id": 0,
     });
     super.initState();
@@ -71,11 +72,7 @@ class _InventoryViewState extends State<InventoryView> {
             onCancelText: "exit".tr,
             onOkText: 'بقاء',
             onCancel: () {
-              if ((locator
-                      .get<SharedStorage>()
-                      .prefs
-                      .getBool("request_visit") ??
-                  false)) {
+              if ((GetStorage().read("request_visit") ?? false)) {
                 exitDialog(
                   context: context,
                   data: data,
@@ -88,7 +85,7 @@ class _InventoryViewState extends State<InventoryView> {
           );
           return false;
         } else {
-          if ((storage.getBool("request_visit") ?? false)) {
+          if ((storage.read("request_visit") ?? false)) {
             exitDialog(
               context: context,
               data: data,
@@ -197,10 +194,11 @@ class _InventoryViewState extends State<InventoryView> {
                       children: [
                         Expanded(
                           child: CustomTextField(
-                             inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
-                  FilteringTextInputFormatter.deny("")
-                ],
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'^\d+\.?\d{0,2}')),
+                              FilteringTextInputFormatter.deny("")
+                            ],
                             onSubmitted: (value) {
                               try {
                                 ItemsModel item = context

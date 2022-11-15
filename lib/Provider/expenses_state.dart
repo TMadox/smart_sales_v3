@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/App/Util/locator.dart';
-import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
 import 'package:smart_sales/Data/Models/expense_model.dart';
 
 class ExpenseState extends ChangeNotifier {
@@ -24,10 +24,7 @@ class ExpenseState extends ChangeNotifier {
       expenses.firstWhere((element) => element.accId == id).curBalance =
           (originalAmount + amount);
     }
-    await locator
-        .get<SharedStorage>()
-        .prefs
-        .setString("expenses", expenseModelToMap(expenses));
+    await GetStorage().write("expenses", expenseModelToMap(expenses));
     return expenses.firstWhere((element) => element.accId == id).curBalance;
   }
 }

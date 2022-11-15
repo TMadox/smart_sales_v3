@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
 import 'package:smart_sales/App/Util/routing.dart';
 import 'package:smart_sales/View/Widgets/Common/common_button.dart';
@@ -46,9 +46,8 @@ void settingsDialog({
       onPressed: () async {
         if (_formKey.currentState!.validate()) {
           _formKey.currentState!.save();
-          SharedPreferences prefs = await SharedPreferences.getInstance();
           if (_formKey.currentState!.value["ip_password"] ==
-              prefs.getString("ip_password")) {
+              GetStorage().read("ip_password")) {
             Get.back();
             Navigator.of(context).pushNamed(Routes.settingsRoute);
           }

@@ -34,7 +34,6 @@ class LoginRepo {
     if (response.data == "-11") {
       throw "هذا الجهاز غير مسجل";
     }
-    log(response.data);
     List serializedList = json.decode(response.data);
     Map temp = {};
     temp.addAll(serializedList[0]);

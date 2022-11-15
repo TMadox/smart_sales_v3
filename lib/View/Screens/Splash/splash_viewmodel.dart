@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:smart_sales/App/Resources/strings_manager.dart';
 import 'package:smart_sales/View/Widgets/Common/alert_snackbar.dart';
 import 'package:universal_io/io.dart';
 import 'package:flutter/foundation.dart';
@@ -8,7 +9,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Util/locator.dart';
 import 'package:smart_sales/Data/Database/Commands/read_data.dart';
-import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/Data/Models/expense_model.dart';
 import 'package:smart_sales/Data/Models/group_model.dart';
 import 'package:smart_sales/Data/Models/kinds_model.dart';
@@ -37,15 +38,15 @@ import '../../../Data/Models/info_model.dart';
 class SplashViewmodel extends ChangeNotifier {
   loadingFunction(BuildContext context) async {
     //get instance of the shared storage
-    final instance = locator.get<SharedStorage>();
+    final storage = GetStorage();
     //get stored user info
-    String? user = instance.prefs.getString("user");
+    String? user = storage.read("user");
     //get login info that is going to be used in logging in and inject it into the instance of userstate
     context.read<UserState>().setLoginInfo(
       input: {
-        "ip_password": instance.ipPassword,
-        "ip_address": instance.ipAddress,
-        "user_id": instance.userId,
+        "ip_password": storage.read(StringsManager.ipPassword),
+        "ip_address": storage.read(StringsManager.ipAddress),
+        "user_id": storage.read(StringsManager.userId),
       },
     );
 
@@ -63,13 +64,12 @@ class SplashViewmodel extends ChangeNotifier {
     } else {
       try {
         //Check if author wants the user to login only within set period
-        if (instance.prefs.getBool("allow_shift") ?? false) {
-          if (instance.prefs.containsKey("shift_end_time") &&
-              instance.prefs.containsKey("shift_start_time")) {
+        if (storage.read("allow_shift") ?? false) {
+          if (storage.hasData("shift_end_time") &&
+              storage.hasData("shift_start_time")) {
             DateTime startDate =
-                DateTime.parse(instance.prefs.getString("shift_start_time")!);
-            DateTime endDate =
-                DateTime.parse(instance.prefs.getString("shift_end_time")!);
+                DateTime.parse(storage.read("shift_start_time")!);
+            DateTime endDate = DateTime.parse(storage.read("shift_end_time")!);
             DateTime now = DateTime(
               1,
               1,
@@ -91,7 +91,7 @@ class SplashViewmodel extends ChangeNotifier {
         await context.read<SplashViewmodel>().readStoredData(
               context: context,
               user: userModelFromString(str: user),
-              reference: instance,
+              reference: storage,
             );
         //define values for the general repository to be used in api calls
         locator.get<DioRepository>().init(
@@ -111,7 +111,7 @@ class SplashViewmodel extends ChangeNotifier {
   readStoredData({
     required BuildContext context,
     required UserModel user,
-    required SharedStorage reference,
+    required GetStorage reference,
   }) async {
     final List<Map> receiptsList = List<Map>.from(
         json.decode(locator.get<ReadData>().readReceiptsData() ?? "[]"));
@@ -125,13 +125,12 @@ class SplashViewmodel extends ChangeNotifier {
     final info =
         infoModelFromMap(locator.get<ReadData>().readInfoData() ?? "[]");
     final Map finalreceipt = locator.get<ReadData>().loadLastId();
-    final stors = storModelFromJson(reference.prefs.getString("stors")!);
-    final kinds = kindModelFromJson(reference.prefs.getString("kinds")!);
-    final mows = mowModelFromMap(reference.prefs.getString("mows")!);
-    final expenses =
-        expenseModelFromMap(reference.prefs.getString("expenses")!);
+    final stors = storModelFromJson(reference.read("stors")!);
+    final kinds = kindModelFromJson(reference.read("kinds")!);
+    final mows = mowModelFromMap(reference.read("mows")!);
+    final expenses = expenseModelFromMap(reference.read("expenses")!);
 
-    final groups = groupModelFromJson(reference.prefs.getString("groups")!);
+    final groups = groupModelFromJson(reference.read("groups")!);
     context.read<SettingsViewmodel>().getStoredPrintingData();
     await injectData(
       context: context,

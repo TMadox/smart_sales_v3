@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:smart_sales/App/Util/locator.dart';
-import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/Data/Models/mow_model.dart';
 
 class MowState extends ChangeNotifier {
@@ -26,10 +25,7 @@ class MowState extends ChangeNotifier {
       mows.firstWhere((element) => element.accId == id).curBalance =
           (originalAmount + amount);
     }
-    await locator
-        .get<SharedStorage>()
-        .prefs
-        .setString("mows", mowModelToMap(mows));
+    await GetStorage().write("mows", mowModelToMap(mows));
     return mows.firstWhere((element) => element.accId == id).curBalance;
   }
 }

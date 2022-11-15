@@ -10,7 +10,7 @@ import 'package:smart_sales/App/Util/device.dart';
 import 'package:smart_sales/App/Util/routing.dart';
 import 'package:smart_sales/App/Util/scroll_behavior.dart';
 import 'package:smart_sales/App/Util/locator.dart';
-import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/Provider/expenses_state.dart';
 import 'package:smart_sales/Provider/groups_state.dart';
 import 'package:smart_sales/Provider/kinds_state.dart';
@@ -34,15 +34,15 @@ import 'package:smart_sales/View/Screens/Splash/splash_viewmodel.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   inject();
-  await locator.get<SharedStorage>().init();
+  await GetStorage.init();
   await locator.get<DeviceParam>().getDeviceId();
   await locator.get<DeviceParam>().getDocumentsPath();
-  final prefs = locator.get<SharedStorage>().prefs;
-  // prefs.clear();
-  if (prefs.getString("ip_password") == null) {
-    await prefs.setString("ip_password", "200");
-    await prefs.setString("user_id", "31");
-    await prefs.setString("ip_address", "sky3m.duckdns.org");
+  final prefs = GetStorage();
+  prefs.erase();
+  if (prefs.read("ip_password") == null) {
+    await prefs.write("ip_password", "200");
+    await prefs.write("user_id", "31");
+    await prefs.write("ip_address", "sky3m.duckdns.org");
   }
   SystemChrome.setEnabledSystemUIMode(
     SystemUiMode.manual,
@@ -108,8 +108,7 @@ class MyApp extends StatelessWidget {
         FormBuilderLocalizations.delegate,
       ],
       translations: LocalizationManager(),
-      locale: Locale(
-          locator.get<SharedStorage>().prefs.getString("language") ?? "ar"),
+      locale: Locale(GetStorage().read("language") ?? "ar"),
       supportedLocales: LocalizationManager.locales,
       debugShowCheckedModeBanner: false,
       navigatorObservers: [routeObserver],

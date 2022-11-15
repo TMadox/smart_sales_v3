@@ -9,8 +9,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
 import 'package:smart_sales/App/Resources/values_manager.dart';
 import 'package:smart_sales/App/Util/locator.dart';
-import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/Provider/general_state.dart';
+import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/View/Screens/Documents/Widgets/first_row.dart';
 import 'package:smart_sales/View/Screens/Documents/Widgets/second_row.dart';
 import 'package:smart_sales/View/Screens/Documents/Widgets/third_row.dart';
@@ -32,7 +33,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
   double newCredit = 0.0;
   final TextEditingController _controller =
       TextEditingController(text: 0.0.toString());
-  final storage = locator.get<SharedStorage>().prefs;
+  final storage = GetStorage();
   late Map data = {};
   @override
   void initState() {
@@ -42,7 +43,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
       "user_name": "not selected",
       "credit_before": 0.0,
       "cst_tax": ".....",
-      "employ_id": 0,
+      "employ_id": context.read<UserState>().user.defEmployAccId,
       "basic_acc_id": 0,
     });
     super.initState();
@@ -59,221 +60,219 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
         FocusScope.of(context).unfocus();
       },
       child: WillPopScope(
-            onWillPop: () async {
-              return documentsState.onExit(
-                context: context,
-                data: data,
-              );
-            },
-            child: SafeArea(
-              left: false,
-              right: false,
-              bottom: false,
-              child: Scaffold(
-                body: Center(
-                  child: SizedBox(
-                    width: width * 0.9,
-                    height: height * 0.95,
-                    child: FormBuilder(
-                      key: _formKey,
-                      child: SingleChildScrollView(
-                        child: Column(
+        onWillPop: () async {
+          return documentsState.onExit(
+            context: context,
+            data: data,
+          );
+        },
+        child: SafeArea(
+          left: false,
+          right: false,
+          bottom: false,
+          child: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: width * 0.9,
+                height: height * 0.95,
+                child: FormBuilder(
+                  key: _formKey,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: height * 0.03,
+                        ),
+                        Visibility(
+                          visible: widget.sectionNo != 108 &&
+                              widget.sectionNo != 107 &&
+                              widget.sectionNo != 103 &&
+                              widget.sectionNo != 104,
+                          child: FirstRow(
+                            sectionNo: widget.sectionNo,
+                            width: width,
+                            height: height,
+                            controller: _controller,
+                          ),
+                        ),
+                        SizedBox(
+                          height: height * 0.03,
+                        ),
+                        SecondRow(
+                          width: width,
+                          sectionNo: widget.sectionNo,
+                          controller: _controller,
+                        ),
+                        SizedBox(
+                          height: height * 0.03,
+                        ),
+                        ThirdRow(
+                          width: width,
+                          sectionNo: widget.sectionNo,
+                        ),
+                        SizedBox(
+                          height: height * 0.03,
+                        ),
+                        Row(
                           children: [
+                            AutoSizeText("notes".tr),
                             SizedBox(
-                              height: height * 0.03,
+                              width: width * 0.01,
                             ),
-                            Visibility(
-                              visible: widget.sectionNo != 108 &&
-                                  widget.sectionNo != 107 &&
-                                  widget.sectionNo != 103 &&
-                                  widget.sectionNo != 104,
-                              child: FirstRow(
-                                sectionNo: widget.sectionNo,
-                                width: width,
-                                height: height,
-                                controller: _controller,
+                            Expanded(
+                              child: CustomTextField(
+                                hintText: "enter_notes".tr,
+                                validators: (p0) {
+                                  return null;
+                                },
+                                name: "notes",
+                                activated: true,
                               ),
-                            ),
-                            SizedBox(
-                              height: height * 0.03,
-                            ),
-                            SecondRow(
-                              width: width,
-                              sectionNo: widget.sectionNo,
-                              controller: _controller,
-                            ),
-                            SizedBox(
-                              height: height * 0.03,
-                            ),
-                            ThirdRow(
-                              width: width,
-                              sectionNo: widget.sectionNo,
-                            ),
-                            SizedBox(
-                              height: height * 0.03,
-                            ),
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: height * 0.03,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
                             Row(
                               children: [
-                                AutoSizeText("notes".tr),
+                                AutoSizeText(
+                                  "credit_before".tr + ": ",
+                                  style: GoogleFonts.cairo(
+                                    fontSize: 20,
+                                  ),
+                                ),
                                 SizedBox(
                                   width: width * 0.01,
                                 ),
-                                Expanded(
-                                  child: CustomTextField(
-                                    hintText: "enter_notes".tr,
-                                    validators: (p0) {
-                                      return null;
-                                    },
-                                    name: "notes",
-                                    activated: true,
-                                  ),
-                                )
-                              ],
-                            ),
-                            SizedBox(
-                              height: height * 0.03,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Row(
-                                  children: [
-                                    AutoSizeText(
-                                      "credit_before".tr + ": ",
-                                      style: GoogleFonts.cairo(
-                                        fontSize: 20,
+                                Consumer<DocumentsViewmodel>(
+                                  builder: (BuildContext context, state,
+                                      Widget? child) {
+                                    return SizedBox(
+                                      width: width * 0.2,
+                                      child: AutoSizeText(
+                                        (state.selectedCustomer.curBalance ??
+                                                0.0)
+                                            .toStringAsFixed(3),
+                                        style: GoogleFonts.cairo(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20,
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(
-                                      width: width * 0.01,
-                                    ),
-                                    Consumer<DocumentsViewmodel>(
-                                      builder: (BuildContext context, state,
-                                          Widget? child) {
-                                        return SizedBox(
-                                          width: width * 0.2,
-                                          child: AutoSizeText(
-                                            (state.selectedCustomer
-                                                        .curBalance ??
-                                                    0.0)
-                                                .toStringAsFixed(3),
-                                            style: GoogleFonts.cairo(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    AutoSizeText(
-                                      "credit_after".tr + ": ",
-                                      style: GoogleFonts.cairo(fontSize: 20),
-                                    ),
-                                    SizedBox(
-                                      width: width * 0.01,
-                                    ),
-                                    Consumer<GeneralState>(
-                                      builder: (
-                                        BuildContext context,
-                                        GeneralState state,
-                                        Widget? child,
-                                      ) {
-                                        return SizedBox(
-                                          width: width * 0.2,
-                                          child: AutoSizeText(
-                                            ValuesManager.doubleToString(
-                                              state.currentReceipt[
-                                                  "credit_after"],
-                                            ),
-                                            maxLines: 1,
-                                            style: GoogleFonts.cairo(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: height * 0.03,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                CommonButton(
-                                  title: "new_document".tr,
-                                  icon: const Icon(Icons.save),
-                                  color: Colors.green,
-                                  onPressed: () {
-                                    if (_formKey.currentState!.validate()) {
-                                      _formKey.currentState!.save();
-
-                                      Map inputs = Map.from(
-                                          _formKey.currentState!.value);
-                                      saveDialog(
-                                        context: context,
-                                        onCancel: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        onPrint: () async {
-                                          await documentsState.onFinishDocument(
-                                            context: context,
-                                            inputs: inputs,
-                                            sectionNo: widget.sectionNo,
-                                            savePdf: true,
-                                          );
-                                        },
-                                        onSave: () async {
-                                          await documentsState.onFinishDocument(
-                                            context: context,
-                                            inputs: inputs,
-                                            sectionNo: widget.sectionNo,
-                                          );
-                                        },
-                                        onShare: () async {
-                                          await documentsState.onFinishDocument(
-                                            context: context,
-                                            inputs: inputs,
-                                            sectionNo: widget.sectionNo,
-                                            share: true,
-                                          );
-                                        },
-                                      );
-                                    }
+                                    );
                                   },
                                 ),
-                                CommonButton(
-                                    onPressed: () {
-                                      documentsState.onExit(
-                                        context: context,
-                                        data: data,
-                                      );
-                                    },
-                                    title: "exit".tr,
-                                    icon: const Icon(Icons.arrow_back_ios),
-                                    color: Colors.red)
                               ],
                             ),
-                            SizedBox(
-                              height: height * 0.02,
+                            Row(
+                              children: [
+                                AutoSizeText(
+                                  "credit_after".tr + ": ",
+                                  style: GoogleFonts.cairo(fontSize: 20),
+                                ),
+                                SizedBox(
+                                  width: width * 0.01,
+                                ),
+                                Consumer<GeneralState>(
+                                  builder: (
+                                    BuildContext context,
+                                    GeneralState state,
+                                    Widget? child,
+                                  ) {
+                                    return SizedBox(
+                                      width: width * 0.2,
+                                      child: AutoSizeText(
+                                        ValuesManager.doubleToString(
+                                          state.currentReceipt["credit_after"],
+                                        ),
+                                        maxLines: 1,
+                                        style: GoogleFonts.cairo(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                      ),
+                        SizedBox(
+                          height: height * 0.03,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            CommonButton(
+                              title: "new_document".tr,
+                              icon: const Icon(Icons.save),
+                              color: Colors.green,
+                              onPressed: () {
+                                if (_formKey.currentState!.validate()) {
+                                  _formKey.currentState!.save();
+
+                                  Map inputs =
+                                      Map.from(_formKey.currentState!.value);
+                                  saveDialog(
+                                    context: context,
+                                    onCancel: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    onPrint: () async {
+                                      await documentsState.onFinishDocument(
+                                        context: context,
+                                        inputs: inputs,
+                                        sectionNo: widget.sectionNo,
+                                        savePdf: true,
+                                      );
+                                    },
+                                    onSave: () async {
+                                      await documentsState.onFinishDocument(
+                                        context: context,
+                                        inputs: inputs,
+                                        sectionNo: widget.sectionNo,
+                                      );
+                                    },
+                                    onShare: () async {
+                                      await documentsState.onFinishDocument(
+                                        context: context,
+                                        inputs: inputs,
+                                        sectionNo: widget.sectionNo,
+                                        share: true,
+                                      );
+                                    },
+                                  );
+                                }
+                              },
+                            ),
+                            CommonButton(
+                                onPressed: () {
+                                  documentsState.onExit(
+                                    context: context,
+                                    data: data,
+                                  );
+                                },
+                                title: "exit".tr,
+                                icon: const Icon(Icons.arrow_back_ios),
+                                color: Colors.red)
+                          ],
+                        ),
+                        SizedBox(
+                          height: height * 0.02,
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
             ),
           ),
+        ),
+      ),
     );
   }
 }

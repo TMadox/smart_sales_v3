@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smart_sales/App/Util/locator.dart';
-import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/View/Screens/Home/home_viewmodel.dart';
 
 class DesktopPage extends StatefulWidget {
@@ -11,11 +10,11 @@ class DesktopPage extends StatefulWidget {
 }
 
 class _DesktopPageState extends State<DesktopPage> {
-  final storage = locator.get<SharedStorage>().prefs;
+  final storage = GetStorage();
   List<String> favorites = [];
   @override
   void initState() {
-    favorites = storage.getStringList("favorites") ?? [];
+    favorites = storage.read("favorites") ?? [];
     super.initState();
   }
 

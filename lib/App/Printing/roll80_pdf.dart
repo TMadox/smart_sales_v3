@@ -2,9 +2,10 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:smart_sales/App/Printing/create_pdf.dart';
 import 'package:smart_sales/App/Resources/values_manager.dart';
 import 'package:smart_sales/App/Util/create_qr.dart';
@@ -17,7 +18,7 @@ Future<pw.Page> roll80Pdf({
   required BuildContext bContext,
   bool share = false,
   required pw.Font arabic,
-  required SharedPreferences storage,
+  required GetStorage storage,
   required String paper,
 }) async {
   String title = await chooseTitle(
@@ -47,7 +48,7 @@ Future<pw.Page> roll80Pdf({
           textDirection: pw.TextDirection.rtl,
           child: pw.Column(
             children: [
-              storage.getBool("company_name") ?? true
+              storage.read("company_name") ?? true
                   ? pw.Container(
                       width: double.infinity,
                       child: pw.Text(
@@ -69,7 +70,7 @@ Future<pw.Page> roll80Pdf({
                       ),
                     )
                   : pw.SizedBox(),
-              storage.getBool("company_address") ?? true
+              storage.read("company_address") ?? true
                   ? pw.Column(
                       children: [
                         pw.SizedBox(height: 10),
@@ -100,7 +101,7 @@ Future<pw.Page> roll80Pdf({
                       ],
                     )
                   : pw.SizedBox(),
-              storage.getBool("company_tax") ?? true
+              storage.read("company_tax") ?? true
                   ? pw.Column(
                       children: [
                         pw.SizedBox(height: 10),
@@ -152,7 +153,7 @@ Future<pw.Page> roll80Pdf({
                 ),
               ),
               pw.Divider(),
-              storage.getBool("receipt_number") ?? true
+              storage.read("receipt_number") ?? true
                   ? pw.Column(
                       children: [
                         pw.Row(
@@ -194,7 +195,7 @@ Future<pw.Page> roll80Pdf({
                       ],
                     )
                   : pw.SizedBox(),
-              storage.getBool("receipt_date") ?? true
+              storage.read("receipt_date") ?? true
                   ? pw.Column(
                       children: [
                         pw.Row(
@@ -235,7 +236,7 @@ Future<pw.Page> roll80Pdf({
                       ],
                     )
                   : pw.SizedBox(),
-              storage.getBool("employee_name") ?? true
+              storage.read("employee_name") ?? true
                   ? pw.Column(
                       children: [
                         pw.Row(
@@ -277,7 +278,7 @@ Future<pw.Page> roll80Pdf({
                       ],
                     )
                   : pw.SizedBox(),
-              storage.getBool("customer_name") ?? true
+              storage.read("customer_name") ?? true
                   ? pw.Column(
                       children: [
                         pw.Row(
@@ -319,7 +320,7 @@ Future<pw.Page> roll80Pdf({
                       ],
                     )
                   : pw.SizedBox(),
-              storage.getBool("customer_tax") ?? true
+              storage.read("customer_tax") ?? true
                   ? pw.Column(
                       children: [
                         pw.Row(
@@ -548,7 +549,7 @@ Future<pw.Page> roll80Pdf({
                 ],
               ),
               pw.Divider(),
-              storage.getBool("paid_amount") ?? true
+              storage.read("paid_amount") ?? true
                   ? pw.Column(
                       children: [
                         pw.Row(
@@ -592,7 +593,7 @@ Future<pw.Page> roll80Pdf({
                       ],
                     )
                   : pw.SizedBox(),
-              storage.getBool("remaining_amount") ?? true
+              storage.read("remaining_amount") ?? true
                   ? pw.Column(
                       children: [
                         pw.Row(
@@ -636,7 +637,7 @@ Future<pw.Page> roll80Pdf({
                     )
                   : pw.SizedBox(),
               pw.Divider(),
-              storage.getBool("credit_before") ?? true
+              storage.read("credit_before") ?? true
                   ? pw.Text(
                       ValuesManager.doubleToString(
                         receipt["credit_before"],
@@ -649,7 +650,7 @@ Future<pw.Page> roll80Pdf({
                     )
                   : pw.SizedBox(),
               pw.Divider(endIndent: 55, indent: 55),
-              storage.getBool("credit_after") ?? true
+              storage.read("credit_after") ?? true
                   ? pw.Text(
                       ValuesManager.doubleToString(
                         receipt["credit_after"],

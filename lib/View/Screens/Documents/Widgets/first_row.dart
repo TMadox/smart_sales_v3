@@ -83,7 +83,6 @@ class _FirstRowState extends State<FirstRow> {
                     );
                     widget.controller.text = "0.0";
                     context.read<GeneralState>().changeReceiptValue(input: {
-                      "employ_id": customer.employAccId,
                       "cst_tax": customer.taxFileNo,
                       "user_name": customer.amName,
                       "credit_before": customer.curBalance ?? 0.0,
@@ -113,7 +112,7 @@ class _FirstRowState extends State<FirstRow> {
                 state.paymentMethod == PaymentMethod.cash) {
               return ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    primary: Colors.blue,
+                    backgroundColor: Colors.blue,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10))),
                 onPressed: () {
@@ -130,7 +129,7 @@ class _FirstRowState extends State<FirstRow> {
                 state.paymentMethod == PaymentMethod.bank) {
               return ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    primary: Colors.blue,
+                    backgroundColor: Colors.blue,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10))),
                 onPressed: () {

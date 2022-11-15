@@ -5,11 +5,12 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:smart_sales/App/Resources/strings_manager.dart';
 import 'package:smart_sales/App/Util/device.dart';
 import 'package:smart_sales/App/Util/locator.dart';
 import 'package:smart_sales/Data/Database/Commands/save_data.dart';
 import 'package:smart_sales/Data/Database/Secure/save_sensitive_data.dart';
-import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/Data/Models/client_model.dart';
 import 'package:smart_sales/Data/Models/info_model.dart';
 import 'package:smart_sales/Data/Models/options_model.dart';
@@ -27,7 +28,7 @@ import 'package:smart_sales/Services/Repositories/powers_repo.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/general_dialog.dart';
 
 class LoginViewmodel extends ChangeNotifier {
-  final storage = locator.get<SharedStorage>();
+  final storage = GetStorage();
   Future<void> validateAndLogin({
     required BuildContext context,
     required GlobalKey<FormBuilderState> formKey,
@@ -130,8 +131,8 @@ class LoginViewmodel extends ChangeNotifier {
                     .get(path: '/get_data_powers'),
               );
             }
-            storage.loggedBefore = true;
-            await storage.prefs.setBool("loaded_items", false);
+            storage.write(StringsManager.loggedBefore, true);
+            await storage.write("loaded_items", false);
             Navigator.of(context).pushReplacementNamed("splash");
           },
         );
@@ -210,18 +211,18 @@ class LoginViewmodel extends ChangeNotifier {
     await locator.get<SaveData>().saveOptionsData(input: options);
     await locator.get<SaveData>().saveInfoData(info: info);
     await locator.get<SaveData>().savePowersInfo(powers: userPowers);
-    await storage.prefs.setString("stors", stors);
-    await storage.prefs.setString("kinds", kinds);
-    await storage.prefs.setString("items", items);
-    await storage.prefs.setString("mows", mows);
-    await storage.prefs.setString("expenses", expenses);
-    await storage.prefs.setString("groups", groups);
-    await storage.prefs.setString("customers", customers);
-    await storage.prefs.setString("powers", powers);
+    await storage.write("stors", stors);
+    await storage.write("kinds", kinds);
+    await storage.write("items", items);
+    await storage.write("mows", mows);
+    await storage.write("expenses", expenses);
+    await storage.write("groups", groups);
+    await storage.write("customers", customers);
+    await storage.write("powers", powers);
     if (types != null) {
-      await storage.prefs.setString("types", types);
+      await storage.write("types", types);
     } else {
-      await storage.prefs.remove("types");
+      await storage.remove("types");
     }
   }
 }

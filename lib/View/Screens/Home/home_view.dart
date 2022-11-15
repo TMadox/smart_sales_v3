@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
 import 'package:smart_sales/App/Util/routing.dart';
-import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/App/Util/locator.dart';
 import 'package:smart_sales/Provider/info_state.dart';
 import 'package:smart_sales/Provider/user_state.dart';
@@ -29,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
   final HomeViewmodel _homeViewmodel = HomeViewmodel();
   int selectedPage = 0;
   PageController page = PageController();
-  final storage = locator.get<SharedStorage>().prefs;
+  final storage = GetStorage();
   Timer? timer;
   @override
   void didChangeDependencies() {
@@ -132,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
                                       children: [
                                         InkWell(
                                           onTap: () async {
-                                            await storage.setString(
+                                            await storage.write(
                                               "language",
                                               "ar",
                                             );
@@ -146,12 +146,12 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
                                               horizontal: 5,
                                             ),
                                             decoration: BoxDecoration(
-                                              color: (storage.getString(
-                                                              "language") ??
-                                                          "ar") ==
-                                                      "ar"
-                                                  ? Colors.green
-                                                  : Colors.white,
+                                              color:
+                                                  (storage.read("language") ??
+                                                              "ar") ==
+                                                          "ar"
+                                                      ? Colors.green
+                                                      : Colors.white,
                                               borderRadius:
                                                   BorderRadius.circular(4),
                                             ),
@@ -170,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
                                         ),
                                         InkWell(
                                           onTap: () async {
-                                            await storage.setString(
+                                            await storage.write(
                                               "language",
                                               "en",
                                             );
@@ -183,12 +183,12 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
                                             padding: const EdgeInsets.symmetric(
                                                 horizontal: 5),
                                             decoration: BoxDecoration(
-                                              color: (storage.getString(
-                                                              "language") ??
-                                                          "ar") ==
-                                                      "en"
-                                                  ? Colors.green
-                                                  : Colors.white,
+                                              color:
+                                                  (storage.read("language") ??
+                                                              "ar") ==
+                                                          "en"
+                                                      ? Colors.green
+                                                      : Colors.white,
                                               borderRadius:
                                                   BorderRadius.circular(4),
                                             ),

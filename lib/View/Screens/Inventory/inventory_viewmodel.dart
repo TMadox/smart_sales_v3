@@ -25,7 +25,7 @@ class InventoryViewmodel extends ChangeNotifier with BaseViewmodel {
       "extend_time": DateTime.now().toString(),
       "section_type_no": 98,
       "oper_time": CurrentDate.getCurrentTime(),
-      "employ_id": 0,
+      "employ_id": loggedUser.defEmployAccId,
       "cst_tax": "",
       "cash_value": 0.0,
       "created_user_id": loggedUser.userId,

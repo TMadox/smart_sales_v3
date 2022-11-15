@@ -1,9 +1,8 @@
 import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/App/Util/locator.dart';
 import 'package:smart_sales/App/Util/routing.dart';
 import 'package:smart_sales/Data/Models/client_model.dart';
@@ -68,7 +67,7 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
   Widget selectWidget({
     required String type,
     required BuildContext context,
-    required SharedPreferences storage,
+    required GetStorage storage,
   }) {
     switch (type) {
       case "sales_receipt":
@@ -86,7 +85,7 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
                 ),
               );
             },
-            visible: storage.getBool("allow_sales_receipt") ?? true,
+            visible: storage.read("allow_sales_receipt") ?? true,
           );
         }
 
@@ -105,7 +104,7 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
                 ),
               );
             },
-            visible: storage.getBool("allow_return_receipt") ?? true,
+            visible: storage.read("allow_return_receipt") ?? true,
           );
         }
       case "purchase_receipt":
@@ -122,7 +121,7 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
                 ),
               );
             },
-            visible: storage.getBool("allow_purchase_receipt") ?? true,
+            visible: storage.read("allow_purchase_receipt") ?? true,
           );
         }
       case "purchase_return_receipt":
@@ -139,7 +138,7 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
                 ),
               );
             },
-            visible: storage.getBool("allow_purchase_return_receipt") ?? true,
+            visible: storage.read("allow_purchase_return_receipt") ?? true,
           );
         }
       case "selling_order":
@@ -157,7 +156,7 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
                 ),
               );
             },
-            visible: storage.getBool("allow_order_receipt") ?? true,
+            visible: storage.read("allow_order_receipt") ?? true,
           );
         }
       case "purchase_order":
@@ -175,7 +174,7 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
                 ),
               );
             },
-            visible: storage.getBool("allow_purchase_order") ?? true,
+            visible: storage.read("allow_purchase_order") ?? true,
           );
         }
       case "seizure_document":
@@ -200,7 +199,7 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
               //   arguments: [false, 101],
               // );
             },
-            visible: storage.getBool("allow_collection_document") ?? true,
+            visible: storage.read("allow_collection_document") ?? true,
           );
         }
       case "payment_document":
@@ -221,7 +220,7 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
                 ),
               );
             },
-            visible: storage.getBool("allow_payment_document") ?? true,
+            visible: storage.read("allow_payment_document") ?? true,
           );
         }
       case "mow_seizure_document":
@@ -238,7 +237,7 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
                 ),
               );
             },
-            visible: storage.getBool("allow_mow_seizure_document") ?? true,
+            visible: storage.read("allow_mow_seizure_document") ?? true,
           );
         }
       case "mow_payment_document":
@@ -255,7 +254,7 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
                 ),
               );
             },
-            visible: storage.getBool("allow_mow_payment_document") ?? true,
+            visible: storage.read("allow_mow_payment_document") ?? true,
           );
         }
       case "expenses_seizure_document":
@@ -271,7 +270,7 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
                 ),
               );
             },
-            visible: storage.getBool("allow_expenses_seizure_document") ?? true,
+            visible: storage.read("allow_expenses_seizure_document") ?? true,
           );
         }
       case "inventory":
@@ -285,7 +284,7 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
                 Routes.inventoryRoute,
               );
             },
-            visible: storage.getBool("allow_inventory_receipt") ?? true,
+            visible: storage.read("allow_inventory_receipt") ?? true,
           );
         }
       case "cashier_receipt":
@@ -303,7 +302,7 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
                 ),
               );
             },
-            visible: storage.getBool("allow_cashier_receipt") ?? true,
+            visible: storage.read("allow_cashier_receipt") ?? true,
           );
         }
       case "expenses_document":
@@ -319,7 +318,7 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
                 ),
               );
             },
-            visible: storage.getBool("allow_expenses_document") ?? true,
+            visible: storage.read("allow_expenses_document") ?? true,
           );
         }
       case "items":
@@ -331,7 +330,7 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
               Navigator.of(context)
                   .pushNamed(Routes.itemsRoute, arguments: false);
             },
-            visible: storage.getBool("allow_view_items") ?? true,
+            visible: storage.read("allow_view_items") ?? true,
           );
         }
       case "view_operations":
@@ -342,7 +341,7 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
             onPressed: () {
               Navigator.of(context).pushNamed("reciepts");
             },
-            visible: storage.getBool("allow_view_operations") ?? true,
+            visible: storage.read("allow_view_operations") ?? true,
           );
         }
       case "clients":
@@ -353,7 +352,7 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
             onPressed: () {
               Navigator.of(context).pushNamed("clients");
             },
-            visible: storage.getBool("allow_view_clients") ?? true,
+            visible: storage.read("allow_view_clients") ?? true,
           );
         }
       case "stors":
@@ -366,12 +365,12 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
                 Routes.storsRoute,
                 arguments: const StorsView(
                   canTap: false,
-                  choosingReceivingStor: false,
+                  choosingSourceStor: false,
                   canPushReplace: false,
                 ),
               );
             },
-            visible: storage.getBool("allow_view_stors") ?? true,
+            visible: storage.read("allow_view_stors") ?? true,
           );
         }
       case "stor_transfer":
@@ -384,12 +383,12 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
                 Routes.storsRoute,
                 arguments: const StorsView(
                   canTap: true,
-                  choosingReceivingStor: false,
+                  choosingSourceStor: false,
                   canPushReplace: false,
                 ),
               );
             },
-            visible: storage.getBool("allow_stor_transfer") ?? true,
+            visible: storage.read("allow_stor_transfer") ?? true,
           );
         }
       case "kinds":
@@ -400,7 +399,7 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
             onPressed: () {
               Navigator.of(context).pushNamed(Routes.kindsRoute);
             },
-            visible: storage.getBool("allow_view_kinds") ?? true,
+            visible: storage.read("allow_view_kinds") ?? true,
           );
         }
       case "expenses":
@@ -416,7 +415,7 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
                 ),
               );
             },
-            visible: storage.getBool("allow_view_expenses") ?? true,
+            visible: storage.read("allow_view_expenses") ?? true,
           );
         }
       case "mows":
@@ -432,7 +431,7 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
                 ),
               );
             },
-            visible: storage.getBool("allow_view_mows") ?? true,
+            visible: storage.read("allow_view_mows") ?? true,
           );
         }
       case "groups":
@@ -445,7 +444,7 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
                 () => const GroupsView(),
               );
             },
-            visible: storage.getBool("allow_view_groups") ?? true,
+            visible: storage.read("allow_view_groups") ?? true,
           );
         }
       case "new_rec":
@@ -458,7 +457,7 @@ class HomeViewmodel extends ChangeNotifier with BaseViewmodel {
                 () => const RegisterView(),
               );
             },
-            visible: storage.getBool("allow_new_rec") ?? true,
+            visible: storage.read("allow_new_rec") ?? true,
           );
         }
       default:

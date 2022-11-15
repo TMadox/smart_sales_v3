@@ -32,7 +32,7 @@ class _SideBarState extends State<SideBar> {
         children: [
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              primary: const Color(0xFF074fb3),
+              backgroundColor: const Color(0xFF074fb3),
               padding: EdgeInsets.zero,
               side: BorderSide(
                 color:
@@ -60,7 +60,7 @@ class _SideBarState extends State<SideBar> {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              primary: const Color(0xFF074fb3),
+              backgroundColor: const Color(0xFF074fb3),
               padding: EdgeInsets.zero,
               side: BorderSide(
                 color:
@@ -88,7 +88,7 @@ class _SideBarState extends State<SideBar> {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              primary: const Color(0xFF074fb3),
+              backgroundColor: const Color(0xFF074fb3),
               padding: EdgeInsets.zero,
               side: BorderSide(
                 color:
@@ -116,7 +116,7 @@ class _SideBarState extends State<SideBar> {
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.zero,
-              primary: const Color(0xFF074fb3),
+              backgroundColor: const Color(0xFF074fb3),
               side: BorderSide(
                 color:
                     selectedPage == 3 ? Colors.white : const Color(0xFF074fb3),
@@ -141,8 +141,7 @@ class _SideBarState extends State<SideBar> {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              padding: EdgeInsets.zero,
-              primary: const Color(0xFF074fb3),
+              padding: EdgeInsets.zero, backgroundColor: const Color(0xFF074fb3),
               side: BorderSide(
                 color:
                     selectedPage == 4 ? Colors.white : const Color(0xFF074fb3),

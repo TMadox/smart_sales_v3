@@ -13,18 +13,17 @@ class CustomCell extends StatelessWidget {
   final bool isEditable;
   final String keyValue;
   final Map item;
-  final double width;
+  final double? width;
   final GeneralState generalState;
-  final double height;
   final TextEditingController? controller;
   const CustomCell({
     Key? key,
     this.isEditable = false,
     required this.keyValue,
     required this.item,
-    required this.width,
+    this.width,
     required this.generalState,
-    required this.height,
+    
     this.controller,
   }) : super(key: key);
 
@@ -32,7 +31,7 @@ class CustomCell extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: SizedBox(
-        width: width * 0.118,
+        width: (width ?? 1) * 0.118,
         child: Builder(
           builder: (context) {
             final ReceiptViewmodel baseViewmodel =

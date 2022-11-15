@@ -94,8 +94,8 @@ class AppRouter {
             return StorsView(
               canTap: (settings.arguments as StorsView).canTap,
               canPushReplace: (settings.arguments as StorsView).canPushReplace,
-              choosingReceivingStor:
-                  (settings.arguments as StorsView).choosingReceivingStor,
+              choosingSourceStor:
+                  (settings.arguments as StorsView).choosingSourceStor,
             );
           },
         );

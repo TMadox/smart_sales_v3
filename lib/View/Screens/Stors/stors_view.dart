@@ -20,12 +20,12 @@ import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
 
 class StorsView extends StatefulWidget {
   final bool canTap;
-  final bool choosingReceivingStor;
+  final bool choosingSourceStor;
   final bool canPushReplace;
   const StorsView({
     Key? key,
     required this.canTap,
-    required this.choosingReceivingStor,
+    required this.choosingSourceStor,
     required this.canPushReplace,
   }) : super(key: key);
 
@@ -138,7 +138,7 @@ class _StorsViewState extends State<StorsView> {
                                     ),
                                     onTap: () {
                                       if (widget.canTap) {
-                                        if (widget.choosingReceivingStor ==
+                                        if (widget.choosingSourceStor ==
                                             false) {
                                           intializeReceipt(
                                             client: ClientsModel(
@@ -153,9 +153,8 @@ class _StorsViewState extends State<StorsView> {
                                               .read<GeneralState>()
                                               .changeReceiptValue(
                                             input: {
-                                              "receiving_stor_name":
-                                                  stor.storName,
-                                              "receiving_stor_id": stor.storId,
+                                              "stor_id": stor.storId,
+                                              "selected_stor_id": stor.storId,
                                             },
                                           );
                                           Get.back();
@@ -236,7 +235,7 @@ class _StorsViewState extends State<StorsView> {
         "extend_time": DateTime.now().toString(),
         "section_type_no": sectionTypeNo,
         "oper_time": CurrentDate.getCurrentTime(),
-        "employ_id": client.employAccId ?? 0,
+        "employ_id": loggedUser.defEmployAccId,
         "cst_tax": client.taxFileNo ?? 0,
         "cash_value": 0.0,
         "created_user_id": loggedUser.userId,
@@ -261,8 +260,6 @@ class _StorsViewState extends State<StorsView> {
         "is_form_has_affect_on_stock": 1,
         "is_form_for_output_stock": 1,
         "selected_stor_id": loggedUser.defStorId,
-        "receiving_stor_name": selectedStor.storName,
-        "receiving_stor_id": selectedStor.storId,
         "stor_id": loggedUser.defStorId,
         "in_stor_id": selectedStor.storId,
         "comp_id": loggedUser.compId,

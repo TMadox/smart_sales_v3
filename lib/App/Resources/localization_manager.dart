@@ -338,10 +338,18 @@ class LocalizationManager extends Translations {
         "SocketException: Failed host lookup: 'sky3m.duckdns.org' (OS Error: No address associated with hostname, errno = 7)",
     "receipt is bending": "A receipt is still bending, do you want to exit?",
     "types": "Types",
-    "offers": "Offers"
+    "offers": "Offers",
+    "stor id": "Store Number",
+    "add product": "Add Product",
+    "address": "Address",
+    "phone": "Phone",
   };
 
   final Map<String, String> arabic = {
+    "address": "العنوان",
+    "phone": "الهاتف",
+    "add product": "اضافة منتج",
+    "stor id": "رقم المخزن",
     "offers": "العروض",
     "types": "الانواع",
     "receipt is bending":

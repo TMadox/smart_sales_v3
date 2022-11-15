@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Util/locator.dart';
 import 'package:smart_sales/Data/Database/Commands/save_data.dart';
-import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/Data/Models/client_model.dart';
 import 'package:smart_sales/Data/Models/options_model.dart';
 import 'package:smart_sales/Data/Models/user_model.dart';
@@ -42,13 +42,13 @@ class ClientsState extends ChangeNotifier {
         : await DioRepository.to.get(
             path: '/get_data_am',
           );
-    await SharedStorage.to.prefs.setString("customers", response);
+    await GetStorage().write("customers", response);
     return response;
   }
 
   void loadClients() {
-    clients = customersListFromJson(
-        input: SharedStorage.to.prefs.getString("customers") ?? "[]");
+    clients =
+        customersListFromJson(input: GetStorage().read("customers") ?? "[]");
   }
 
   Future<List<ClientsModel>> reloadClients({

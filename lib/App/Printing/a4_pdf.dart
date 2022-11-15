@@ -2,9 +2,10 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:smart_sales/App/Printing/create_pdf.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
 import 'package:smart_sales/App/Resources/values_manager.dart';
@@ -21,7 +22,7 @@ Future<pw.Page> a4Pdf({
   required BuildContext bContext,
   bool share = false,
   required pw.Font arabic,
-  required SharedPreferences storage,
+  required GetStorage storage,
   required String paper,
 }) async {
   String title = await chooseTitle(
@@ -61,7 +62,7 @@ Future<pw.Page> a4Pdf({
           name: 'receipt_number'.tr,
           receipt: receipt,
           width: 65,
-          visible: storage.getBool("receipt_number") ?? true,
+          visible: storage.read("receipt_number") ?? true,
         );
       case "date":
         return headerCell(
@@ -70,7 +71,7 @@ Future<pw.Page> a4Pdf({
           name: "date".tr,
           receipt: receipt,
           width: 65,
-          visible: storage.getBool("receipt_date") ?? true,
+          visible: storage.read("receipt_date") ?? true,
         );
       case "employee":
         return headerCell(
@@ -79,7 +80,7 @@ Future<pw.Page> a4Pdf({
           name: "employee".tr,
           receipt: receipt,
           width: 65,
-          visible: storage.getBool("employee_name") ?? true,
+          visible: storage.read("employee_name") ?? true,
         );
       case "customer":
         return headerCell(
@@ -88,7 +89,7 @@ Future<pw.Page> a4Pdf({
           name: "customer".tr,
           receipt: receipt,
           width: 65,
-          visible: storage.getBool("customer_name") ?? true,
+          visible: storage.read("customer_name") ?? true,
         );
       case "tax":
         return headerCell(
@@ -97,7 +98,7 @@ Future<pw.Page> a4Pdf({
           name: "tax_number".tr,
           receipt: receipt,
           width: 65,
-          visible: storage.getBool("customer_tax") ?? true,
+          visible: storage.read("customer_tax") ?? true,
         );
     }
   }
@@ -117,7 +118,7 @@ Future<pw.Page> a4Pdf({
           child: pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.end,
             children: [
-              storage.getBool("company_name") ?? true
+              storage.read("company_name") ?? true
                   ? pw.Container(
                       padding: const pw.EdgeInsets.symmetric(horizontal: 5),
                       child: pw.Text(
@@ -141,7 +142,7 @@ Future<pw.Page> a4Pdf({
                       ),
                     )
                   : pw.SizedBox(),
-              storage.getBool("company_address") ?? true
+              storage.read("company_address") ?? true
                   ? pw.Column(
                       children: [
                         pw.SizedBox(height: 5),
@@ -169,7 +170,7 @@ Future<pw.Page> a4Pdf({
                       ],
                     )
                   : pw.SizedBox(),
-              storage.getBool("company_tax") ?? true
+              storage.read("company_tax") ?? true
                   ? pw.Column(
                       children: [
                         pw.SizedBox(height: 5),
@@ -237,8 +238,7 @@ Future<pw.Page> a4Pdf({
                           child: pw.Stack(
                             children: [
                               pw.Positioned(
-                                right: (storage.getDouble(headers[0] + "_x") ??
-                                        0) *
+                                right: (storage.read(headers[0] + "_x") ?? 0) *
                                     factor,
                                 child: headerWidgets[0],
                               ),
@@ -251,8 +251,7 @@ Future<pw.Page> a4Pdf({
                           child: pw.Stack(
                             children: [
                               pw.Positioned(
-                                right:
-                                    (storage.getDouble(headers[1] + "_x") ?? 0),
+                                right: (storage.read(headers[1] + "_x") ?? 0),
                                 child: headerWidgets[1],
                               )
                             ],
@@ -264,8 +263,7 @@ Future<pw.Page> a4Pdf({
                           child: pw.Stack(
                             children: [
                               pw.Positioned(
-                                right:
-                                    storage.getDouble(headers[2] + "_x") ?? 0,
+                                right: storage.read(headers[2] + "_x") ?? 0,
                                 child: headerWidgets[2],
                               ),
                             ],
@@ -277,8 +275,7 @@ Future<pw.Page> a4Pdf({
                           child: pw.Stack(
                             children: [
                               pw.Positioned(
-                                right:
-                                    storage.getDouble(headers[3] + "_x") ?? 0,
+                                right: storage.read(headers[3] + "_x") ?? 0,
                                 child: headerWidgets[3],
                               ),
                             ],
@@ -290,8 +287,7 @@ Future<pw.Page> a4Pdf({
                           child: pw.Stack(
                             children: [
                               pw.Positioned(
-                                right:
-                                    storage.getDouble(headers[4] + "_x") ?? 0,
+                                right: storage.read(headers[4] + "_x") ?? 0,
                                 child: headerWidgets[4],
                               ),
                             ],
@@ -581,7 +577,7 @@ Future<pw.Page> a4Pdf({
                           key: 'cash_value',
                           name: 'paid_amount'.tr,
                           receipt: receipt,
-                          visible: storage.getBool("paid_amount") ?? true,
+                          visible: storage.read("paid_amount") ?? true,
                         ),
                         pw.SizedBox(height: 5),
                         footerCell(
@@ -589,7 +585,7 @@ Future<pw.Page> a4Pdf({
                           key: 'reside_value',
                           name: 'remaining_amount'.tr,
                           receipt: receipt,
-                          visible: storage.getBool("remaining_amount") ?? true,
+                          visible: storage.read("remaining_amount") ?? true,
                         ),
                         pw.SizedBox(height: 5),
                         footerCell(
@@ -597,7 +593,7 @@ Future<pw.Page> a4Pdf({
                           key: 'credit_before',
                           name: 'credit_before'.tr,
                           receipt: receipt,
-                          visible: storage.getBool("credit_before") ?? true,
+                          visible: storage.read("credit_before") ?? true,
                         ),
                         pw.SizedBox(height: 5),
                         footerCell(
@@ -605,7 +601,7 @@ Future<pw.Page> a4Pdf({
                           key: 'credit_after',
                           name: 'current_credit'.tr,
                           receipt: receipt,
-                          visible: storage.getBool("credit_after") ?? true,
+                          visible: storage.read("credit_after") ?? true,
                         )
                       ],
                     ),

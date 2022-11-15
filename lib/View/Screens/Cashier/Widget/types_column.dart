@@ -1,7 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:smart_sales/App/Util/colors.dart';
 import 'package:smart_sales/Data/Models/kinds_model.dart';
 import 'package:smart_sales/Provider/kinds_state.dart';
 import 'package:smart_sales/View/Screens/Cashier/cashier_controller.dart';
@@ -18,27 +19,36 @@ class TypesColumn extends StatelessWidget {
     return Container(
       clipBehavior: Clip.antiAliasWithSaveLayer,
       decoration: BoxDecoration(
-        color: Colors.grey[300],
-        border: Border.all(color: Colors.green, width: 2),
+        color: Colors.grey[200],
+        border: Border.all(color: darkBlue, width: 2),
         borderRadius: const BorderRadius.all(
           Radius.circular(15),
         ),
       ),
       child: Column(
         children: [
-          Container(
+          SizedBox(
             width: double.infinity,
-            child: Text(
-              "types".tr,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.white,
+            child: Neumorphic(
+              child: Text(
+                "types".tr,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              style: NeumorphicStyle(
+                color: darkBlue,
+                boxShape: NeumorphicBoxShape.roundRect(BorderRadius.zero),
+                shape: NeumorphicShape.concave,
+                surfaceIntensity: 50,
+                shadowDarkColor: Colors.black,
               ),
             ),
-            color: Colors.green,
           ),
           Expanded(
             child: ListView.builder(
+              primary: false,
               itemCount: context.read<KindsState>().kinds.length,
               itemBuilder: (BuildContext context, int index) {
                 final KindsModel kindsModel =
@@ -47,21 +57,20 @@ class TypesColumn extends StatelessWidget {
                   onTap: () {
                     cashierController.setSelectedKind(input: kindsModel.kindId);
                   },
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                      side: BorderSide(
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    color: kindsModel.kindId ==
+                            cashierController.selectedKindId.value
+                        ? darkBlue
+                        : Colors.transparent,
+                    child: AutoSizeText(
+                      kindsModel.kindName,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
                         color: kindsModel.kindId ==
                                 cashierController.selectedKindId.value
-                            ? Colors.green
-                            : Colors.transparent,
-                      ),
-                    ),
-                    child: ListTile(
-                      title: AutoSizeText(
-                        kindsModel.kindName,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.red),
+                            ? Colors.white
+                            : Colors.red,
                       ),
                     ),
                   ),

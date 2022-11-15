@@ -4,8 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
-import 'package:smart_sales/App/Util/locator.dart';
-import 'package:smart_sales/Data/Database/Shared/shared_storage.dart';
+import 'package:get_storage/get_storage.dart';
 
 class CashierSettingsView extends StatefulWidget {
   const CashierSettingsView({Key? key}) : super(key: key);
@@ -15,11 +14,11 @@ class CashierSettingsView extends StatefulWidget {
 }
 
 class _CashierSettingsViewState extends State<CashierSettingsView> {
-  final storage = locator.get<SharedStorage>().prefs;
+  final storage = GetStorage();
   int productSpace = 1;
   @override
   void initState() {
-    productSpace = storage.getInt("products_space") ?? 1;
+    productSpace = storage.read("products_space") ?? 1;
     super.initState();
   }
 
@@ -27,7 +26,7 @@ class _CashierSettingsViewState extends State<CashierSettingsView> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        await storage.setInt("products_space", productSpace);
+        await storage.write("products_space", productSpace);
         return true;
       },
       child: Scaffold(
@@ -43,11 +42,10 @@ class _CashierSettingsViewState extends State<CashierSettingsView> {
               sections: [
                 SettingsSection(tiles: [
                   SettingsTile.switchTile(
-                    initialValue:
-                        storage.getBool("show_cashier_details") ?? true,
+                    initialValue: storage.read("show_cashier_details") ?? true,
                     onToggle: (value) {
                       setState(() {
-                        storage.setBool("show_cashier_details", value);
+                        storage.write("show_cashier_details", value);
                       });
                     },
                     title: Text(
@@ -128,7 +126,7 @@ class _CashierSettingsViewState extends State<CashierSettingsView> {
                     ),
                   ),
                   Visibility(
-                    visible: storage.getBool("show_cashier_details") ?? true,
+                    visible: storage.read("show_cashier_details") ?? true,
                     child: Container(
                       margin: const EdgeInsets.symmetric(horizontal: 1),
                       decoration: BoxDecoration(
@@ -138,14 +136,15 @@ class _CashierSettingsViewState extends State<CashierSettingsView> {
                       height: screenHeight(context) * 0.2,
                       width: screenWidth(context) * 0.5,
                       child: Center(
-                          child: AutoSizeText(
-                        "cashier_details_space".tr,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: screenSize(context).aspectRatio * 10,
+                        child: AutoSizeText(
+                          "cashier_details_space".tr,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: screenSize(context).aspectRatio * 10,
+                          ),
                         ),
-                      )),
+                      ),
                     ),
                   )
                 ],
