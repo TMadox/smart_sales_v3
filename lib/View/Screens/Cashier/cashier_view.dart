@@ -134,7 +134,8 @@ class _CashierViewState extends State<CashierView> {
                                       width: screenWidth(context) * 0.005,
                                     ),
                                     Expanded(
-                                      flex: 2,
+                                      flex: cashierController
+                                          .cashierSettings.value.productsFlex,
                                       child: ProductsBox(
                                         cashierController: cashierController,
                                       ),

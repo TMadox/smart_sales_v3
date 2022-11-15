@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:smart_sales/View/Screens/Cashier/cashier_controller.dart';
 
 class CashierSettingsView extends StatefulWidget {
   const CashierSettingsView({Key? key}) : super(key: key);
@@ -15,10 +16,8 @@ class CashierSettingsView extends StatefulWidget {
 
 class _CashierSettingsViewState extends State<CashierSettingsView> {
   final storage = GetStorage();
-  int productSpace = 1;
   @override
   void initState() {
-    productSpace = storage.read("products_space") ?? 1;
     super.initState();
   }
 
@@ -36,53 +35,55 @@ class _CashierSettingsViewState extends State<CashierSettingsView> {
         body: Column(
           children: [
             Expanded(
-                child: SettingsList(
-              contentPadding: EdgeInsets.zero,
-              platform: DevicePlatform.iOS,
-              sections: [
-                SettingsSection(tiles: [
-                  SettingsTile.switchTile(
-                    initialValue: storage.read("show_cashier_details") ?? true,
-                    onToggle: (value) {
-                      setState(() {
-                        storage.write("show_cashier_details", value);
-                      });
-                    },
-                    title: Text(
-                      "show_cashier_details".tr,
-                      style: GoogleFonts.cairo(),
-                    ),
-                  ),
-                  SettingsTile.navigation(
-                    title: Text(
-                      "products_space".tr,
-                      style: GoogleFonts.cairo(),
-                    ),
-                    trailing: Row(
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            setState(() {
-                              productSpace += 1;
-                            });
-                          },
-                          icon: const Icon(Icons.add),
+              child: GetX<CashierController>(
+                builder: (controller) {
+                  return SettingsList(
+                    contentPadding: EdgeInsets.zero,
+                    platform: DevicePlatform.iOS,
+                    sections: [
+                      SettingsSection(tiles: [
+                        SettingsTile.switchTile(
+                          initialValue:
+                              storage.read("show_cashier_details") ?? true,
+                          onToggle: (value) {},
+                          title: Text(
+                            "show_cashier_details".tr,
+                            style: GoogleFonts.cairo(),
+                          ),
                         ),
-                        Text(productSpace.toString()),
-                        IconButton(
-                          onPressed: () {
-                            setState(() {
-                              productSpace -= 1;
-                            });
-                          },
-                          icon: const Icon(Icons.remove),
+                        SettingsTile.navigation(
+                          title: Text(
+                            "products_space".tr,
+                            style: GoogleFonts.cairo(),
+                          ),
+                          trailing: Row(
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    productSpace += 1;
+                                  });
+                                },
+                                icon: const Icon(Icons.add),
+                              ),
+                              Text(productSpace.toString()),
+                              IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    productSpace -= 1;
+                                  });
+                                },
+                                icon: const Icon(Icons.remove),
+                              )
+                            ],
+                          ),
                         )
-                      ],
-                    ),
-                  )
-                ])
-              ],
-            )),
+                      ])
+                    ],
+                  );
+                },
+              ),
+            ),
             ListTile(
               title: Text("cashier_receipt_spaces".tr),
               subtitle: Row(

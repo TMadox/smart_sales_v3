@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
@@ -81,6 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Expanded(
                           child: CustomTextField(
                             hintText: 'enter_username'.tr,
+                            initialValue: (kDebugMode) ? "مستخدم 3" : null,
                             name: 'username',
                             activated: value.loginInfo.isNotEmpty,
                           ),
@@ -90,6 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         Expanded(
                           child: CustomTextField(
+                            initialValue: (kDebugMode) ? "202" : null,
                             hintText: 'enter_password'.tr,
                             name: 'password',
                             activated: value.loginInfo.isNotEmpty,

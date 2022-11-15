@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Util/routing.dart';
+import 'package:smart_sales/Data/Models/cashier_settings_model.dart';
 import 'package:smart_sales/Data/Models/item_model.dart';
 import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/Provider/powers_state.dart';
@@ -21,18 +22,33 @@ class CashierController extends GetxController with BaseViewmodel {
   final selectedItems = Rx<List<Map>>([]);
   final filteredItems = Rx<List<ItemsModel>>([]);
   String searchWord = '';
-  final productSpace = 1.obs;
+  final cashierSettings = Rx(CashierSettingsModel(
+    girdCount: 3,
+    productsFlex: 2,
+    tileSize: 1.0,
+  ));
 
   CashierController({
     required this.items,
   }) {
     filteredItems.value = filterItems();
-    productSpace.value = GetStorage().read("product_space");
+    cashierSettings.value = CashierSettingsModel.fromMap(
+      GetStorage().read<Map<String, dynamic>>("cashier_settings") ?? {},
+    );
   }
 
   void setSelectedKind({required int input}) {
     selectedKindId.value = input;
     filteredItems.value = filterItems();
+  }
+
+  void updateProductsFlex({
+    required int input,
+  }) {
+    cashierSettings.update((val) {
+      val = cashierSettings.value.copyWith(productsFlex: input);
+    });
+    GetStorage().write("cashier_settings", cashierSettings.toJson());
   }
 
   void clearSelectedItems() {

@@ -49,7 +49,7 @@ class SplashViewmodel extends ChangeNotifier {
         "user_id": storage.read(StringsManager.userId),
       },
     );
-
+    log(user.toString());
     //if the platform is web then do some changes.
     if (!kIsWeb) {
       if (Platform.isIOS || Platform.isAndroid) {

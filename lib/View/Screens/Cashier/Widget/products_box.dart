@@ -36,7 +36,6 @@ class ProductsBox extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: Neumorphic(
-                  
                   child: Text(
                     "items".tr,
                     textAlign: TextAlign.center,
@@ -57,9 +56,11 @@ class ProductsBox extends StatelessWidget {
               Expanded(
                 child: Obx(
                   () => GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      childAspectRatio:
+                          cashierController.cashierSettings.value.tileSize,
+                    ),
                     itemCount: cashierController.filteredItems.value.length,
                     primary: false,
                     itemBuilder: (

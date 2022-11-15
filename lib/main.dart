@@ -38,7 +38,6 @@ Future<void> main() async {
   await locator.get<DeviceParam>().getDeviceId();
   await locator.get<DeviceParam>().getDocumentsPath();
   final prefs = GetStorage();
-  prefs.erase();
   if (prefs.read("ip_password") == null) {
     await prefs.write("ip_password", "200");
     await prefs.write("user_id", "31");
