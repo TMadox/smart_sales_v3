@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
 import 'package:smart_sales/App/Util/routing.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:smart_sales/App/Util/locator.dart';
 import 'package:smart_sales/Provider/info_state.dart';
 import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/View/Screens/Home/Subviews/desktop_page.dart';

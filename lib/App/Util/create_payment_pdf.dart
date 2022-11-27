@@ -5,7 +5,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:smart_sales/App/Printing/create_pdf.dart';
 import 'package:smart_sales/App/Resources/values_manager.dart';
-import 'package:smart_sales/App/Util/locator.dart';
+
 import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/Provider/info_state.dart';
 import 'package:provider/provider.dart';

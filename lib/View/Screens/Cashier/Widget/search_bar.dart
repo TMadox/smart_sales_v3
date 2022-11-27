@@ -4,9 +4,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Util/colors.dart';
-import 'package:smart_sales/App/Util/locator.dart';
 import 'package:smart_sales/Provider/general_state.dart';
-import 'package:smart_sales/View/Screens/Settings/subviews/cashier_settings_view.dart';
 import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/exit_dialog.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/general_dialog.dart';
@@ -74,22 +72,22 @@ class SearchBar extends StatelessWidget {
             shadowDarkColor: Colors.black,
           ),
         ),
-        NeumorphicButton(
-          margin: const EdgeInsets.all(5),
-          child: const Icon(
-            Icons.settings,
-            color: Colors.white,
-          ),
-          onPressed: () {
-            Get.to(() => const CashierSettingsView());
-          },
-          style: const NeumorphicStyle(
-            color: Colors.green,
-            shape: NeumorphicShape.concave,
-            surfaceIntensity: 50,
-            shadowDarkColor: Colors.black,
-          ),
-        ),
+        // NeumorphicButton(
+        //   margin: const EdgeInsets.all(5),
+        //   child: const Icon(
+        //     Icons.settings,
+        //     color: Colors.white,
+        //   ),
+        //   onPressed: () {
+        //     Get.to(() => const CashierSettingsView());
+        //   },
+        //   style: const NeumorphicStyle(
+        //     color: Colors.green,
+        //     shape: NeumorphicShape.concave,
+        //     surfaceIntensity: 50,
+        //     shadowDarkColor: Colors.black,
+        //   ),
+        // ),
         // Container(
         //   margin: const EdgeInsets.all(5.0),
         //   decoration: BoxDecoration(

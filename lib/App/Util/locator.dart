@@ -4,7 +4,7 @@ import 'package:smart_sales/Data/Database/Commands/read_data.dart';
 import 'package:smart_sales/Data/Database/Commands/save_data.dart';
 import 'package:smart_sales/Data/Database/Secure/read_sensitive_data.dart';
 import 'package:smart_sales/Data/Database/Secure/save_sensitive_data.dart';
-import 'package:get_storage/get_storage.dart';
+
 import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/Services/Repositories/check_allowance_repo.dart';
 import 'package:smart_sales/Services/Repositories/customers_repo.dart';

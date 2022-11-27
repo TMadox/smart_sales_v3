@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
@@ -56,8 +56,12 @@ class _ChashierDialogBodyState extends State<ChashierDialogBody> {
         width: screenWidth(context),
         child: Column(
           children: [
-            Card(
-              margin: EdgeInsets.zero,
+            Neumorphic(
+              style: const NeumorphicStyle(
+                color: Colors.white,
+                shape: NeumorphicShape.concave,
+                shadowDarkColor: Colors.black,
+              ),
               child: Column(
                 children: [
                   Row(
@@ -123,199 +127,215 @@ class _ChashierDialogBodyState extends State<ChashierDialogBody> {
                 ],
               ),
             ),
-            Row(
-              children: [
-                Expanded(
-                  child: ListTile(
-                    dense: true,
-                    visualDensity:
-                        const VisualDensity(horizontal: 0, vertical: -3),
-                    title: Text(
-                      "total".tr,
-                    ),
-                    trailing: Text(
-                      widget.generalState
-                          .currentReceipt["oper_net_value_with_tax"]
-                          .toString(),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Consumer<GeneralState>(
-                    builder: (
-                      context,
-                      state,
-                      widget,
-                    ) {
-                      return ListTile(
-                        dense: true,
-                        visualDensity:
-                            const VisualDensity(horizontal: 0, vertical: -3),
-                        title: Text(
-                          "remaining".tr,
-                        ),
-                        trailing: Text(
-                          state.currentReceipt["reside_value"].toString(),
-                        ),
-                      );
-                    },
-                  ),
-                )
-              ],
+            const SizedBox(
+              height: 10,
             ),
-            Row(
-              children: [
-                Expanded(
-                  child: ListTile(
-                    dense: true,
-                    visualDensity:
-                        const VisualDensity(horizontal: 0, vertical: -3),
-                    title: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            "cash".tr,
+            Neumorphic(
+              style: const NeumorphicStyle(
+                color: Colors.white,
+                shape: NeumorphicShape.concave,
+                shadowDarkColor: Colors.black,
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ListTile(
+                          dense: true,
+                          visualDensity:
+                              const VisualDensity(horizontal: 0, vertical: -3),
+                          title: Text(
+                            "total".tr,
+                          ),
+                          trailing: Text(
+                            widget.generalState
+                                .currentReceipt["oper_net_value_with_tax"]
+                                .toString(),
                           ),
                         ),
-                        InkWell(
-                          onTap: () {
-                            masrafiController.text = "0.0";
-                            cashController.text = widget.generalState
-                                .currentReceipt["oper_net_value_with_tax"]
-                                .toString();
-                          },
-                          child: const Icon(
-                            Icons.add_circle,
-                            color: Colors.green,
-                          ),
-                        )
-                      ],
-                    ),
-                    trailing: SizedBox(
-                      width: screenWidth(context) * 0.2,
-                      child: CustomTextField(
-                        editingController: cashController,
-                        activated: true,
-                        isDense: true,
-                        hintText: "cash".tr,
-                        inputType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.allow(
-                              RegExp(r'^\d+\.?\d{0,2}')),
-                          FilteringTextInputFormatter.deny("")
-                        ],
-                        onTap: () {
-                          cashController.selection = TextSelection(
-                            baseOffset: 0,
-                            extentOffset: cashController.value.text.length,
-                          );
-                        },
-                        onChanged: (value) {
-                          context.read<GeneralState>().changeReceiptValue(
-                            input: {
-                              "cash_value":
-                                  ValuesManager.numberValidator(value ?? ""),
-                            },
-                          );
-                        },
-                        name: "cash_value",
                       ),
-                    ),
+                      Expanded(
+                        child: Consumer<GeneralState>(
+                          builder: (
+                            context,
+                            state,
+                            widget,
+                          ) {
+                            return ListTile(
+                              dense: true,
+                              visualDensity: const VisualDensity(
+                                  horizontal: 0, vertical: -3),
+                              title: Text(
+                                "remaining".tr,
+                              ),
+                              trailing: Text(
+                                state.currentReceipt["reside_value"].toString(),
+                              ),
+                            );
+                          },
+                        ),
+                      )
+                    ],
                   ),
-                ),
-                Expanded(
-                  child: ListTile(
-                    dense: true,
-                    visualDensity:
-                        const VisualDensity(horizontal: 0, vertical: -3),
-                    title: Text(
-                      "credit_before".tr,
-                    ),
-                    trailing: Text(
-                      widget.generalState.currentReceipt["credit_before"]
-                          .toString(),
-                    ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ListTile(
+                          dense: true,
+                          visualDensity:
+                              const VisualDensity(horizontal: 0, vertical: -3),
+                          title: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  "cash".tr,
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  masrafiController.text = "0.0";
+                                  cashController.text = widget.generalState
+                                      .currentReceipt["oper_net_value_with_tax"]
+                                      .toString();
+                                },
+                                child: const Icon(
+                                  Icons.add_circle,
+                                  color: Colors.green,
+                                ),
+                              )
+                            ],
+                          ),
+                          trailing: SizedBox(
+                            width: screenWidth(context) * 0.2,
+                            child: CustomTextField(
+                              editingController: cashController,
+                              activated: true,
+                              isDense: true,
+                              hintText: "cash".tr,
+                              inputType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d+\.?\d{0,2}')),
+                                FilteringTextInputFormatter.deny("")
+                              ],
+                              onTap: () {
+                                cashController.selection = TextSelection(
+                                  baseOffset: 0,
+                                  extentOffset:
+                                      cashController.value.text.length,
+                                );
+                              },
+                              onChanged: (value) {
+                                context.read<GeneralState>().changeReceiptValue(
+                                  input: {
+                                    "cash_value": ValuesManager.numberValidator(
+                                        value ?? ""),
+                                  },
+                                );
+                              },
+                              name: "cash_value",
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: ListTile(
+                          dense: true,
+                          visualDensity:
+                              const VisualDensity(horizontal: 0, vertical: -3),
+                          title: Text(
+                            "credit_before".tr,
+                          ),
+                          trailing: Text(
+                            widget.generalState.currentReceipt["credit_before"]
+                                .toString(),
+                          ),
+                        ),
+                      )
+                    ],
                   ),
-                )
-              ],
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ListTile(
+                          dense: true,
+                          visualDensity:
+                              const VisualDensity(horizontal: 0, vertical: -3),
+                          title: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  "banking".tr,
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  cashController.text = "0.0";
+                                  masrafiController.text = widget.generalState
+                                      .currentReceipt["oper_net_value_with_tax"]
+                                      .toString();
+                                },
+                                child: const Icon(
+                                  Icons.add_circle,
+                                  color: Colors.blue,
+                                ),
+                              )
+                            ],
+                          ),
+                          trailing: SizedBox(
+                            width: screenWidth(context) * 0.2,
+                            child: CustomTextField(
+                              isDense: true,
+                              activated: true,
+                              inputType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d+\.?\d{0,2}')),
+                                FilteringTextInputFormatter.deny("")
+                              ],
+                              editingController: masrafiController,
+                              hintText: "banking".tr,
+                              name: "saraf_cash_value",
+                              onChanged: (value) {
+                                widget.generalState.changeReceiptValue(
+                                  input: {
+                                    "saraf_cash_value":
+                                        ValuesManager.numberValidator(
+                                            value ?? ""),
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Consumer<GeneralState>(
+                          builder: (
+                            context,
+                            state,
+                            widget,
+                          ) {
+                            return ListTile(
+                              dense: true,
+                              visualDensity: const VisualDensity(
+                                  horizontal: 0, vertical: -3),
+                              title: Text(
+                                "credit_after".tr,
+                              ),
+                              trailing: Text(
+                                state.currentReceipt["credit_after"].toString(),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-            Row(
-              children: [
-                Expanded(
-                  child: ListTile(
-                    dense: true,
-                    visualDensity:
-                        const VisualDensity(horizontal: 0, vertical: -3),
-                    title: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            "banking".tr,
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            cashController.text = "0.0";
-                            masrafiController.text = widget.generalState
-                                .currentReceipt["oper_net_value_with_tax"]
-                                .toString();
-                          },
-                          child: const Icon(
-                            Icons.add_circle,
-                            color: Colors.blue,
-                          ),
-                        )
-                      ],
-                    ),
-                    trailing: SizedBox(
-                      width: screenWidth(context) * 0.2,
-                      child: CustomTextField(
-                        isDense: true,
-                        activated: true,
-                        inputType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.allow(
-                              RegExp(r'^\d+\.?\d{0,2}')),
-                          FilteringTextInputFormatter.deny("")
-                        ],
-                        editingController: masrafiController,
-                        hintText: "banking".tr,
-                        name: "saraf_cash_value",
-                        onChanged: (value) {
-                          widget.generalState.changeReceiptValue(
-                            input: {
-                              "saraf_cash_value":
-                                  ValuesManager.numberValidator(value ?? ""),
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Consumer<GeneralState>(
-                    builder: (
-                      context,
-                      state,
-                      widget,
-                    ) {
-                      return ListTile(
-                        dense: true,
-                        visualDensity:
-                            const VisualDensity(horizontal: 0, vertical: -3),
-                        title: Text(
-                          "credit_after".tr,
-                        ),
-                        trailing: Text(
-                          state.currentReceipt["credit_after"].toString(),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            )
           ],
         ),
       ),

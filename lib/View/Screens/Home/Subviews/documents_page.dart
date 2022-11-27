@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_sales/App/Util/locator.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/Data/Models/client_model.dart';
 import 'package:smart_sales/View/Screens/Clients/clients_screen.dart';

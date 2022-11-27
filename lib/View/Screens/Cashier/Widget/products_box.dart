@@ -57,7 +57,8 @@ class ProductsBox extends StatelessWidget {
                 child: Obx(
                   () => GridView.builder(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
+                      crossAxisCount:
+                          cashierController.cashierSettings.value.gridCount,
                       childAspectRatio:
                           cashierController.cashierSettings.value.tileSize,
                     ),
@@ -83,30 +84,44 @@ class ProductsBox extends StatelessWidget {
                             ),
                           );
                         },
-                        child: GetBuilder<CashierController>(
-                          builder: (state) => Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15.0),
-                              border: Border.all(
-                                color: context
-                                        .read<GeneralState>()
-                                        .receiptItems
-                                        .where((element) =>
-                                            element["unit_id"] == item.unitId)
-                                        .isNotEmpty
-                                    ? darkBlue
-                                    : Colors.white,
+                        child: Card(
+                          shape: Border.all(
+                            color: context
+                                    .read<GeneralState>()
+                                    .receiptItems
+                                    .where((element) =>
+                                        element["unit_id"] == item.unitId)
+                                    .isNotEmpty
+                                ? darkBlue
+                                : Colors.white,
+                            width: 3,
+                          ),
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  margin: const EdgeInsets.all(5),
+                                  color: Colors.blue,
+                                ),
                               ),
-                            ),
-                            child: Center(
-                              child: AutoSizeText(
+                              AutoSizeText(
                                 item.itemName.toString(),
                                 textAlign: TextAlign.center,
+                                maxLines: 1,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                            ),
+                              AutoSizeText(
+                                "${item.unitName} ${item.outPrice}",
+                                textAlign: TextAlign.center,
+                                maxLines: 1,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       );

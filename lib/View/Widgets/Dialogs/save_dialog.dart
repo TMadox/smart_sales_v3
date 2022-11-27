@@ -1,4 +1,5 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Resources/values_manager.dart';
 import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/View/Widgets/Common/common_button.dart';
+import 'package:universal_io/io.dart';
 
 saveDialog({
   required BuildContext context,
@@ -114,12 +116,13 @@ saveDialog({
             color: Colors.orange,
             onPressed: onSave,
           ),
-          CommonButton(
-            title: "save_dialog_second_common_button".tr,
-            icon: const Icon(Icons.share),
-            color: Colors.green,
-            onPressed: onShare,
-          ),
+          if (!kIsWeb && !Platform.isWindows)
+            CommonButton(
+              title: "save_dialog_second_common_button".tr,
+              icon: const Icon(Icons.share),
+              color: Colors.green,
+              onPressed: onShare,
+            ),
           CommonButton(
             title: "save_dialog_third_common_button".tr,
             icon: const Icon(Icons.print),

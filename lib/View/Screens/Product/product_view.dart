@@ -25,7 +25,7 @@ class _ProductViewState extends State<ProductView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("معلومات المنتج"),
+        title:  Text("product info".tr),
       ),
       body: Align(
         alignment: AlignmentDirectional.topStart,

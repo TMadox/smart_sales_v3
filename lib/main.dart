@@ -35,6 +35,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   inject();
   await GetStorage.init();
+  // await GetStorage().erase();
   await locator.get<DeviceParam>().getDeviceId();
   await locator.get<DeviceParam>().getDocumentsPath();
   final prefs = GetStorage();

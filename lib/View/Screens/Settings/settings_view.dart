@@ -15,6 +15,7 @@ import 'package:smart_sales/App/Util/locator.dart';
 import 'package:smart_sales/App/Util/routing.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/Provider/user_state.dart';
+import 'package:smart_sales/View/Screens/Settings/subviews/cashier_settings_view.dart';
 import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
 
 class SettingsView extends StatefulWidget {
@@ -191,7 +192,7 @@ class _SettingsViewState extends State<SettingsView> {
                         storage.write("allow_shift", value);
                       },
                       title: Text(
-                        "use shift".tr,
+                        "use shifts".tr,
                       ),
                     ),
                     SettingsTile.navigation(
@@ -444,14 +445,13 @@ class _SettingsViewState extends State<SettingsView> {
                     ),
                     SettingsTile.navigation(
                       title: Text(
-                        "اعدادات الكاشير",
+                        "cashier settings".tr,
                         style: GoogleFonts.cairo(),
                       ),
                       leading: const Icon(FontAwesomeIcons.cashRegister),
                       trailing: InkWell(
                         onTap: () {
-                          Navigator.of(context)
-                              .pushNamed(Routes.cashierSettingsRoute);
+                          Get.to(() => const CashierSettingsView());
                         },
                         child: Row(
                           children: [

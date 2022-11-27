@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:hawk_fab_menu/hawk_fab_menu.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Util/locator.dart';
-import 'package:smart_sales/App/Util/routing.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/Data/Models/client_model.dart';
 import 'package:smart_sales/Data/Models/item_model.dart';
@@ -20,6 +19,7 @@ import 'package:smart_sales/Services/Helpers/exceptions.dart';
 import 'package:smart_sales/Services/Repositories/delete_repo.dart';
 import 'package:smart_sales/View/Screens/Home/home_viewmodel.dart';
 import 'package:smart_sales/View/Screens/Items/items_viewmodel.dart';
+import 'package:smart_sales/View/Screens/Settings/settings_view.dart';
 import 'package:smart_sales/View/Widgets/Common/common_button.dart';
 import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/error_dialog.dart';
@@ -102,8 +102,8 @@ class _CustomFABState extends State<CustomFAB> {
                   if (password ==
                       context.read<UserState>().user.ipPassword.toString()) {
                     password = "";
-                    Navigator.of(context).pop();
-                    Navigator.of(context).pushNamed(Routes.settingsRoute);
+                    Get.back();
+                    Get.to(() => const SettingsView());
                   }
                 },
                 title: "enter".tr,
@@ -133,49 +133,49 @@ class _CustomFABState extends State<CustomFAB> {
   }
 
   retrieveNewInfo(BuildContext context) async {
-    // try {
-    //   isDialOpen.value = false;
-    //   EasyLoading.show();
-    final user = context.read<UserState>().user;
-    if (context.read<GeneralState>().receiptsList.isNotEmpty) {
-      showErrorDialog(
-        context: context,
-        title: "error".tr,
-        description: "operations_not_uploaded_yet".tr,
-      );
-    } else {
-      await context.read<ItemsViewmodel>().reloadItems(
-            context: context,
-            user: user,
-          );
-      await context.read<ClientsState>().reloadClients(
-            context: context,
-            user: user,
-          );
-      responseSnackbar(
-        context,
-        "reload_successful".tr,
-      );
+    try {
+      isDialOpen.value = false;
+      EasyLoading.show();
+      final user = context.read<UserState>().user;
+      if (context.read<GeneralState>().receiptsList.isNotEmpty) {
+        showErrorDialog(
+          context: context,
+          title: "error".tr,
+          description: "operations_not_uploaded_yet".tr,
+        );
+      } else {
+        await context.read<ItemsViewmodel>().reloadItems(
+              context: context,
+              user: user,
+            );
+        await context.read<ClientsState>().reloadClients(
+              context: context,
+              user: user,
+            );
+        responseSnackbar(
+          context,
+          "reload_successful".tr,
+        );
+      }
+    } catch (e) {
+      if (e is DioError) {
+        String message = DioExceptions.fromDioError(e).toString();
+        showErrorDialog(
+          context: context,
+          description: message,
+          title: "error".tr,
+        );
+      } else {
+        e.printInfo();
+        showErrorDialog(
+          context: context,
+          description: e.toString(),
+          title: "error".tr,
+        );
+      }
+    } finally {
+      EasyLoading.dismiss();
     }
-    // } catch (e) {
-    //   if (e is DioError) {
-    //     String message = DioExceptions.fromDioError(e).toString();
-    //     showErrorDialog(
-    //       context: context,
-    //       description: message,
-    //       title: "error".tr,
-    //     );
-    //   } else {
-    //     e.printInfo();
-    //     showErrorDialog(
-    //       context: context,
-    //       description: e.toString(),
-    //       title: "error".tr,
-    //     );
-    //   }
-    // } finally {
-    //   EasyLoading.dismiss();
-    // }
   }
 
   Future<void> updateInfo({required BuildContext context}) async {

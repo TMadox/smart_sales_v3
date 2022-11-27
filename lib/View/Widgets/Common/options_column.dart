@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart' hide ThemeData;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import 'package:smart_sales/App/Util/locator.dart';
 import 'package:smart_sales/App/Util/routing.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/Provider/general_state.dart';
@@ -11,7 +10,6 @@ import 'package:smart_sales/View/Widgets/Dialogs/exit_dialog.dart';
 import 'package:smart_sales/View/Widgets/Common/options_button.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/general_dialog.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/save_dialog.dart';
-
 import 'package:provider/provider.dart';
 import 'package:smart_sales/View/Widgets/Dialogs/select_receipt_dialog.dart';
 

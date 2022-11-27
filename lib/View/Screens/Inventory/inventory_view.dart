@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
 import 'package:smart_sales/App/Util/colors.dart';
 import 'package:smart_sales/App/Util/date.dart';
-import 'package:smart_sales/App/Util/locator.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/Data/Models/item_model.dart';
 import 'package:smart_sales/Provider/general_state.dart';

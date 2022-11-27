@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -111,9 +112,10 @@ class _BottomInfoState extends State<BottomInfo> {
                               try {
                                 if (value != "" && value != ".") {
                                   widget.generalState.changeReceiptValue(
-                                      input: {
-                                        "oper_disc_value": double.parse(value)
-                                      });
+                                    input: {
+                                      "oper_disc_value": double.parse(value)
+                                    },
+                                  );
                                 } else {
                                   discountController.text = "0.0";
                                   discountController.selection = TextSelection(
@@ -121,15 +123,19 @@ class _BottomInfoState extends State<BottomInfo> {
                                       extentOffset:
                                           discountController.value.text.length);
                                   widget.generalState.changeReceiptValue(
-                                      input: {
-                                        "oper_disc_value": double.parse("0")
-                                      });
+                                    input: {
+                                      "oper_disc_value": double.parse("0"),
+                                    },
+                                  );
                                 }
                               } catch (e) {
                                 discountController.text =
                                     ValuesManager.doubleToString(currentValue);
                                 widget.generalState.changeReceiptValue(
-                                    input: {"oper_disc_value": currentValue});
+                                  input: {
+                                    "oper_disc_value": currentValue,
+                                  },
+                                );
                                 showErrorDialog(
                                   context: context,
                                   description: 'price_less_than_least'.tr,
@@ -173,21 +179,29 @@ class _BottomInfoState extends State<BottomInfo> {
                                 } else {
                                   taxController.text = "0.0";
                                   taxController.selection = TextSelection(
-                                      baseOffset: 0,
-                                      extentOffset:
-                                          taxController.value.text.length);
+                                    baseOffset: 0,
+                                    extentOffset:
+                                        taxController.value.text.length,
+                                  );
                                   widget.generalState.changeReceiptValue(
-                                      input: {"oper_add_value": 0.0});
+                                    input: {
+                                      "oper_add_value": 0.0,
+                                    },
+                                  );
                                 }
                               } catch (e) {
                                 taxController.text = currentValue.toString();
                                 widget.generalState.changeReceiptValue(
-                                    input: {"oper_add_value": currentValue});
+                                  input: {
+                                    "oper_add_value": currentValue,
+                                  },
+                                );
                                 showErrorDialog(
-                                    context: context,
-                                    description:
-                                        'ليس لديك صلاحيات لتقليل السعر الي اقل من الحد الادني',
-                                    title: "error".tr);
+                                  context: context,
+                                  description:
+                                      'ليس لديك صلاحيات لتقليل السعر الي اقل من الحد الادني',
+                                  title: "error".tr,
+                                );
                               }
                             },
                           ),
@@ -197,7 +211,7 @@ class _BottomInfoState extends State<BottomInfo> {
                     DataCell(
                       SizedBox(
                         width: widget.width * 0.14,
-                        child: Text(
+                        child: AutoSizeText(
                           ValuesManager.doubleToString(
                               widget.generalState.currentReceipt['tax_value']),
                           textAlign: TextAlign.center,
@@ -208,8 +222,8 @@ class _BottomInfoState extends State<BottomInfo> {
                     ),
                     DataCell(
                       SizedBox(
-                        width: widget.width * 0.14,
-                        child: Text(
+                        width: widget.width * 0.2,
+                        child: AutoSizeText(
                           ValuesManager.doubleToString(widget.generalState
                               .currentReceipt['oper_net_value_with_tax']),
                           textAlign: TextAlign.center,

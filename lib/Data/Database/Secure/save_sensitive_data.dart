@@ -1,6 +1,4 @@
 import 'dart:developer';
-
-import 'package:smart_sales/App/Util/locator.dart';
 import 'package:get_storage/get_storage.dart';
 
 class SaveSensitiveData {

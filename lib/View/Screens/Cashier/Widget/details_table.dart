@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -23,23 +24,27 @@ class DetailsTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        clipBehavior: Clip.antiAlias,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
-          border: Border.all(
-            color: darkBlue,
-            width: 2,
-          ),
+    return Container(
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(16)),
+      ),
+      clipBehavior: Clip.antiAlias,
+      foregroundDecoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(
+          color: darkBlue,
+          width: 2,
         ),
+      ),
+      child: SingleChildScrollView(
+        primary: false,
         child: Obx(
           () {
             final selectedItems = cashierController.selectedItems.value;
             return DataTable(
               onSelectAll: (v) {},
-              columnSpacing: width * 0.0,
-              headingRowHeight: height * 0.13,
+              columnSpacing: 0,
+              headingRowHeight: height * 0.15,
               dataRowHeight: height * 0.2,
               headingRowColor: MaterialStateProperty.resolveWith<Color?>(
                   (Set<MaterialState> states) {
@@ -56,7 +61,7 @@ class DetailsTable extends StatelessWidget {
                       label: Center(
                         child: SizedBox(
                           width: width * 0.2,
-                          child: Text(
+                          child: AutoSizeText(
                             e,
                             textAlign: TextAlign.center,
                             style: GoogleFonts.cairo(

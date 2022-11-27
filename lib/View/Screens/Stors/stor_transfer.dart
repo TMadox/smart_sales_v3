@@ -1,13 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
 import 'package:smart_sales/App/Util/colors.dart';
-import 'package:smart_sales/App/Util/locator.dart';
 import 'package:smart_sales/App/Util/routing.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/Data/Models/item_model.dart';

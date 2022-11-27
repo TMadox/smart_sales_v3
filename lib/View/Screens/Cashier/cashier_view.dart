@@ -3,8 +3,6 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
-import 'package:smart_sales/App/Util/locator.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/Data/Models/client_model.dart';
 import 'package:smart_sales/Data/Models/kinds_model.dart';
 import 'package:smart_sales/Provider/clients_state.dart';
@@ -30,10 +28,8 @@ class CashierView extends StatefulWidget {
 }
 
 class _CashierViewState extends State<CashierView> {
-  final CashierController cashierController = Get.find<CashierController>();
   KindsModel? selectedModel;
   Map data = {};
-  final storage = GetStorage();
   @override
   void initState() {
     data.addAll({
@@ -96,36 +92,36 @@ class _CashierViewState extends State<CashierView> {
             left: false,
             right: false,
             bottom: false,
-            child: NestedScrollView(
-              body: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        children: [
-                          SearchBar(
-                            data: data,
-                            onChanged: (value) {
-                              cashierController.setSearchWord(value ?? "");
-                            },
-                            generalState: generalState,
-                            storage: storage,
-                            onTap: () async {
-                              await storage.write(
-                                "show_cashier_details",
-                                !(storage.read('show_cashier_details') ?? true),
-                              );
-                              setState(() {});
-                            },
-                          ),
-                          Expanded(
-                            child: Obx(
-                              () {
-                                cashierController.selectedKindId.value;
-                                return Row(
+            child: GetX<CashierController>(
+              builder: (cashierController) {
+                return NestedScrollView(
+                  body: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            children: [
+                              SearchBar(
+                                data: data,
+                                onChanged: (value) {
+                                  cashierController.setSearchWord(value ?? "");
+                                },
+                                generalState: generalState,
+                                storage: GetStorage(),
+                                onTap: () async {
+                                  cashierController.updateShowCart(
+                                      input: !cashierController
+                                          .cashierSettings.value.showCart);
+
+                                  setState(() {});
+                                },
+                              ),
+                              Expanded(
+                                child: Row(
                                   children: [
-                                    Expanded(
+                                    SizedBox(
+                                      width: screenWidth(context) * 0.2,
                                       child: TypesColumn(
                                         cashierController: cashierController,
                                       ),
@@ -134,172 +130,199 @@ class _CashierViewState extends State<CashierView> {
                                       width: screenWidth(context) * 0.005,
                                     ),
                                     Expanded(
-                                      flex: cashierController
-                                          .cashierSettings.value.productsFlex,
+                                      flex: cashierController.cashierSettings
+                                                  .value.productsFlex >
+                                              0
+                                          ? cashierController.cashierSettings
+                                              .value.productsFlex
+                                          : 1,
                                       child: ProductsBox(
                                         cashierController: cashierController,
                                       ),
                                     ),
-                                    if (!(storage
-                                            .read("show_cashier_details") ??
-                                        true)) ...[
+                                    if (!cashierController
+                                            .cashierSettings.value.showCart &&
+                                        cashierController.cashierSettings.value
+                                            .showOffers) ...[
                                       SizedBox(
                                         width: screenWidth(context) * 0.005,
                                       ),
                                       Expanded(
+                                        flex: cashierController.cashierSettings
+                                                    .value.productsFlex <
+                                                0
+                                            ? cashierController.cashierSettings
+                                                .value.productsFlex
+                                                .abs()
+                                            : 1,
                                         child: OffersColumn(
                                           cashierController: cashierController,
                                         ),
                                       )
                                     ]
                                   ],
-                                );
-                              },
-                            ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Visibility(
-                      visible: storage.read("show_cashier_details") ?? true,
-                      child: Expanded(
-                        child: Consumer<GeneralState>(
-                          builder: (context, generalState, child) {
-                            return LayoutBuilder(
-                              builder: (context, constraints) {
-                                return Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Row(
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Visibility(
+                          visible:
+                              cashierController.cashierSettings.value.showCart,
+                          child: Expanded(
+                            child: Consumer<GeneralState>(
+                              builder: (context, generalState, child) {
+                                return LayoutBuilder(
+                                  builder: (context, constraints) {
+                                    return Column(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.start,
                                       children: [
                                         Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Consumer<GeneralState>(builder:
-                                                (context, state, widget) {
-                                              return NeumorphicButton(
-                                                margin:
-                                                    const EdgeInsets.all(5.0),
+                                            Row(
+                                              children: [
+                                                Consumer<GeneralState>(
+                                                  builder:
+                                                      (context, state, widget) {
+                                                    return NeumorphicButton(
+                                                      margin:
+                                                          const EdgeInsets.all(
+                                                              5.0),
+                                                      style: NeumorphicStyle(
+                                                        color: state
+                                                                .receiptItems
+                                                                .isNotEmpty
+                                                            ? Colors.orange
+                                                            : Colors.grey,
+                                                        shape: NeumorphicShape
+                                                            .concave,
+                                                        surfaceIntensity: 50,
+                                                        shadowDarkColor:
+                                                            Colors.black,
+                                                      ),
+                                                      onPressed: state
+                                                              .receiptItems
+                                                              .isNotEmpty
+                                                          ? () {
+                                                              cashierController
+                                                                  .saveChashier(
+                                                                context:
+                                                                    context,
+                                                                generalState:
+                                                                    generalState,
+                                                              );
+                                                            }
+                                                          : null,
+                                                      child: const Icon(
+                                                        Icons.save,
+                                                        color: Colors.white,
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                                Text(
+                                                  "customer".tr +
+                                                      " : " +
+                                                      context
+                                                          .read<ClientsState>()
+                                                          .currentClient!
+                                                          .amName
+                                                          .toString(),
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Obx(
+                                              () => NeumorphicButton(
+                                                margin: const EdgeInsets.all(5),
+                                                child: const Icon(
+                                                  Icons.delete,
+                                                  color: Colors.white,
+                                                ),
+                                                onPressed: cashierController
+                                                        .selectedItems
+                                                        .value
+                                                        .isEmpty
+                                                    ? null
+                                                    : () {
+                                                        generalState
+                                                            .removeFromListReceiptItems(
+                                                          inputs:
+                                                              cashierController
+                                                                  .selectedItems
+                                                                  .value,
+                                                        );
+                                                        cashierController
+                                                            .clearSelectedItems();
+                                                      },
                                                 style: NeumorphicStyle(
-                                                  color: state.receiptItems
-                                                          .isNotEmpty
-                                                      ? Colors.orange
-                                                      : Colors.grey,
+                                                  color: cashierController
+                                                          .selectedItems
+                                                          .value
+                                                          .isEmpty
+                                                      ? Colors.grey
+                                                      : Colors.indigo,
                                                   shape:
                                                       NeumorphicShape.concave,
                                                   surfaceIntensity: 50,
                                                   shadowDarkColor: Colors.black,
                                                 ),
-                                                onPressed: state
-                                                        .receiptItems.isNotEmpty
-                                                    ? () {
-                                                        cashierController
-                                                            .saveChashier(
-                                                          context: context,
-                                                          generalState:
-                                                              generalState,
-                                                        );
-                                                      }
-                                                    : null,
-                                                child: const Icon(
-                                                  Icons.save,
-                                                  color: Colors.white,
-                                                ),
-                                              );
-                                            }),
-                                            Text(
-                                              "customer".tr +
-                                                  " : " +
-                                                  context
-                                                      .read<ClientsState>()
-                                                      .currentClient!
-                                                      .amName
-                                                      .toString(),
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
                                               ),
-                                            ),
+                                            )
                                           ],
                                         ),
-                                        Obx(
-                                          () => NeumorphicButton(
-                                            margin: const EdgeInsets.all(5),
-                                            child: const Icon(
-                                              Icons.delete,
-                                              color: Colors.white,
-                                            ),
-                                            onPressed: cashierController
-                                                    .selectedItems.value.isEmpty
-                                                ? null
-                                                : () {
-                                                    generalState
-                                                        .removeFromListReceiptItems(
-                                                      inputs: cashierController
-                                                          .selectedItems.value,
-                                                    );
-                                                    cashierController
-                                                        .clearSelectedItems();
-                                                  },
-                                            style: NeumorphicStyle(
-                                              color: cashierController
-                                                      .selectedItems
-                                                      .value
-                                                      .isEmpty
-                                                  ? Colors.grey
-                                                  : Colors.indigo,
-                                              shape: NeumorphicShape.concave,
-                                              surfaceIntensity: 50,
-                                              shadowDarkColor: Colors.black,
-                                            ),
+                                        Expanded(
+                                          child: DetailsTable(
+                                            generalState: generalState,
+                                            height: height,
+                                            width: constraints.maxWidth,
+                                            cashierController:
+                                                cashierController,
                                           ),
+                                        ),
+                                        BottomInfo(
+                                          width: constraints.maxWidth,
+                                          height: height,
+                                          generalState: generalState,
                                         )
                                       ],
-                                    ),
-                                    Expanded(
-                                      child: DetailsTable(
-                                        generalState: generalState,
-                                        height: height,
-                                        width: constraints.maxWidth,
-                                        cashierController: cashierController,
-                                      ),
-                                    ),
-                                    BottomInfo(
-                                      width: constraints.maxWidth,
-                                      height: height,
-                                      generalState: generalState,
-                                    )
-                                  ],
+                                    );
+                                  },
                                 );
                               },
-                            );
-                          },
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-              headerSliverBuilder:
-                  (BuildContext context, bool innerBoxIsScrolled) {
-                return [
-                  if (!(storage.read("show_cashier_details") ?? true))
-                    SliverAppBar(
-                      backgroundColor: Colors.white,
-                      toolbarHeight: 70,
-                      leading: const SizedBox(),
-                      flexibleSpace: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: GroupsRow(
-                          cashierController: cashierController,
-                          storage: storage,
+                  ),
+                  headerSliverBuilder:
+                      (BuildContext context, bool innerBoxIsScrolled) {
+                    return [
+                      if (!cashierController.cashierSettings.value.showCart)
+                        SliverAppBar(
+                          backgroundColor: Colors.white,
+                          toolbarHeight: 70,
+                          leading: const SizedBox(),
+                          flexibleSpace: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: GroupsRow(
+                              cashierController: cashierController,
+                              storage: GetStorage(),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                ];
+                    ];
+                  },
+                );
               },
             ),
           ),

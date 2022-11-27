@@ -47,33 +47,67 @@ class TypesColumn extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              primary: false,
-              itemCount: context.read<KindsState>().kinds.length,
-              itemBuilder: (BuildContext context, int index) {
-                final KindsModel kindsModel =
-                    context.read<KindsState>().kinds[index];
-                return InkWell(
-                  onTap: () {
-                    cashierController.setSelectedKind(input: kindsModel.kindId);
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    color: kindsModel.kindId ==
-                            cashierController.selectedKindId.value
-                        ? darkBlue
-                        : Colors.transparent,
-                    child: AutoSizeText(
-                      kindsModel.kindName,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: kindsModel.kindId ==
-                                cashierController.selectedKindId.value
-                            ? Colors.white
-                            : Colors.red,
+            child: Obx(
+              () {
+                cashierController.selectedKindId.value;
+                return Column(
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        cashierController.setSelectedKind(input: null);
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(10),
+                        color: cashierController.selectedKindId.value == null
+                            ? darkBlue
+                            : Colors.transparent,
+                        child: AutoSizeText(
+                          "all".tr,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color:
+                                cashierController.selectedKindId.value == null
+                                    ? Colors.white
+                                    : Colors.red,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                    Expanded(
+                      child: ListView.builder(
+                        primary: false,
+                        itemCount: context.read<KindsState>().kinds.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final KindsModel kindsModel =
+                              context.read<KindsState>().kinds[index];
+                          return InkWell(
+                            onTap: () {
+                              cashierController.setSelectedKind(
+                                  input: kindsModel.kindId);
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(10),
+                              color: kindsModel.kindId ==
+                                      cashierController.selectedKindId.value
+                                  ? darkBlue
+                                  : Colors.transparent,
+                              child: AutoSizeText(
+                                kindsModel.kindName,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: kindsModel.kindId ==
+                                          cashierController.selectedKindId.value
+                                      ? Colors.white
+                                      : Colors.red,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 );
               },
             ),

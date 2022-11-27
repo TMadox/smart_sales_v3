@@ -22,32 +22,34 @@ class CashierController extends GetxController with BaseViewmodel {
   final selectedItems = Rx<List<Map>>([]);
   final filteredItems = Rx<List<ItemsModel>>([]);
   String searchWord = '';
-  final cashierSettings = Rx(CashierSettingsModel(
-    girdCount: 3,
-    productsFlex: 2,
-    tileSize: 1.0,
-  ));
+  final cashierSettings = Rx(
+    CashierSettingsModel(
+      gridCount: 2,
+      productsFlex: 2,
+      tileSize: 1.0,
+      showCart: false,
+      showOffers: true,
+    ),
+  );
 
   CashierController({
     required this.items,
   }) {
     filteredItems.value = filterItems();
-    cashierSettings.value = CashierSettingsModel.fromMap(
-      GetStorage().read<Map<String, dynamic>>("cashier_settings") ?? {},
+    cashierSettings.value = CashierSettingsModel.fromJson(
+      GetStorage().read<String>("cashier_settings") ?? "{}",
     );
   }
 
-  void setSelectedKind({required int input}) {
+  void setSelectedKind({required int? input}) {
     selectedKindId.value = input;
     filteredItems.value = filterItems();
   }
 
-  void updateProductsFlex({
-    required int input,
+  void updateShowCart({
+    required bool input,
   }) {
-    cashierSettings.update((val) {
-      val = cashierSettings.value.copyWith(productsFlex: input);
-    });
+    cashierSettings.value = cashierSettings.value.copyWith(showCart: input);
     GetStorage().write("cashier_settings", cashierSettings.toJson());
   }
 
@@ -76,7 +78,7 @@ class CashierController extends GetxController with BaseViewmodel {
     filteredItems.value = filterItems();
   }
 
-  void setGroupId(int input) {
+  void setGroupId(int? input) {
     selectedGroupId.value = input;
     filteredItems.value = filterItems();
   }

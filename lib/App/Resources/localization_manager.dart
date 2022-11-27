@@ -343,9 +343,20 @@ class LocalizationManager extends Translations {
     "add product": "Add Product",
     "address": "Address",
     "phone": "Phone",
+    "products grid count": "Products Grid Count",
+    "product tile height": "Product Tile Height",
+    "show offers": "Show Offers",
+    "default length is 1": "Default length is 1",
+    "cashier settings": "Cashier Settings",
   };
 
   final Map<String, String> arabic = {
+    "use shifts": "استخدام الشفتات",
+    "cashier settings": "اعدادات الكاشير",
+    "default length is 1": "الطول الافتراضي 1",
+    "show offers": "اظهار العروض",
+    "product tile height": "طول مربع المنتج",
+    "products grid count": "عدد المنتجات فالصف الواحد",
     "address": "العنوان",
     "phone": "الهاتف",
     "add product": "اضافة منتج",

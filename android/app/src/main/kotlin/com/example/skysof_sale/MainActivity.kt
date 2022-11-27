@@ -1,4 +1,4 @@
-package com.smart.sales
+package com.sky.smartsales
 
 import io.flutter.embedding.android.FlutterActivity
 
