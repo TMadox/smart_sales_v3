@@ -17,11 +17,15 @@ class ExpenseState extends ChangeNotifier {
     double originalAmount =
         expenses.firstWhere((element) => element.accId == id).curBalance;
     if (sectionType == 108) {
-      expenses.firstWhere((element) => element.accId == id).curBalance =
-          (originalAmount - amount);
+      final ExpenseModel mow =
+          expenses.firstWhere((element) => element.accId == id);
+      expenses[expenses.indexOf(mow)] = expenses[expenses.indexOf(mow)]
+          .copyWith(curBalance: (originalAmount - amount));
     } else {
-      expenses.firstWhere((element) => element.accId == id).curBalance =
-          (originalAmount + amount);
+      final ExpenseModel mow =
+          expenses.firstWhere((element) => element.accId == id);
+      expenses[expenses.indexOf(mow)] = expenses[expenses.indexOf(mow)]
+          .copyWith(curBalance: (originalAmount + amount));
     }
     await GetStorage().write("expenses", expenseModelToMap(expenses));
     return expenses.firstWhere((element) => element.accId == id).curBalance;

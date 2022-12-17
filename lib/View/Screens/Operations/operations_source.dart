@@ -1,19 +1,21 @@
 import 'dart:developer';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
 import 'package:smart_sales/App/Resources/values_manager.dart';
-import 'package:smart_sales/View/Screens/Operations/operations_viewmodel.dart';
+import 'package:smart_sales/View/Common/Features/receipt_type.dart';
+import 'package:smart_sales/View/Screens/Operations/operations_controller.dart';
 
 class OperationsSource extends DataTableSource {
   final List receipts;
   final BuildContext context;
+  final OperationsController controller;
   OperationsSource({
     required this.receipts,
     required this.context,
+    required this.controller,
   });
 
   @override
@@ -26,10 +28,10 @@ class OperationsSource extends DataTableSource {
       receipt["oper_date"],
       receipt["oper_time"],
       receipt["cash_value"],
-      OperationsViewmodel().receiptType(type: receipt["section_type_no"]),
+      ReceiptType().get(type: receipt["section_type_no"]),
       receipt["is_sender_complete_status"] == 0
-              ? "select_receipt_dialog_No".tr
-              : "select_receipt_dialog_yes".tr
+          ? "select_receipt_dialog_No".tr
+          : "select_receipt_dialog_yes".tr
     ];
     return DataRow(
       color: MaterialStateProperty.resolveWith<Color?>(

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
 import 'package:smart_sales/Data/Models/item_model.dart';
-import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/View/Screens/Cashier/cashier_controller.dart';
 import 'package:smart_sales/View/Screens/Product/product_controller.dart';
-import 'package:smart_sales/View/Widgets/Common/common_button.dart';
+import 'package:smart_sales/View/Common/Widgets/Common/common_button.dart';
 
 class ProductView extends StatefulWidget {
   final CashierController cashierController;
@@ -25,7 +23,7 @@ class _ProductViewState extends State<ProductView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:  Text("product info".tr),
+        title: Text("product info".tr),
       ),
       body: Align(
         alignment: AlignmentDirectional.topStart,
@@ -97,7 +95,6 @@ class _ProductViewState extends State<ProductView> {
                                   widget.cashierController.addCashierItem(
                                     context: context,
                                     item: widget.item,
-                                    generalState: context.read<GeneralState>(),
                                     qty: productController.qty.value,
                                   );
                                 },

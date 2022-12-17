@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:get/get.dart';
 import 'package:smart_sales/App/Resources/strings_manager.dart';
-import 'package:smart_sales/View/Widgets/Common/alert_snackbar.dart';
+import 'package:smart_sales/View/Screens/Operations/operations_controller.dart';
+import 'package:smart_sales/View/Common/Widgets/Common/alert_snackbar.dart';
 import 'package:universal_io/io.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +51,6 @@ class SplashViewmodel extends ChangeNotifier {
         "user_id": storage.read(StringsManager.userId),
       },
     );
-    log(user.toString());
     //if the platform is web then do some changes.
     if (!kIsWeb) {
       if (Platform.isIOS || Platform.isAndroid) {
@@ -99,6 +100,7 @@ class SplashViewmodel extends ChangeNotifier {
               ipAddress: userModelFromString(str: user).ipAddress,
               ipPassword: userModelFromString(str: user).ipPassword,
             );
+        Get.delete<OperationsController>();
         return const HomeScreen();
       } catch (e) {
         log(e.toString());
@@ -113,8 +115,7 @@ class SplashViewmodel extends ChangeNotifier {
     required UserModel user,
     required GetStorage reference,
   }) async {
-    final List<Map> receiptsList = List<Map>.from(
-        json.decode(locator.get<ReadData>().readReceiptsData() ?? "[]"));
+    final List<Map> receiptsList = ReadData().readOperations();
     for (var element in receiptsList) {
       if (element["is_sender_complete_status"] == 2) {
         element["is_sender_complete_status"] = 0;
@@ -129,7 +130,6 @@ class SplashViewmodel extends ChangeNotifier {
     final kinds = kindModelFromJson(reference.read("kinds")!);
     final mows = mowModelFromMap(reference.read("mows")!);
     final expenses = expenseModelFromMap(reference.read("expenses")!);
-
     final groups = groupModelFromJson(reference.read("groups")!);
     context.read<SettingsViewmodel>().getStoredPrintingData();
     await injectData(
@@ -171,9 +171,7 @@ class SplashViewmodel extends ChangeNotifier {
     context.read<ItemsViewmodel>().loadItems(context: context);
     context.read<ClientsState>().loadClients();
     context.read<UserState>().setLoggedUser(input: user);
-    context.read<GeneralState>().fillReceiptsList(input: receipts);
     context.read<InfoState>().fillInfo(input: info);
-    context.read<GeneralState>().setfinalReceipts(finalReceipt);
     context.read<KindsState>().fillKinds(input: kinds);
     context.read<MowState>().fillMows(input: mows);
     context.read<ExpenseState>().fillExpenses(input: expenses);

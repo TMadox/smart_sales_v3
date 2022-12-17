@@ -34,16 +34,6 @@ class _PrintingSortingViewState extends State<PrintingSortingView> {
             return true;
           },
           child: Scaffold(
-            floatingActionButton: FloatingActionButton(
-              onPressed: () async {
-                await createPDF(
-                  bContext: context,
-                  receipt: context.read<GeneralState>().receiptsList.last,
-                  share: false,
-                );
-                // Navigator.of(context).pushNamed(Routes.printingRoute);
-              },
-            ),
             appBar: AppBar(
               title: Text("a4_settings".tr),
             ),

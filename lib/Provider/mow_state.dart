@@ -17,13 +17,15 @@ class MowState extends ChangeNotifier {
     if (sectionType == 3 || sectionType == 104) {
       double originalAmount =
           mows.firstWhere((element) => element.accId == id).curBalance;
-      mows.firstWhere((element) => element.accId == id).curBalance =
-          (originalAmount - amount);
+      final MowModel mow = mows.firstWhere((element) => element.accId == id);
+      mows[mows.indexOf(mow)] = mows[mows.indexOf(mow)]
+          .copyWith(curBalance: (originalAmount - amount));
     } else {
       double originalAmount =
           mows.firstWhere((element) => element.accId == id).curBalance;
-      mows.firstWhere((element) => element.accId == id).curBalance =
-          (originalAmount + amount);
+      final MowModel mow = mows.firstWhere((element) => element.accId == id);
+      mows[mows.indexOf(mow)] = mows[mows.indexOf(mow)]
+          .copyWith(curBalance: (originalAmount + amount));
     }
     await GetStorage().write("mows", mowModelToMap(mows));
     return mows.firstWhere((element) => element.accId == id).curBalance;

@@ -5,20 +5,20 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
 import 'package:smart_sales/App/Resources/values_manager.dart';
-import 'package:smart_sales/Provider/general_state.dart';
-import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
-import 'package:smart_sales/View/Widgets/Dialogs/error_dialog.dart';
+import 'package:smart_sales/View/Common/Widgets/Common/custom_textfield.dart';
+import 'package:smart_sales/View/Common/Widgets/Dialogs/error_dialog.dart';
+import 'package:smart_sales/View/Screens/Receipts/receipts_controller.dart';
 
 class BottomTableCell extends StatefulWidget {
   final TextEditingController? controller;
-  final GeneralState state;
+  final ReceiptsController receiptsController;
   final String keyName;
   final bool? readOnly;
   final Color? color;
   const BottomTableCell({
     Key? key,
     this.controller,
-    required this.state,
+    required this.receiptsController,
     required this.keyName,
     this.readOnly,
     this.color,
@@ -32,39 +32,43 @@ class _BottomTableCellState extends State<BottomTableCell> {
   @override
   void initState() {
     if (widget.controller != null) {
-      widget.controller!.addListener(() {
-        final currentValue = widget.state.currentReceipt[widget.keyName];
-        final value = widget.controller!.value.text;
-        try {
-          if (value != "" && value != ".") {
-            widget.state.changeReceiptValue(
-                input: {widget.keyName: double.parse(value.toString())});
-          } else {
-            widget.controller!.value = const TextEditingValue(text: "0.0");
-            widget.controller!.selection = TextSelection(
-              baseOffset: 0,
-              extentOffset: widget.controller!.value.text.length,
-            );
-            widget.state.changeReceiptValue(
+      widget.controller!.addListener(
+        () {
+          final currentValue =
+              widget.receiptsController.currentReceipt.value[widget.keyName];
+          final value = widget.controller!.value.text;
+          try {
+            if (value != "" && value != ".") {
+              widget.receiptsController.changeReceiptValue(
+                  input: {widget.keyName: double.parse(value.toString())});
+            } else {
+              widget.controller!.value = const TextEditingValue(text: "0.0");
+              widget.controller!.selection = TextSelection(
+                baseOffset: 0,
+                extentOffset: widget.controller!.value.text.length,
+              );
+              widget.receiptsController.changeReceiptValue(
+                input: {
+                  widget.keyName: 0.0,
+                },
+              );
+            }
+          } catch (e) {
+            widget.controller!.text = currentValue.toString();
+            widget.receiptsController.changeReceiptValue(
               input: {
-                widget.keyName: 0.0,
+                widget.keyName: currentValue,
               },
             );
+            showErrorDialog(
+              context: context,
+              description:
+                  'ليس لديك صلاحيات لتقليل السعر الي اقل من الحد الادني',
+              title: "error".tr,
+            );
           }
-        } catch (e) {
-          widget.controller!.text = currentValue.toString();
-          widget.state.changeReceiptValue(
-            input: {
-              widget.keyName: currentValue,
-            },
-          );
-          showErrorDialog(
-            context: context,
-            description: 'ليس لديك صلاحيات لتقليل السعر الي اقل من الحد الادني',
-            title: "error".tr,
-          );
-        }
-      });
+        },
+      );
     }
     super.initState();
   }
@@ -72,7 +76,7 @@ class _BottomTableCellState extends State<BottomTableCell> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: screenWidth(context) * 0.1,
+      width: 80,
       child: Center(
         child: Builder(
           builder: (context) {
@@ -85,7 +89,7 @@ class _BottomTableCellState extends State<BottomTableCell> {
                 editingController: widget.controller,
                 name: widget.keyName,
                 textAlign: TextAlign.center,
-                 inputFormatters: [
+                inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
                   FilteringTextInputFormatter.deny("")
                 ],
@@ -110,7 +114,8 @@ class _BottomTableCellState extends State<BottomTableCell> {
                 ),
                 child: Text(
                   ValuesManager.doubleToString(
-                    widget.state.currentReceipt[widget.keyName],
+                    widget.receiptsController.currentReceipt
+                        .value[widget.keyName],
                   ),
                   textAlign: TextAlign.center,
                   overflow: TextOverflow.ellipsis,

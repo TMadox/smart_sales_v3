@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:smart_sales/View/Screens/Home/Widgets/button_selection.dart';
 import 'package:smart_sales/View/Screens/Home/home_viewmodel.dart';
 
 class DesktopPage extends StatefulWidget {
@@ -20,7 +21,7 @@ class _DesktopPageState extends State<DesktopPage> {
 
   @override
   Widget build(BuildContext context) {
-    final HomeViewmodel _homeViewmodel = HomeViewmodel();
+    final HomeController _homeViewmodel = HomeController();
     return Container(
       decoration: const BoxDecoration(
         image: DecorationImage(
@@ -43,7 +44,7 @@ class _DesktopPageState extends State<DesktopPage> {
                   spacing: constrains.maxWidth * 0.02,
                   children: favorites
                       .map(
-                        (e) => _homeViewmodel.selectWidget(
+                        (e) => selectWidget(
                           type: e,
                           context: context,
                           storage: storage,

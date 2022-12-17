@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -8,10 +10,11 @@ import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Resources/strings_manager.dart';
 import 'package:smart_sales/App/Util/device.dart';
 import 'package:smart_sales/App/Util/locator.dart';
+import 'package:smart_sales/Data/Database/Commands/read_data.dart';
 import 'package:smart_sales/Data/Database/Commands/save_data.dart';
 import 'package:smart_sales/Data/Database/Secure/save_sensitive_data.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:smart_sales/Data/Models/client_model.dart';
+import 'package:smart_sales/Data/Models/client.dart';
 import 'package:smart_sales/Data/Models/info_model.dart';
 import 'package:smart_sales/Data/Models/options_model.dart';
 import 'package:smart_sales/Data/Models/power_model.dart';
@@ -25,7 +28,8 @@ import 'package:smart_sales/Services/Repositories/info_repo.dart';
 import 'package:smart_sales/Services/Repositories/login_repo.dart';
 import 'package:smart_sales/Services/Repositories/options_repo.dart';
 import 'package:smart_sales/Services/Repositories/powers_repo.dart';
-import 'package:smart_sales/View/Widgets/Dialogs/general_dialog.dart';
+import 'package:smart_sales/View/Screens/Employees/employees_controller.dart';
+import 'package:smart_sales/View/Common/Widgets/Dialogs/general_dialog.dart';
 
 class LoginViewmodel extends ChangeNotifier {
   final storage = GetStorage();
@@ -35,19 +39,16 @@ class LoginViewmodel extends ChangeNotifier {
   }) async {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
+      final List<Map> operations = ReadData().readOperations();
       try {
         EasyLoading.show();
-        if (context.read<GeneralState>().receiptsList.isNotEmpty &&
-            context
-                .read<GeneralState>()
-                .receiptsList
+        if (operations.isNotEmpty &&
+            operations
                 .where((element) =>
                     element["created_user_id"].toString() ==
                     context.read<UserState>().loginInfo['user_id'].toString())
                 .isEmpty &&
-            context
-                .read<GeneralState>()
-                .receiptsList
+            operations
                 .where((element) =>
                     element["created_user_id"].toString() ==
                     context
@@ -77,7 +78,7 @@ class LoginViewmodel extends ChangeNotifier {
                   ipPassword: user.ipPassword,
                   ipAddress: user.ipAddress,
                 );
-            if (context.read<GeneralState>().receiptsList.isEmpty) {
+            if (operations.isEmpty) {
               final List<OptionsModel> optionsList =
                   await getOptions(user: user);
               final OptionsModel transAllStors =
@@ -130,6 +131,7 @@ class LoginViewmodel extends ChangeNotifier {
                     .get<DioRepository>()
                     .get(path: '/get_data_powers'),
               );
+              await Get.find<EmployeesController>().fetchAndSaveEmployees();
             }
             storage.write(StringsManager.loggedBefore, true);
             await storage.write("loaded_items", false);
@@ -165,7 +167,7 @@ class LoginViewmodel extends ChangeNotifier {
     }
   }
 
-  Future<List<ClientsModel>> getCustomers({required UserModel user}) async {
+  Future<List<Client>> getCustomers({required UserModel user}) async {
     return await locator.get<CustomersRepo>().requestCustomers(
         ipAddress: user.ipAddress,
         employerId: user.defEmployAccId,

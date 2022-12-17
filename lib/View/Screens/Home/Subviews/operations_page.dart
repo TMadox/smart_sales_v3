@@ -47,9 +47,8 @@ class _OperationsPageState extends State<OperationsPage> {
                             visible:
                                 storage.read("allow_sales_receipt") ?? true,
                             onPressed: () {
-                              Navigator.of(context).pushNamed(
-                                "clients",
-                                arguments: const ClientsScreen(
+                              Get.to(
+                                () => const ClientsScreen(
                                   canPushReplace: false,
                                   sectionType: 1,
                                   canTap: true,
@@ -63,9 +62,8 @@ class _OperationsPageState extends State<OperationsPage> {
                             visible:
                                 storage.read("allow_return_receipt") ?? true,
                             onPressed: () {
-                              Navigator.of(context).pushNamed(
-                                "clients",
-                                arguments: const ClientsScreen(
+                              Get.to(
+                                () => const ClientsScreen(
                                   canPushReplace: false,
                                   sectionType: 2,
                                   canTap: true,
@@ -79,9 +77,8 @@ class _OperationsPageState extends State<OperationsPage> {
                             visible:
                                 storage.read("allow_order_receipt") ?? true,
                             onPressed: () {
-                              Navigator.of(context).pushNamed(
-                                "clients",
-                                arguments: const ClientsScreen(
+                              Get.to(
+                                () => const ClientsScreen(
                                   canPushReplace: false,
                                   sectionType: 17,
                                   canTap: true,
@@ -126,9 +123,8 @@ class _OperationsPageState extends State<OperationsPage> {
                             visible:
                                 storage.read("allow_cashier_receipt") ?? true,
                             onPressed: () {
-                              Navigator.of(context).pushNamed(
-                                "clients",
-                                arguments: const ClientsScreen(
+                              Get.to(
+                                () => const ClientsScreen(
                                   canPushReplace: false,
                                   sectionType: 31,
                                   canTap: true,
@@ -142,9 +138,8 @@ class _OperationsPageState extends State<OperationsPage> {
                             imagePath: "assets/puchase_order.png",
                             title: "purchase_order".tr,
                             onPressed: () {
-                              Navigator.of(context).pushNamed(
-                                "clients",
-                                arguments: const ClientsScreen(
+                              Get.to(
+                                () => const ClientsScreen(
                                   canPushReplace: false,
                                   sectionType: 18,
                                   canTap: true,

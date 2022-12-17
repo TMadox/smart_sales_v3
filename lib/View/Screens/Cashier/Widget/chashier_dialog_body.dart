@@ -4,15 +4,15 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
 import 'package:smart_sales/App/Resources/values_manager.dart';
-import 'package:smart_sales/Provider/clients_state.dart';
 import 'package:smart_sales/Provider/general_state.dart';
-import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
+import 'package:smart_sales/View/Common/Widgets/Common/custom_textfield.dart';
+import 'package:smart_sales/View/Screens/Cashier/cashier_controller.dart';
 
 class ChashierDialogBody extends StatefulWidget {
-  final GeneralState generalState;
+  final CashierController cashierController;
   const ChashierDialogBody({
     Key? key,
-    required this.generalState,
+    required this.cashierController,
   }) : super(key: key);
 
   @override
@@ -21,31 +21,33 @@ class ChashierDialogBody extends StatefulWidget {
 
 class _ChashierDialogBodyState extends State<ChashierDialogBody> {
   final TextEditingController masrafiController = TextEditingController();
-
   late final TextEditingController cashController;
   @override
   void initState() {
     cashController = TextEditingController(
-        text: widget.generalState.currentReceipt["oper_net_value_with_tax"]
+        text: widget
+            .cashierController.currentReceipt.value["oper_net_value_with_tax"]
             .toString());
-    cashController.addListener(() {
-      String value = cashController.text;
-      if (value != "" && value != ".") {
-        context.read<GeneralState>().changeReceiptValue(
-            input: {"cash_value": double.parse(value.toString())});
-      } else {
-        cashController.text = "0.0";
-        cashController.selection = TextSelection(
-          baseOffset: 0,
-          extentOffset: cashController.value.text.length,
-        );
-        context.read<GeneralState>().changeReceiptValue(
-          input: {
-            "cash_value": 0.0,
-          },
-        );
-      }
-    });
+    cashController.addListener(
+      () {
+        String value = cashController.text;
+        if (value != "" && value != ".") {
+          widget.cashierController.changeReceiptValue(
+              input: {"cash_value": double.parse(value.toString())});
+        } else {
+          cashController.text = "0.0";
+          cashController.selection = TextSelection(
+            baseOffset: 0,
+            extentOffset: cashController.value.text.length,
+          );
+          widget.cashierController.changeReceiptValue(
+            input: {
+              "cash_value": 0.0,
+            },
+          );
+        }
+      },
+    );
     super.initState();
   }
 
@@ -76,11 +78,7 @@ class _ChashierDialogBodyState extends State<ChashierDialogBody> {
                             style: const TextStyle(fontSize: 18),
                           ),
                           trailing: Text(
-                            context
-                                .read<ClientsState>()
-                                .currentClient!
-                                .amName
-                                .toString(),
+                            widget.cashierController.selectedEntity!.name,
                             style: const TextStyle(fontSize: 18),
                           ),
                         ),
@@ -149,31 +147,27 @@ class _ChashierDialogBodyState extends State<ChashierDialogBody> {
                             "total".tr,
                           ),
                           trailing: Text(
-                            widget.generalState
-                                .currentReceipt["oper_net_value_with_tax"]
+                            widget.cashierController.currentReceipt
+                                .value["oper_net_value_with_tax"]
                                 .toString(),
                           ),
                         ),
                       ),
                       Expanded(
-                        child: Consumer<GeneralState>(
-                          builder: (
-                            context,
-                            state,
-                            widget,
-                          ) {
-                            return ListTile(
-                              dense: true,
-                              visualDensity: const VisualDensity(
-                                  horizontal: 0, vertical: -3),
-                              title: Text(
-                                "remaining".tr,
-                              ),
-                              trailing: Text(
-                                state.currentReceipt["reside_value"].toString(),
-                              ),
-                            );
-                          },
+                        child: Obx(
+                          () => ListTile(
+                            dense: true,
+                            visualDensity: const VisualDensity(
+                                horizontal: 0, vertical: -3),
+                            title: Text(
+                              "remaining".tr,
+                            ),
+                            trailing: Text(
+                              widget.cashierController.currentReceipt
+                                  .value["reside_value"]
+                                  .toString(),
+                            ),
+                          ),
                         ),
                       )
                     ],
@@ -195,8 +189,10 @@ class _ChashierDialogBodyState extends State<ChashierDialogBody> {
                               InkWell(
                                 onTap: () {
                                   masrafiController.text = "0.0";
-                                  cashController.text = widget.generalState
-                                      .currentReceipt["oper_net_value_with_tax"]
+                                  cashController.text = widget
+                                      .cashierController
+                                      .currentReceipt
+                                      .value["oper_net_value_with_tax"]
                                       .toString();
                                 },
                                 child: const Icon(
@@ -227,7 +223,7 @@ class _ChashierDialogBodyState extends State<ChashierDialogBody> {
                                 );
                               },
                               onChanged: (value) {
-                                context.read<GeneralState>().changeReceiptValue(
+                                widget.cashierController.changeReceiptValue(
                                   input: {
                                     "cash_value": ValuesManager.numberValidator(
                                         value ?? ""),
@@ -248,7 +244,8 @@ class _ChashierDialogBodyState extends State<ChashierDialogBody> {
                             "credit_before".tr,
                           ),
                           trailing: Text(
-                            widget.generalState.currentReceipt["credit_before"]
+                            widget.cashierController.currentReceipt
+                                .value["credit_before"]
                                 .toString(),
                           ),
                         ),
@@ -272,8 +269,10 @@ class _ChashierDialogBodyState extends State<ChashierDialogBody> {
                               InkWell(
                                 onTap: () {
                                   cashController.text = "0.0";
-                                  masrafiController.text = widget.generalState
-                                      .currentReceipt["oper_net_value_with_tax"]
+                                  masrafiController.text = widget
+                                      .cashierController
+                                      .currentReceipt
+                                      .value["oper_net_value_with_tax"]
                                       .toString();
                                 },
                                 child: const Icon(
@@ -298,7 +297,7 @@ class _ChashierDialogBodyState extends State<ChashierDialogBody> {
                               hintText: "banking".tr,
                               name: "saraf_cash_value",
                               onChanged: (value) {
-                                widget.generalState.changeReceiptValue(
+                                widget.cashierController.changeReceiptValue(
                                   input: {
                                     "saraf_cash_value":
                                         ValuesManager.numberValidator(
@@ -311,24 +310,20 @@ class _ChashierDialogBodyState extends State<ChashierDialogBody> {
                         ),
                       ),
                       Expanded(
-                        child: Consumer<GeneralState>(
-                          builder: (
-                            context,
-                            state,
-                            widget,
-                          ) {
-                            return ListTile(
-                              dense: true,
-                              visualDensity: const VisualDensity(
-                                  horizontal: 0, vertical: -3),
-                              title: Text(
-                                "credit_after".tr,
-                              ),
-                              trailing: Text(
-                                state.currentReceipt["credit_after"].toString(),
-                              ),
-                            );
-                          },
+                        child: Obx(
+                          () => ListTile(
+                            dense: true,
+                            visualDensity: const VisualDensity(
+                                horizontal: 0, vertical: -3),
+                            title: Text(
+                              "credit_after".tr,
+                            ),
+                            trailing: Text(
+                              widget.cashierController.currentReceipt
+                                  .value["credit_after"]
+                                  .toString(),
+                            ),
+                          ),
                         ),
                       ),
                     ],

@@ -17,10 +17,18 @@ class TypesColumn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      clipBehavior: Clip.antiAliasWithSaveLayer,
+      clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
         color: Colors.grey[200],
-        border: Border.all(color: darkBlue, width: 2),
+        borderRadius: const BorderRadius.all(
+          Radius.circular(15),
+        ),
+      ),
+      foregroundDecoration: BoxDecoration(
+        border: Border.all(
+          color: darkBlue,
+          width: 2,
+        ),
         borderRadius: const BorderRadius.all(
           Radius.circular(15),
         ),

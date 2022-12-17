@@ -7,7 +7,8 @@ import 'package:hawk_fab_menu/hawk_fab_menu.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Util/locator.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:smart_sales/Data/Models/client_model.dart';
+import 'package:smart_sales/Data/Database/Commands/read_data.dart';
+import 'package:smart_sales/Data/Models/client.dart';
 import 'package:smart_sales/Data/Models/item_model.dart';
 import 'package:smart_sales/Data/Models/options_model.dart';
 import 'package:smart_sales/Data/Models/user_model.dart';
@@ -20,10 +21,10 @@ import 'package:smart_sales/Services/Repositories/delete_repo.dart';
 import 'package:smart_sales/View/Screens/Home/home_viewmodel.dart';
 import 'package:smart_sales/View/Screens/Items/items_viewmodel.dart';
 import 'package:smart_sales/View/Screens/Settings/settings_view.dart';
-import 'package:smart_sales/View/Widgets/Common/common_button.dart';
-import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
-import 'package:smart_sales/View/Widgets/Dialogs/error_dialog.dart';
-import 'package:smart_sales/View/Widgets/Dialogs/general_snackbar.dart';
+import 'package:smart_sales/View/Common/Widgets/Common/common_button.dart';
+import 'package:smart_sales/View/Common/Widgets/Common/custom_textfield.dart';
+import 'package:smart_sales/View/Common/Widgets/Dialogs/error_dialog.dart';
+import 'package:smart_sales/View/Common/Widgets/Dialogs/general_snackbar.dart';
 
 class CustomFAB extends StatefulWidget {
   final Widget child;
@@ -34,7 +35,7 @@ class CustomFAB extends StatefulWidget {
 }
 
 class _CustomFABState extends State<CustomFAB> {
-  final HomeViewmodel _homeViewmodel = HomeViewmodel();
+  final HomeController _homeViewmodel = HomeController();
   ValueNotifier<bool> isDialOpen = ValueNotifier(false);
   String password = "";
   @override
@@ -132,12 +133,13 @@ class _CustomFABState extends State<CustomFAB> {
     );
   }
 
-  retrieveNewInfo(BuildContext context) async {
+  Future<void> retrieveNewInfo(BuildContext context) async {
     try {
+      final List<Map> operations = ReadData().readOperations();
       isDialOpen.value = false;
       EasyLoading.show();
       final user = context.read<UserState>().user;
-      if (context.read<GeneralState>().receiptsList.isNotEmpty) {
+      if (operations.isNotEmpty) {
         showErrorDialog(
           context: context,
           title: "error".tr,
@@ -228,12 +230,11 @@ class _CustomFABState extends State<CustomFAB> {
     }
   }
 
-  deleteReceipts(BuildContext context) async {
+ Future<void> deleteReceipts(BuildContext context) async {
+    final List<Map> operations = ReadData().readOperations();
     try {
-      if (context.read<GeneralState>().receiptsList.isNotEmpty &&
-          context
-              .read<GeneralState>()
-              .receiptsList
+      if (operations.isNotEmpty &&
+          operations
               .where((element) => element["is_sender_complete_status"] == 0)
               .isNotEmpty) {
         Get.back();
@@ -265,7 +266,7 @@ class _CustomFABState extends State<CustomFAB> {
     }
   }
 
-  compare(List<ItemsModel> items, List<ClientsModel> customers) {
+  compare(List<ItemsModel> items, List<Client> customers) {
     final currentCustomers = context.read<ClientsState>().clients;
     final currentItems = context.read<ItemsViewmodel>().items;
     for (var newItem in items) {
@@ -285,7 +286,7 @@ class _CustomFABState extends State<CustomFAB> {
     for (var newCustomer in customers) {
       if (currentCustomers
           .where(
-              (currentCustomer) => currentCustomer.accId == newCustomer.accId!)
+              (currentCustomer) => currentCustomer.accId == newCustomer.accId)
           .isEmpty) {
         currentCustomers.add(newCustomer);
       }

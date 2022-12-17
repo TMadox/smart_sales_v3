@@ -5,26 +5,33 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
-import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/Provider/user_state.dart';
+import 'package:smart_sales/View/Common/Controllers/upload_controller.dart';
 import 'package:smart_sales/View/Screens/Operations/Widgets/receipts_summery_table.dart';
 import 'package:smart_sales/View/Screens/Operations/operations_source.dart';
-import 'package:smart_sales/View/Screens/Operations/operations_viewmodel.dart';
-import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
+import 'package:smart_sales/View/Screens/Operations/operations_controller.dart';
+import 'package:smart_sales/View/Common/Widgets/Common/custom_textfield.dart';
 import 'package:provider/provider.dart';
 
-class ReceiptsScreen extends StatefulWidget {
-  const ReceiptsScreen({Key? key}) : super(key: key);
+class OperationsView extends StatefulWidget {
+  const OperationsView({Key? key}) : super(key: key);
 
   @override
-  State<ReceiptsScreen> createState() => _ReceiptsScreenState();
+  State<OperationsView> createState() => _OperationsViewState();
 }
 
-class _ReceiptsScreenState extends State<ReceiptsScreen> {
+class _OperationsViewState extends State<OperationsView> {
   bool isLoading = false;
   String searchWord = "";
   int filterSectionType = 0;
-  OperationsViewmodel operationsViewmodel = OperationsViewmodel();
+  final OperationsController operationController =
+      Get.find<OperationsController>();
+  @override
+  void initState() {
+    operationController.loadOperations();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -48,9 +55,9 @@ class _ReceiptsScreenState extends State<ReceiptsScreen> {
                   child: CustomTextField(
                     name: "search",
                     onChanged: (p0) {
-                      setState(() {
-                        searchWord = p0!;
-                      });
+                      // setState(() {
+                      //   searchWord = p0!;
+                      // });
                     },
                     activated: true,
                     hintText: "search".tr,
@@ -230,6 +237,28 @@ class _ReceiptsScreenState extends State<ReceiptsScreen> {
                           ),
                         ),
                         value: 4,
+                      ),
+                      DropdownMenuItem(
+                        alignment: AlignmentDirectional.center,
+                        child: AutoSizeText(
+                          "employee payment document".tr,
+                          style: GoogleFonts.cairo(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 10,
+                          ),
+                        ),
+                        value: 106,
+                      ),
+                      DropdownMenuItem(
+                        alignment: AlignmentDirectional.center,
+                        child: AutoSizeText(
+                          "employee seizure document".tr,
+                          style: GoogleFonts.cairo(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 10,
+                          ),
+                        ),
+                        value: 105,
                       )
                     ],
                     decoration: const InputDecoration(
@@ -250,7 +279,7 @@ class _ReceiptsScreenState extends State<ReceiptsScreen> {
               ),
               FloatingActionButton(
                 onPressed: () async {
-                  await operationsViewmodel.uploadReceipts(context);
+                  await Get.find<UploadController>().commit(showLoading: true);
                 },
                 mini: true,
                 backgroundColor: Colors.green,
@@ -261,101 +290,91 @@ class _ReceiptsScreenState extends State<ReceiptsScreen> {
             ],
           ),
         ),
-        body: Consumer<GeneralState>(
-          builder: (BuildContext context, GeneralState state, Widget? w) {
-            return LayoutBuilder(
-              builder: (context, constraints) {
-                double width = constraints.maxWidth;
-                double height = constraints.maxHeight;
-                return Center(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(15),
-                    child: SizedBox(
-                      width: width * 0.98,
-                      height: height * 0.95,
-                      child: Column(
-                        children: [
-                          Align(
-                            alignment: AlignmentDirectional.centerStart,
-                            child: Text(
-                              "last_upload_date".tr +
-                                  ": " +
-                                  (context.read<UserState>().user.uploadDate ??
-                                      ".."),
-                              style: GoogleFonts.cairo(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 20,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(15),
-                              child: SingleChildScrollView(
-                                  child: ClipRRect(
-                                borderRadius: BorderRadius.circular(15),
-                                child: PaginatedDataTable(
-                                  arrowHeadColor: Colors.green,
-                                  headingRowHeight: height * 0.09,
-                                  dataRowHeight: height * 0.1,
-                                  horizontalMargin: 0,
-                                  columnSpacing: 0,
-                                  source: OperationsSource(
-                                      context: context,
-                                      receipts: filterList(
-                                        input: searchWord,
-                                        receiptsList: state.receiptsList,
-                                      )),
-                                  columns: [
-                                    "number".tr,
-                                    "customer_name".tr,
-                                    "receipt_total".tr,
-                                    "date".tr,
-                                    "time".tr,
-                                    "paid_amount".tr,
-                                    "operation_type".tr,
-                                    "uploaded".tr
-                                  ]
-                                      .map(
-                                        (e) => DataColumn(
-                                          label: Expanded(
-                                            child: Container(
-                                              color: Colors.green,
-                                              width:
-                                                  screenWidth(context) * 0.15,
-                                              child: Center(
-                                                child: Text(
-                                                  e,
-                                                  textAlign: TextAlign.center,
-                                                  style: GoogleFonts.cairo(
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                      .toList(),
-                                ),
-                              )),
-                            ),
-                          ),
-                          SizedBox(
-                            height: height * 0.02,
-                          ),
-                          ReceiptsSummeryTable(
-                            height: height,
-                            width: width,
-                          )
-                        ],
-                      ),
+        body: Center(
+          child: Container(
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: Column(
+              children: [
+                Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Text(
+                    "last_upload_date".tr +
+                        ": " +
+                        (context.read<UserState>().user.uploadDate ?? ".."),
+                    style: GoogleFonts.cairo(
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                );
-              },
-            );
-          },
+                ),
+                Expanded(
+                  flex: 20,
+                  child: Container(
+                    foregroundDecoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15.0),
+                      border: Border.all(color: Colors.green, width: 4),
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    clipBehavior: Clip.hardEdge,
+                    child: SingleChildScrollView(
+                        child: PaginatedDataTable(
+                      arrowHeadColor: Colors.green,
+                      headingRowHeight: 30,
+                      dataRowHeight: 30,
+                      horizontalMargin: 0,
+                      columnSpacing: 0,
+                      source: OperationsSource(
+                        context: context,
+                        receipts: filterList(
+                          input: searchWord,
+                          receiptsList: operationController.operations.value,
+                        ),
+                        controller: operationController,
+                      ),
+                      columns: [
+                        "number".tr,
+                        "customer_name".tr,
+                        "receipt_total".tr,
+                        "date".tr,
+                        "time".tr,
+                        "paid_amount".tr,
+                        "operation_type".tr,
+                        "uploaded".tr
+                      ]
+                          .map(
+                            (e) => DataColumn(
+                              label: Expanded(
+                                child: Container(
+                                  color: Colors.green,
+                                  width: screenWidth(context) * 0.15,
+                                  child: Center(
+                                    child: Text(
+                                      e,
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.cairo(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                    )),
+                  ),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                const ReceiptsSummeryTable()
+              ],
+            ),
+          ),
         ),
       ),
     );

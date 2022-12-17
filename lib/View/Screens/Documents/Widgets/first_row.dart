@@ -6,110 +6,101 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smart_sales/App/Resources/enums_manager.dart';
-import 'package:smart_sales/Data/Models/client_model.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_sales/Provider/clients_state.dart';
-import 'package:smart_sales/Provider/general_state.dart';
+import 'package:smart_sales/Data/Models/entity.dart';
+import 'package:smart_sales/View/Screens/Documents/document_controller.dart';
 import 'package:smart_sales/View/Screens/Documents/document_viewmodel.dart';
-import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
+import 'package:smart_sales/View/Common/Widgets/Common/custom_textfield.dart';
 
-class FirstRow extends StatefulWidget {
+class FirstRow extends StatelessWidget {
   final int sectionNo;
-  final double width;
-  final double height;
-  final TextEditingController controller;
+  final Entity entity;
+  final GlobalKey<FormBuilderState> formKey;
+  final DocumentsController documentsController;
+  final List<Entity> entites;
   const FirstRow({
     Key? key,
     required this.sectionNo,
-    required this.width,
-    required this.height,
-    required this.controller,
+    required this.entity,
+    required this.formKey,
+    required this.entites,
+    required this.documentsController,
   }) : super(key: key);
 
-  @override
-  State<FirstRow> createState() => _FirstRowState();
-}
-
-class _FirstRowState extends State<FirstRow> {
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Text(
-          widget.sectionNo == 102 ? "paid_by".tr : "received_from".tr,
+          sectionNo == 102 ? "paid_by".tr : "received_from".tr,
         ),
-        SizedBox(
-          width: widget.width * 0.01,
+        const SizedBox(
+          width: 5,
         ),
         Expanded(
           flex: 2,
           child: FormBuilderField(
-              builder: (field) {
-                return DropdownSearch<ClientsModel>(
-                  validator: FormBuilderValidators.required(context),
-                  popupProps: PopupProps.modalBottomSheet(
-                    showSearchBox: true,
-                    itemBuilder: (context, item, isSelected) {
-                      return ListTile(
-                        title: Text(item.amName!),
-                        subtitle: Text(item.accId.toString()),
-                      );
-                    },
-                  ),
-                  dropdownBuilder: (context, selectedItem) {
+            builder: (field) {
+              return DropdownSearch<Entity>(
+                validator: FormBuilderValidators.required(context),
+                popupProps: PopupProps.modalBottomSheet(
+                  showSearchBox: true,
+                  itemBuilder: (context, item, isSelected) {
                     return ListTile(
-                      dense: true,
-                      title: Text(
-                        selectedItem == null
-                            ? ""
-                            : selectedItem.amName.toString(),
-                      ),
+                      title: Text(item.name),
+                      subtitle: Text(item.accId.toString()),
                     );
                   },
-                  selectedItem:
-                      context.read<DocumentsViewmodel>().selectedCustomer,
-                  items: context.read<ClientsState>().clients,
-                  itemAsString: (item) => item.amName!,
-                  filterFn: (instance, filter) {
-                    if (instance.amName!.contains(filter.toString())) {
-                      return true;
-                    } else {
-                      return false;
-                    }
-                  },
-                  onChanged: (customer) {
-                    field.didChange(
-                      customer!.accId,
-                    );
-                    widget.controller.text = "0.0";
-                    context.read<GeneralState>().changeReceiptValue(input: {
-                      "cst_tax": customer.taxFileNo,
-                      "user_name": customer.amName,
-                      "credit_before": customer.curBalance ?? 0.0,
-                      "basic_acc_id": customer.accId,
-                    });
-                    context.read<DocumentsViewmodel>().setSelectedCustomer(
-                          input: customer,
-                        );
-                  },
-                );
-              },
-              name: "basic_acc_id"),
+                ),
+                dropdownBuilder: (context, selectedItem) {
+                  return ListTile(
+                    dense: true,
+                    title: Text(
+                      selectedItem == null ? "" : selectedItem.name.toString(),
+                    ),
+                  );
+                },
+                selectedItem: entity,
+                items: entites,
+                itemAsString: (item) => item.name,
+                filterFn: (instance, filter) {
+                  if (instance.name.contains(filter.toString())) {
+                    return true;
+                  } else {
+                    return false;
+                  }
+                },
+                onChanged: (entity) {
+                  field.didChange(entity!.accId);
+                  formKey.currentState!.fields.values.elementAt(2).reset();
+                  documentsController.editDocument(
+                    input: {
+                      "cst_tax": entity.taxFileNo,
+                      "user_name": entity.name,
+                      "credit_before": entity.curBalance,
+                      "basic_acc_id": entity.accId,
+                      "cash_value": 0.0,
+                    },
+                  );
+                },
+              );
+            },
+            name: "basic_acc_id",
+          ),
         ),
-        SizedBox(
-          width: widget.width * 0.02,
+        const SizedBox(
+          width: 5,
         ),
         AutoSizeText(
-          widget.sectionNo == 101 ? "seizure_method".tr : "payment_method".tr,
+          sectionNo == 101 ? "seizure_method".tr : "payment_method".tr,
         ),
-        SizedBox(
-          width: widget.width * 0.01,
+        const SizedBox(
+          width: 5,
         ),
         Consumer<DocumentsViewmodel>(
           builder:
               (BuildContext context, DocumentsViewmodel state, Widget? child) {
-            if (widget.sectionNo == 101 &&
-                state.paymentMethod == PaymentMethod.cash) {
+            if (sectionNo == 101 && state.paymentMethod == PaymentMethod.cash) {
               return ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
@@ -125,7 +116,7 @@ class _FirstRowState extends State<FirstRow> {
                       fontSize: 10, fontWeight: FontWeight.bold),
                 ),
               );
-            } else if (widget.sectionNo == 101 &&
+            } else if (sectionNo == 101 &&
                 state.paymentMethod == PaymentMethod.bank) {
               return ElevatedButton(
                 style: ElevatedButton.styleFrom(

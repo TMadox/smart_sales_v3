@@ -6,6 +6,8 @@ import 'package:smart_sales/View/Screens/Clients/clients_screen.dart';
 import 'package:smart_sales/View/Screens/Expenses/expenses_view.dart';
 import 'package:smart_sales/View/Screens/Groups/groups_view.dart';
 import 'package:smart_sales/View/Screens/Home/Widgets/operation_button.dart';
+import 'package:smart_sales/View/Screens/Items/items_view.dart';
+import 'package:smart_sales/View/Screens/Operations/operations_view.dart';
 import 'package:smart_sales/View/Screens/Stors/stors_view.dart';
 
 class InfoPage extends StatelessWidget {
@@ -41,8 +43,7 @@ class InfoPage extends StatelessWidget {
                     OperationButton(
                       imagePath: "assets/products.png",
                       onPressed: () {
-                        Navigator.of(context)
-                            .pushNamed(Routes.itemsRoute, arguments: false);
+                        Get.to(() => const ItemsView(canTap: false));
                       },
                       title: "items".tr,
                       visible: storage.read("allow_view_items") ?? true,
@@ -50,7 +51,9 @@ class InfoPage extends StatelessWidget {
                     OperationButton(
                       imagePath: "assets/operations.png",
                       onPressed: () {
-                        Navigator.of(context).pushNamed("reciepts");
+                        Get.to(
+                          () => const OperationsView(),
+                        );
                       },
                       title: "view_operations".tr,
                       visible: storage.read("allow_view_operations") ?? true,
@@ -58,9 +61,8 @@ class InfoPage extends StatelessWidget {
                     OperationButton(
                       imagePath: 'assets/clients.png',
                       onPressed: () {
-                        Navigator.of(context).pushNamed(
-                          "clients",
-                          arguments: const ClientsScreen(
+                        Get.to(
+                          () => const ClientsScreen(
                             canPushReplace: false,
                             sectionType: 0,
                             canTap: false,

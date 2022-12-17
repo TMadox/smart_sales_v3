@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:smart_sales/Data/Models/client_model.dart';
+import 'package:smart_sales/Data/Models/client.dart';
 
 class CustomersRepo {
   Dio dio = Dio();
-  Future<List<ClientsModel>> requestCustomers({
+  Future<List<Client>> requestCustomers({
     required String ipAddress,
     required int employerId,
     required String ipPassword,
@@ -21,8 +21,6 @@ class CustomersRepo {
       throw "خطا في استحضار العملاء ";
     }
     List serializedList = json.decode(response.data);
-    return serializedList
-        .map<ClientsModel>((e) => ClientsModel.fromMap(e))
-        .toList();
+    return serializedList.map<Client>((e) => Client.fromMap(e)).toList();
   }
 }

@@ -2,26 +2,25 @@ import 'package:badges/badges.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Util/colors.dart';
-import 'package:smart_sales/Provider/general_state.dart';
-import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
-import 'package:smart_sales/View/Widgets/Dialogs/exit_dialog.dart';
-import 'package:smart_sales/View/Widgets/Dialogs/general_dialog.dart';
+import 'package:smart_sales/View/Common/Widgets/Common/custom_textfield.dart';
+import 'package:smart_sales/View/Common/Widgets/Dialogs/exit_dialog.dart';
+import 'package:smart_sales/View/Common/Widgets/Dialogs/general_dialog.dart';
+import 'package:smart_sales/View/Screens/Cashier/cashier_controller.dart';
 
 class SearchBar extends StatelessWidget {
   final Map data;
-  final GeneralState generalState;
   final Function(String?)? onChanged;
   final GetStorage storage;
   final Function() onTap;
+  final CashierController cashierController;
   const SearchBar({
     Key? key,
     required this.data,
     this.onChanged,
     required this.storage,
-    required this.generalState,
     required this.onTap,
+    required this.cashierController,
   }) : super(key: key);
 
   @override
@@ -35,7 +34,7 @@ class SearchBar extends StatelessWidget {
             color: Colors.white,
           ),
           onPressed: () {
-            if (context.read<GeneralState>().receiptItems.isNotEmpty) {
+            if (cashierController.receiptItems.value.isNotEmpty) {
               generalDialog(
                 title: "warning".tr,
                 context: context,
@@ -72,74 +71,6 @@ class SearchBar extends StatelessWidget {
             shadowDarkColor: Colors.black,
           ),
         ),
-        // NeumorphicButton(
-        //   margin: const EdgeInsets.all(5),
-        //   child: const Icon(
-        //     Icons.settings,
-        //     color: Colors.white,
-        //   ),
-        //   onPressed: () {
-        //     Get.to(() => const CashierSettingsView());
-        //   },
-        //   style: const NeumorphicStyle(
-        //     color: Colors.green,
-        //     shape: NeumorphicShape.concave,
-        //     surfaceIntensity: 50,
-        //     shadowDarkColor: Colors.black,
-        //   ),
-        // ),
-        // Container(
-        //   margin: const EdgeInsets.all(5.0),
-        //   decoration: BoxDecoration(
-        //     borderRadius: BorderRadius.circular(15),
-        //     color: Colors.red,
-        //   ),
-        //   child: IconButton(
-        //     onPressed: () {
-        //       if (context.read<GeneralState>().receiptItems.isNotEmpty) {
-        //         generalDialog(
-        //           title: "warning".tr,
-        //           context: context,
-        //           message: 'receipt_still_inprogress'.tr,
-        //           onCancelText: 'exit'.tr,
-        //           onOkText: 'stay'.tr,
-        //           onCancel: () {
-        //             if ((locator
-        //                     .get<SharedStorage>()
-        //                     .prefs
-        //                     .read("request_visit") ??
-        //                 false)) {
-        //               exitDialog(
-        //                 context: context,
-        //                 data: data,
-        //               );
-        //               return false;
-        //             } else {
-        //               Get.back();
-        //             }
-        //           },
-        //         );
-        //       } else {
-        //         if ((locator
-        //                 .get<SharedStorage>()
-        //                 .prefs
-        //                 .read("request_visit") ??
-        //             false)) {
-        //           exitDialog(
-        //             context: context,
-        //             data: data,
-        //           );
-        //         } else {
-        //           Get.back();
-        //         }
-        //       }
-        //     },
-        //     icon: const Icon(
-        //       Icons.exit_to_app,
-        //       color: Colors.white,
-        //     ),
-        //   ),
-        // ),
         Expanded(
           child: Neumorphic(
             style: const NeumorphicStyle(
@@ -162,15 +93,15 @@ class SearchBar extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.all(5.0),
-          child: Consumer<GeneralState>(
-            builder: (context, state, widget) => Badge(
+          child: Obx(
+            () => Badge(
               badgeContent: Text(
-                state.receiptItems.length.toString(),
+                cashierController.receiptItems.value.length.toString(),
                 style: const TextStyle(
                   color: Colors.white,
                 ),
               ),
-              showBadge: state.receiptItems.isNotEmpty,
+              showBadge: cashierController.receiptItems.value.isNotEmpty,
               child: NeumorphicButton(
                 onPressed: onTap,
                 style: const NeumorphicStyle(

@@ -1,11 +1,12 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_sales/App/Util/device.dart';
+import 'package:smart_sales/Data/Database/Commands/read_data.dart';
 import 'package:smart_sales/Data/Database/Commands/save_data.dart';
 import 'package:smart_sales/Data/Models/user_model.dart';
 import 'package:smart_sales/App/Util/locator.dart';
-import 'package:smart_sales/Provider/general_state.dart';
 import "package:provider/provider.dart";
 import 'package:smart_sales/Provider/user_state.dart';
 
@@ -16,10 +17,10 @@ class DeleteRepo {
     String ipPassword = currentUser.ipPassword;
     String ipAddress = currentUser.ipAddress;
     String encoded = base64.encode(utf8.encode(ipPassword));
-    List<Map> receipts = List.from(context.read<GeneralState>().receiptsList);
+    final List<Map> operations = ReadData().readOperations();
     bool foundError = false;
-    int priorIndex = receipts.length;
-    for (var element in receipts
+    int priorIndex = operations.length;
+    for (var element in operations
         .where((element) => (element["is_sender_complete_status"] == 1))) {
       final response = await dio.post(
         "http://$ipAddress/api_delete_saved_operation_by_oper_id_and_refrence_id",
@@ -35,15 +36,16 @@ class DeleteRepo {
       );
       if (response.data == "not ok" || response.data == "not found") {
         foundError = true;
+        log(response.data);
       } else {
-        context.read<GeneralState>().deleteReceipt(receipt: element);
+        operations.remove(element);
       }
     }
-    if (context.read<GeneralState>().receiptsList.length != priorIndex) {
-      await locator.get<SaveData>().saveReceiptsData(
-            input: context.read<GeneralState>().receiptsList,
-            context: context,
-          );
+    if (operations.length != priorIndex) {
+      await locator.get<SaveData>().saveOperationsData(
+        operations: operations,
+        lastOperations: {},
+      );
     }
     return foundError;
   }

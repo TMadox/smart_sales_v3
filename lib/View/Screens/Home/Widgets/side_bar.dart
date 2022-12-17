@@ -5,11 +5,9 @@ import 'package:smart_sales/App/Resources/screen_size.dart';
 
 class SideBar extends StatefulWidget {
   final PageController page;
-  final double constrainedWidth;
   const SideBar({
     Key? key,
     required this.page,
-    required this.constrainedWidth,
   }) : super(key: key);
 
   @override
@@ -23,8 +21,8 @@ class _SideBarState extends State<SideBar> {
   Widget build(BuildContext context) {
     return Container(
       color: const Color(0xFF074fb3),
-      padding: EdgeInsets.symmetric(
-        horizontal: widget.constrainedWidth * 0.01,
+      padding: const EdgeInsets.symmetric(
+        horizontal: 5,
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -43,10 +41,8 @@ class _SideBarState extends State<SideBar> {
               setState(() {
                 selectedPage = 0;
               });
-              widget.page.animateToPage(
+              widget.page.jumpToPage(
                 0,
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.easeIn,
               );
             },
             child: AutoSizeText(
@@ -71,10 +67,8 @@ class _SideBarState extends State<SideBar> {
               setState(() {
                 selectedPage = 1;
               });
-              widget.page.animateToPage(
+              widget.page.jumpToPage(
                 1,
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.easeIn,
               );
             },
             child: AutoSizeText(
@@ -99,10 +93,8 @@ class _SideBarState extends State<SideBar> {
               setState(() {
                 selectedPage = 2;
               });
-              widget.page.animateToPage(
+              widget.page.jumpToPage(
                 2,
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.easeIn,
               );
             },
             child: AutoSizeText(
@@ -126,10 +118,8 @@ class _SideBarState extends State<SideBar> {
               setState(() {
                 selectedPage = 3;
               });
-              widget.page.animateToPage(
+              widget.page.jumpToPage(
                 3,
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.easeIn,
               );
             },
             child: AutoSizeText(
@@ -141,7 +131,8 @@ class _SideBarState extends State<SideBar> {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              padding: EdgeInsets.zero, backgroundColor: const Color(0xFF074fb3),
+              padding: EdgeInsets.zero,
+              backgroundColor: const Color(0xFF074fb3),
               side: BorderSide(
                 color:
                     selectedPage == 4 ? Colors.white : const Color(0xFF074fb3),
@@ -151,10 +142,8 @@ class _SideBarState extends State<SideBar> {
               setState(() {
                 selectedPage = 4;
               });
-              widget.page.animateToPage(
+              widget.page.jumpToPage(
                 4,
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.easeIn,
               );
             },
             child: AutoSizeText(

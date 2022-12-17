@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:smart_sales/Data/Models/client_model.dart';
+import 'package:smart_sales/Data/Models/client.dart';
 import 'package:smart_sales/View/Screens/Cashier/cashier_view.dart';
-import 'package:smart_sales/View/Screens/Documents/documents.dart';
-import 'package:smart_sales/View/Screens/Inventory/inventory_view.dart';
 import 'package:smart_sales/View/Screens/Kinds/kinds_view.dart';
-import 'package:smart_sales/View/Screens/Receipts/receipt_screen.dart';
 import 'package:smart_sales/View/Screens/Clients/clients_screen.dart';
 import 'package:smart_sales/View/Screens/Home/home_view.dart';
-import 'package:smart_sales/View/Screens/Items/items_view.dart';
-import 'package:smart_sales/View/Screens/Details/receipt_details_screen.dart';
-import 'package:smart_sales/View/Screens/Edit/receipt_edit_screen.dart';
-import 'package:smart_sales/View/Screens/Operations/operations_view.dart';
+import 'package:smart_sales/View/Screens/Details/details_view.dart';
 import 'package:smart_sales/View/Screens/Settings/settings_view.dart';
 import 'package:smart_sales/View/Screens/Settings/subviews/cashier_settings_view.dart';
 import 'package:smart_sales/View/Screens/Settings/subviews/names_settings_view.dart';
@@ -64,10 +58,10 @@ class AppRouter {
         return MaterialPageRoute(builder: (BuildContext context) {
           return const ElementsSettingsView();
         });
-      case Routes.inventoryRoute:
-        return MaterialPageRoute(builder: (BuildContext context) {
-          return const InventoryView();
-        });
+      // case Routes.inventoryRoute:
+      //   return MaterialPageRoute(builder: (BuildContext context) {
+      //     return const InventoryView();
+      //   });
       case Routes.settingsRoute:
         return MaterialPageRoute(builder: (BuildContext context) {
           return const SettingsView();
@@ -102,7 +96,7 @@ class AppRouter {
       case Routes.cashierRoute:
         return MaterialPageRoute(builder: (BuildContext context) {
           return CashierView(
-            client: settings.arguments as ClientsModel,
+            client: settings.arguments as Client,
           );
         });
       case Routes.kindsRoute:
@@ -118,43 +112,43 @@ class AppRouter {
             canTap: (settings.arguments as ClientsScreen).canTap,
           );
         });
-      case 'reciepts':
-        return MaterialPageRoute(builder: (BuildContext context) {
-          return const ReceiptsScreen();
-        });
-      case Routes.documentsRoute:
-        return MaterialPageRoute(builder: (BuildContext context) {
-          return DocumentsScreen(
-            sectionNo: settings.arguments as int,
-          );
-        });
+      // case 'reciepts':
+      //   return MaterialPageRoute(builder: (BuildContext context) {
+      //     return const OperationsView();
+      //   });
+      // case Routes.documentsRoute:
+      //   return MaterialPageRoute(builder: (BuildContext context) {
+      //     return DocumentsScreen(
+      //       sectionNo: settings.arguments as int, entity: null,
+      //     );
+      //   });
 
       case "receiptDetails":
         return MaterialPageRoute(builder: (BuildContext context) {
-          return ReceiptDetailsScreen(
+          return DetailsView(
             receipt: settings.arguments as Map,
           );
         });
-      case 'ReceiptCreation':
-        return MaterialPageRoute(
-          builder: (BuildContext context) {
-            return ReceiptScreen(
-              customer: settings.arguments as ClientsModel,
-            );
-          },
-        );
-      case "receiptEdit":
-        return MaterialPageRoute(builder: (BuildContext context) {
-          return ReceiptEditScreen(
-            customer: settings.arguments as ClientsModel,
-          );
-        });
-      case Routes.itemsRoute:
-        return MaterialPageRoute(builder: (BuildContext context) {
-          return ItemsView(
-            canTap: settings.arguments as bool,
-          );
-        });
+      // case 'ReceiptCreation':
+      //   return MaterialPageRoute(
+      //     builder: (BuildContext context) {
+      //       return ReceiptScreen(
+      //         entity: settings.arguments as Entity,
+      //       );
+      //     },
+      //   );
+      // case "receiptEdit":
+      //   return MaterialPageRoute(builder: (BuildContext context) {
+      //     return ReceiptEditScreen(
+      //       entity: settings.arguments as Client,
+      //     );
+      //   });
+      // case Routes.itemsRoute:
+      //   return MaterialPageRoute(builder: (BuildContext context) {
+      //     return ItemsView(
+      //       canTap: settings.arguments as bool,
+      //     );
+      //   });
       case 'splash':
         return MaterialPageRoute(builder: (BuildContext context) {
           return const SplashScreen();

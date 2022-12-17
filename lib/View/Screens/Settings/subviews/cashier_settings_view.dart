@@ -20,7 +20,7 @@ class _CashierSettingsViewState extends State<CashierSettingsView> {
   @override
   void initState() {
     cashierSettings = CashierSettingsModel.fromJson(
-      storage.read<String>("cashier_settings") ?? "{}",
+      storage.read("cashier_settings") ?? "{}",
     );
     super.initState();
   }

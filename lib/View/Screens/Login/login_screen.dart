@@ -5,11 +5,11 @@ import 'package:get/get.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
 import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/View/Screens/Login/login_viewmodel.dart';
-import 'package:smart_sales/View/Widgets/Common/common_button.dart';
-import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
+import 'package:smart_sales/View/Common/Widgets/Common/common_button.dart';
+import 'package:smart_sales/View/Common/Widgets/Common/custom_textfield.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_sales/View/Widgets/Dialogs/forgot_password_dialog.dart';
-import 'package:smart_sales/View/Widgets/Dialogs/settings_dialog.dart';
+import 'package:smart_sales/View/Common/Widgets/Dialogs/forgot_password_dialog.dart';
+import 'package:smart_sales/View/Common/Widgets/Dialogs/settings_dialog.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key})
@@ -82,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Expanded(
                           child: CustomTextField(
                             hintText: 'enter_username'.tr,
-                            initialValue: (kDebugMode) ? "مستخدم 3" : null,
+                            initialValue: (kDebugMode) ? "user3" : null,
                             name: 'username',
                             activated: value.loginInfo.isNotEmpty,
                           ),

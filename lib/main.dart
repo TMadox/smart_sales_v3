@@ -4,8 +4,10 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 import 'package:smart_sales/App/Resources/localization_manager.dart';
 import 'package:smart_sales/App/Resources/theme_manager.dart';
+import 'package:smart_sales/App/Util/bindings.dart';
 import 'package:smart_sales/App/Util/device.dart';
 import 'package:smart_sales/App/Util/routing.dart';
 import 'package:smart_sales/App/Util/scroll_behavior.dart';
@@ -16,18 +18,15 @@ import 'package:smart_sales/Provider/groups_state.dart';
 import 'package:smart_sales/Provider/kinds_state.dart';
 import 'package:smart_sales/Provider/mow_state.dart';
 import 'package:smart_sales/Provider/stor_state.dart';
-import 'package:smart_sales/View/Screens/Inventory/inventory_viewmodel.dart';
 import 'package:smart_sales/View/Screens/Items/items_viewmodel.dart';
 import 'package:smart_sales/Provider/clients_state.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:smart_sales/Provider/info_state.dart';
 import 'package:smart_sales/Provider/options_state.dart';
 import 'package:smart_sales/Provider/powers_state.dart';
-import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/View/Screens/Documents/document_viewmodel.dart';
 import 'package:smart_sales/View/Screens/Login/login_viewmodel.dart';
-import 'package:smart_sales/View/Screens/Receipts/receipt_viewmodel.dart';
 import 'package:smart_sales/View/Screens/Settings/settings_viewmodel.dart';
 import 'package:smart_sales/View/Screens/Splash/splash_viewmodel.dart';
 
@@ -66,17 +65,14 @@ Future<void> main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => DocumentsViewmodel()),
         ChangeNotifierProvider(create: (_) => ItemsViewmodel()),
-        ChangeNotifierProvider(create: (_) => GeneralState()),
         ChangeNotifierProvider(create: (_) => ClientsState()),
         ChangeNotifierProvider(create: (_) => UserState()),
         ChangeNotifierProvider(create: (_) => SettingsViewmodel()),
-        ChangeNotifierProvider(create: (_) => InventoryViewmodel()),
         ChangeNotifierProvider(create: (_) => SplashViewmodel()),
         ChangeNotifierProvider(create: (_) => OptionsState()),
         ChangeNotifierProvider(create: (_) => InfoState()),
         ChangeNotifierProvider(create: (_) => PowersState()),
         ChangeNotifierProvider(create: (_) => LoginViewmodel()),
-        ChangeNotifierProvider(create: (_) => ReceiptViewmodel()),
         // ChangeNotifierProvider(create: (_) => PrintingViewmodel()),
         ChangeNotifierProvider(create: (_) => StoreState()),
         ChangeNotifierProvider(create: (_) => KindsState()),
@@ -102,6 +98,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       theme: ThemeManger.lightTheme,
       scrollBehavior: MyCustomScrollBehavior(),
+      initialBinding: AppBindings(),
       localizationsDelegates: const [
         ...GlobalMaterialLocalizations.delegates,
         GlobalWidgetsLocalizations.delegate,
@@ -115,9 +112,14 @@ class MyApp extends StatelessWidget {
       onGenerateRoute: appRouter.generateRoute,
       builder: EasyLoading.init(
         builder: ((context, child) {
-          return MediaQuery(
-            child: child!,
-            data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          return ResponsiveWrapper.builder(
+            child,
+            maxWidth: 2024,
+            minWidth: 480,
+            defaultScale: true,
+            breakpoints: [
+              const ResponsiveBreakpoint.autoScale(600, scaleFactor: 0.8),
+            ],
           );
         }),
       ),

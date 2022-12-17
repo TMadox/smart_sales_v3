@@ -1,8 +1,6 @@
-// To parse this JSON data, do
-//
-//      mowModel = mowModelFromJson(jsonString);
-
 import 'dart:convert';
+
+import 'package:smart_sales/Data/Models/entity.dart';
 
 List<MowModel> mowModelFromMap(String str) =>
     List<MowModel>.from(json.decode(str).map((x) => MowModel.fromMap(x)));
@@ -10,26 +8,20 @@ List<MowModel> mowModelFromMap(String str) =>
 String mowModelToMap(List<MowModel> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toMap())));
 
-class MowModel {
+class MowModel extends Entity {
   MowModel({
-    required this.mowId,
-    required this.mowCode,
-    required this.mowName,
-    required this.accId,
-    required this.priceId,
-    required this.taxFileNo,
-    required this.taxRecordNo,
-    required this.curBalance,
+    required super.id,
+    required super.code,
+    required super.name,
+    required super.accId,
+    required super.priceId,
+    required super.employAccId,
+    required super.taxFileNo,
+    required super.taxRecordNo,
+    required super.maxCredit,
+    required super.payByCash,
+    required super.curBalance,
   });
-
-   int mowId;
-   int mowCode;
-   String mowName;
-   int accId;
-   int priceId;
-   String taxFileNo;
-   String taxRecordNo;
-   double curBalance;
 
   MowModel copyWith({
     int? mowId,
@@ -42,22 +34,25 @@ class MowModel {
     double? curBalance,
   }) {
     return MowModel(
-      mowId: mowId ?? this.mowId,
-      mowCode: mowCode ?? this.mowCode,
-      mowName: mowName ?? this.mowName,
+      id: mowId ?? id,
+      code: mowCode ?? code,
+      name: mowName ?? name,
       accId: accId ?? this.accId,
       priceId: priceId ?? this.priceId,
       taxFileNo: taxFileNo ?? this.taxFileNo,
       taxRecordNo: taxRecordNo ?? this.taxRecordNo,
       curBalance: curBalance ?? this.curBalance,
+      employAccId: 0,
+      maxCredit: 0.0,
+      payByCash: 1,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'mow_id': mowId,
-      'mow_code': mowCode,
-      'mow_name': mowName,
+      'mow_id': id,
+      'mow_code': code,
+      'mow_name': name,
       'acc_id': accId,
       'price_id': priceId,
       'tax_file_no': taxFileNo,
@@ -68,14 +63,17 @@ class MowModel {
 
   factory MowModel.fromMap(Map<String, dynamic> map) {
     return MowModel(
-      mowId: map['mow_id']?.toInt() ?? 0,
-      mowCode: map['mow_code']?.toInt() ?? 0,
-      mowName: map['mow_name'] ?? '',
+      id: map['mow_id']?.toInt() ?? 0,
+      code: map['mow_code']?.toInt() ?? 0,
+      name: map['mow_name'] ?? '',
       accId: map['acc_id']?.toInt() ?? 0,
       priceId: map['price_id']?.toInt() ?? 0,
       taxFileNo: map['tax_file_no'] ?? "",
       taxRecordNo: map['tax_record_no'] ?? "",
       curBalance: map['cur_balance']?.toDouble() ?? 0.0,
+      employAccId: 0,
+      maxCredit: 0,
+      payByCash: null,
     );
   }
 
@@ -83,31 +81,4 @@ class MowModel {
 
   factory MowModel.fromJson(String source) =>
       MowModel.fromMap(json.decode(source));
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is MowModel &&
-        other.mowId == mowId &&
-        other.mowCode == mowCode &&
-        other.mowName == mowName &&
-        other.accId == accId &&
-        other.priceId == priceId &&
-        other.taxFileNo == taxFileNo &&
-        other.taxRecordNo == taxRecordNo &&
-        other.curBalance == curBalance;
-  }
-
-  @override
-  int get hashCode {
-    return mowId.hashCode ^
-        mowCode.hashCode ^
-        mowName.hashCode ^
-        accId.hashCode ^
-        priceId.hashCode ^
-        taxFileNo.hashCode ^
-        taxRecordNo.hashCode ^
-        curBalance.hashCode;
-  }
 }

@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:settings_ui/settings_ui.dart';
-import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
+import 'package:smart_sales/View/Common/Widgets/Common/custom_textfield.dart';
 
 class ReceiptNamesView extends StatefulWidget {
   const ReceiptNamesView({Key? key}) : super(key: key);

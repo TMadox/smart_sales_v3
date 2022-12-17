@@ -4,21 +4,14 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Util/colors.dart';
-import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/Provider/powers_state.dart';
 import 'package:smart_sales/View/Screens/Cashier/cashier_controller.dart';
-import 'package:smart_sales/View/Widgets/Common/custom_cell.dart';
+import 'package:smart_sales/View/Common/Widgets/Common/custom_cell.dart';
 
 class DetailsTable extends StatelessWidget {
-  final double width;
-  final double height;
-  final GeneralState generalState;
   final CashierController cashierController;
   const DetailsTable({
     Key? key,
-    required this.width,
-    required this.height,
-    required this.generalState,
     required this.cashierController,
   }) : super(key: key);
 
@@ -44,8 +37,8 @@ class DetailsTable extends StatelessWidget {
             return DataTable(
               onSelectAll: (v) {},
               columnSpacing: 0,
-              headingRowHeight: height * 0.15,
-              dataRowHeight: height * 0.2,
+              headingRowHeight: 60,
+              dataRowHeight: 60,
               headingRowColor: MaterialStateProperty.resolveWith<Color?>(
                   (Set<MaterialState> states) {
                 return darkBlue;
@@ -60,10 +53,11 @@ class DetailsTable extends StatelessWidget {
                     (e) => DataColumn(
                       label: Center(
                         child: SizedBox(
-                          width: width * 0.2,
+                          width: 80,
                           child: AutoSizeText(
                             e,
                             textAlign: TextAlign.center,
+                            maxLines: 2,
                             style: GoogleFonts.cairo(
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
@@ -74,7 +68,7 @@ class DetailsTable extends StatelessWidget {
                     ),
                   )
                   .toList(),
-              rows: generalState.receiptItems.map(
+              rows: cashierController.receiptItems.value.map(
                 (item) {
                   return DataRow(
                     onSelectChanged: (v) {
@@ -86,7 +80,9 @@ class DetailsTable extends StatelessWidget {
                     selected: selectedItems.contains(item),
                     color: MaterialStateProperty.resolveWith<Color?>(
                         (Set<MaterialState> states) {
-                      if ((generalState.receiptItems.indexOf(item) % 2) == 0) {
+                      if ((cashierController.receiptItems.value.indexOf(item) %
+                              2) ==
+                          0) {
                         return Colors.grey[200];
                       }
                       return null;
@@ -100,8 +96,7 @@ class DetailsTable extends StatelessWidget {
                                 isEditable: false,
                                 item: item,
                                 keyValue: 'name',
-                                generalState: generalState,
-                                width: width,
+                                generalController: cashierController,
                               ),
                             ),
                             Expanded(
@@ -109,8 +104,7 @@ class DetailsTable extends StatelessWidget {
                                 isEditable: false,
                                 item: item,
                                 keyValue: 'unit_convert',
-                                width: width,
-                                generalState: generalState,
+                                generalController: cashierController,
                               ),
                             )
                           ],
@@ -125,8 +119,7 @@ class DetailsTable extends StatelessWidget {
                                 item: item,
                                 keyValue: 'fat_qty',
                                 controller: item["fat_qty_controller"],
-                                generalState: generalState,
-                                width: width,
+                                generalController: cashierController,
                               ),
                             ),
                             Expanded(
@@ -136,8 +129,7 @@ class DetailsTable extends StatelessWidget {
                                 controller: item["free_qty_controller"],
                                 item: item,
                                 keyValue: 'free_qty',
-                                width: width,
-                                generalState: generalState,
+                                generalController: cashierController,
                               ),
                             ),
                           ],
@@ -154,8 +146,7 @@ class DetailsTable extends StatelessWidget {
                                 item: item,
                                 keyValue: 'original_price',
                                 controller: item["fat_price_controller"],
-                                generalState: generalState,
-                                width: width,
+                                generalController: cashierController,
                               ),
                             ),
                             Expanded(
@@ -164,8 +155,7 @@ class DetailsTable extends StatelessWidget {
                                 controller: item["fat_disc_value_controller"],
                                 item: item,
                                 keyValue: 'fat_disc_value_with_tax',
-                                width: width,
-                                generalState: generalState,
+                                generalController: cashierController,
                               ),
                             )
                           ],
@@ -176,8 +166,7 @@ class DetailsTable extends StatelessWidget {
                           isEditable: false,
                           item: item,
                           keyValue: 'fat_value',
-                          generalState: generalState,
-                          width: width,
+                          generalController: cashierController,
                         ),
                       ),
                     ],

@@ -14,8 +14,8 @@ import 'package:smart_sales/Provider/info_state.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/Provider/options_state.dart';
 import 'package:smart_sales/View/Screens/Settings/settings_viewmodel.dart';
-import 'package:smart_sales/View/Widgets/A4/footer_cell.dart';
-import 'package:smart_sales/View/Widgets/A4/header_cell.dart';
+import 'package:smart_sales/View/Common/Widgets/A4/footer_cell.dart';
+import 'package:smart_sales/View/Common/Widgets/A4/header_cell.dart';
 
 Future<pw.Page> a4Pdf({
   required Map receipt,

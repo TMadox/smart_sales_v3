@@ -3,13 +3,14 @@ import 'package:get_storage/get_storage.dart';
 
 class ReadData {
   final storage = GetStorage();
-  // String? readItemsData() {
-  //   if (box.hasData("items")) {
-  //     String data = box.read("items").toString();
-  //     return data;
-  //   }
-  //   return null;
-  // }
+
+  List<Map> readOperations() {
+    return List<Map>.from(json.decode(GetStorage().read("operations") ?? "[]"));
+  }
+
+  Map readLastOperations() {
+    return json.decode(GetStorage().read("lastOperations") ?? "{}");
+  }
 
   String? readCustomersData() {
     if (storage.hasData("customers")) {
@@ -20,8 +21,8 @@ class ReadData {
   }
 
   String? readReceiptsData() {
-    if (storage.hasData("receipts")) {
-      String data = storage.read("receipts").toString();
+    if (storage.hasData("operations")) {
+      String data = storage.read("operations").toString();
       return data;
     }
     return null;
@@ -36,8 +37,8 @@ class ReadData {
   }
 
   Map loadLastId() {
-    if (storage.hasData("lastReceipt")) {
-      Map data = json.decode(storage.read("lastReceipt").toString());
+    if (storage.hasData("lastOperations")) {
+      Map data = json.decode(storage.read("lastOperations") ?? "");
       return data;
     } else {
       return {};

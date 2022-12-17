@@ -10,12 +10,11 @@ import 'package:smart_sales/View/Screens/Items/items_source.dart';
 import 'package:smart_sales/App/Resources/values_manager.dart';
 import 'package:smart_sales/View/Screens/Items/items_viewmodel.dart';
 import 'package:smart_sales/Provider/powers_state.dart';
-import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
+import 'package:smart_sales/View/Common/Widgets/Common/custom_textfield.dart';
 import 'package:provider/provider.dart';
 
 class ItemsView extends StatefulWidget {
   final bool canTap;
-
   const ItemsView({Key? key, required this.canTap}) : super(key: key);
   @override
   State<ItemsView> createState() => _ItemsViewState();
@@ -25,15 +24,17 @@ class _ItemsViewState extends State<ItemsView> {
   String searchWord = "";
   final TextEditingController _controller =
       TextEditingController(text: 0.toString());
+  late ItemsViewmodel itemsState;
+
   @override
   void initState() {
     context.read<ItemsViewmodel>().reset();
+    itemsState = context.read<ItemsViewmodel>();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final itemsState = context.read<ItemsViewmodel>();
     return SafeArea(
       left: false,
       right: false,
@@ -183,180 +184,174 @@ class _ItemsViewState extends State<ItemsView> {
             ],
           ),
         ),
-        body: LayoutBuilder(
-          builder: (BuildContext lContext, BoxConstraints constraints) {
-            double width = constraints.maxWidth;
-            double height = constraints.maxHeight;
-            return Center(
-              child: SizedBox(
-                width: width * 0.98,
-                height: height * 0.95,
-                child: Column(
-                  children: [
-                    Align(
-                        alignment: AlignmentDirectional.centerStart,
-                        child: Text(
-                          "last_items_update".tr +
-                              ": " +
-                              context.read<ItemsViewmodel>().lastFetchDate,
-                          style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
-                        )),
-                    Expanded(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(15),
-                        child: SingleChildScrollView(
-                          child: Consumer<ItemsViewmodel>(
-                            builder:
-                                (BuildContext context, state, Widget? child) {
-                              if (state
-                                  .filterStor(
-                                    context: context,
-                                    canTap: widget.canTap,
-                                  )
-                                  .isEmpty) {
-                                return Text(
-                                  "no_items_found".tr,
-                                  style: GoogleFonts.cairo(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                );
-                              }
-                              return PaginatedDataTable(
-                                sortAscending: true,
-                                headingRowHeight: height * 0.09,
-                                dataRowHeight: height * 0.1,
-                                horizontalMargin: 0,
-                                arrowHeadColor: Colors.green,
-                                columnSpacing: 0,
-                                columns: showAvPrice(context)
-                                    .map(
-                                      (e) => DataColumn(
-                                        label: Expanded(
-                                          child: Container(
-                                            alignment:
-                                                AlignmentDirectional.center,
-                                            color: Colors.green,
-                                            width: double.infinity,
-                                            height: double.infinity,
-                                            child: Text(
-                                              e,
-                                              style: GoogleFonts.cairo(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
+        body: Padding(
+          padding: const EdgeInsets.all(5),
+          child: Column(
+            children: [
+              Expanded(
+                child: Container(
+                  foregroundDecoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15.0),
+                    border: Border.all(color: Colors.green, width: 4),
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  clipBehavior: Clip.hardEdge,
+                  child: SingleChildScrollView(
+                    child: Consumer<ItemsViewmodel>(
+                      builder: (BuildContext context, state, Widget? child) {
+                        if (state
+                            .filterStor(
+                              context: context,
+                              canTap: widget.canTap,
+                            )
+                            .isEmpty) {
+                          return Text(
+                            "no_items_found".tr,
+                            style: GoogleFonts.cairo(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          );
+                        }
+                        return PaginatedDataTable(
+                          sortAscending: true,
+                          headingRowHeight: 30,
+                          dataRowHeight: 30,
+                          horizontalMargin: 0,
+                          arrowHeadColor: Colors.green,
+                          columnSpacing: 0,
+                          columns: showAvPrice(context)
+                              .map(
+                                (e) => DataColumn(
+                                  label: Expanded(
+                                    child: Container(
+                                      alignment: AlignmentDirectional.center,
+                                      color: Colors.green,
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                      child: Text(
+                                        e,
+                                        style: GoogleFonts.cairo(
+                                          color: Colors.white,
                                         ),
                                       ),
-                                    )
-                                    .toList(),
-                                source: ItemsSource(
-                                  items: state.filterStor(
-                                    context: context,
-                                    canTap: widget.canTap,
-                                  ),
-                                  context: context,
-                                  canTap: widget.canTap,
-                                  state: state,
-                                ),
-                                rowsPerPage: 8,
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: height * 0.02,
-                    ),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
-                      child: DataTable(
-                        headingRowColor:
-                            MaterialStateProperty.resolveWith<Color?>(
-                                (Set<MaterialState> states) {
-                          return smaltBlue;
-                        }),
-                        border: TableBorder.all(
-                            width: 0.5,
-                            style: BorderStyle.none,
-                            borderRadius: BorderRadius.circular(15)),
-                        headingRowHeight: height * 0.07,
-                        dataRowHeight: height * 0.07,
-                        columns: ["total_items".tr, 'total_items_quantity'.tr]
-                            .map((e) => DataColumn(
-                                    label: Expanded(
-                                  child: Center(
-                                    child: Text(
-                                      e,
-                                      style: GoogleFonts.cairo(
-                                          color: Colors.white),
                                     ),
-                                  ),
-                                )))
-                            .toList(),
-                        rows: [
-                          DataRow(
-                            cells: [
-                              DataCell(
-                                Center(
-                                  child: Text(
-                                    context
-                                        .read<ItemsViewmodel>()
-                                        .items
-                                        .where((element) =>
-                                            element.unitConvert == 1)
-                                        .length
-                                        .toString(),
-                                    overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.cairo(),
-                                  ),
-                                ),
-                              ),
-                              DataCell(
-                                Center(
-                                  child: Text(
-                                    ValuesManager.doubleToString(context
-                                        .read<ItemsViewmodel>()
-                                        .items
-                                        .where((element) =>
-                                            element.unitConvert == 1)
-                                        .fold<double>(
-                                            0,
-                                            (double sum, item) =>
-                                                sum + item.curQty)),
-                                    overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.cairo(),
                                   ),
                                 ),
                               )
-                            ],
-                          )
-                        ],
-                      ),
+                              .toList(),
+                          source: ItemsSource(
+                            items: state.filterStor(
+                              context: context,
+                              canTap: widget.canTap,
+                            ),
+                            context: context,
+                            canTap: widget.canTap,
+                            state: state,
+                          ),
+                          rowsPerPage: 8,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: DataTable(
+                  headingRowColor: MaterialStateProperty.resolveWith<Color?>(
+                    (Set<MaterialState> states) {
+                      return smaltBlue;
+                    },
+                  ),
+                  border: TableBorder.all(
+                    width: 0.5,
+                    style: BorderStyle.none,
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  headingRowHeight: 30,
+                  dataRowHeight: 30,
+                  columns: ["total_items".tr, 'total_items_quantity'.tr]
+                      .map(
+                        (txt) => DataColumn(
+                          label: Expanded(
+                            child: Center(
+                              child: Text(
+                                txt,
+                                style: GoogleFonts.cairo(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                      .toList(),
+                  rows: [
+                    DataRow(
+                      cells: [
+                        DataCell(
+                          Center(
+                            child: Text(
+                              context
+                                  .read<ItemsViewmodel>()
+                                  .items
+                                  .where((element) => element.unitConvert == 1)
+                                  .length
+                                  .toString(),
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.cairo(),
+                            ),
+                          ),
+                        ),
+                        DataCell(
+                          Center(
+                            child: Text(
+                              ValuesManager.doubleToString(
+                                context
+                                    .read<ItemsViewmodel>()
+                                    .items
+                                    .where(
+                                        (element) => element.unitConvert == 1)
+                                    .fold<double>(
+                                        0,
+                                        (double sum, item) =>
+                                            sum + item.curQty),
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.cairo(),
+                            ),
+                          ),
+                        )
+                      ],
                     )
                   ],
                 ),
-              ),
-            );
-          },
+              )
+            ],
+          ),
         ),
       ),
     );
   }
 
   List showAvPrice(BuildContext context) {
-    List<String> tableHeaders = List.from([
-      "number".tr,
-      "name".tr,
-      "unit".tr,
-      "qty".tr,
-      "normal_price".tr,
-      "sectoral_price".tr,
-      "avg_selling_price".tr,
-      "last_selling_price".tr,
-      "barcode".tr,
-      "stor id".tr,
-    ]);
+    List<String> tableHeaders = List.from(
+      [
+        "number".tr,
+        "name".tr,
+        "unit".tr,
+        "qty".tr,
+        "normal_price".tr,
+        "sectoral_price".tr,
+        "avg_selling_price".tr,
+        "last_selling_price".tr,
+        "barcode".tr,
+        "stor id".tr,
+      ],
+    );
     if (context.read<PowersState>().showPurchasePrices) {
       return tableHeaders;
     } else {

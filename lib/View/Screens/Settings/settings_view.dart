@@ -16,7 +16,7 @@ import 'package:smart_sales/App/Util/routing.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/View/Screens/Settings/subviews/cashier_settings_view.dart';
-import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
+import 'package:smart_sales/View/Common/Widgets/Common/custom_textfield.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({Key? key}) : super(key: key);

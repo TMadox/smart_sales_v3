@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:provider/provider.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:smart_sales/Data/Models/client_model.dart';
 import 'package:smart_sales/View/Screens/Clients/clients_screen.dart';
-import 'package:smart_sales/View/Screens/Documents/document_viewmodel.dart';
+import 'package:smart_sales/View/Screens/Employees/employees_view.dart';
 import 'package:smart_sales/View/Screens/Expenses/expenses_view.dart';
 import 'package:smart_sales/View/Screens/Home/Widgets/operation_button.dart';
 
@@ -48,12 +46,8 @@ class _DocumentsPageState extends State<DocumentsPage> {
                             imagePath: "assets/payment_document.png",
                             title: "payment_document".tr,
                             onPressed: () {
-                              context
-                                  .read<DocumentsViewmodel>()
-                                  .setSelectedCustomer(input: ClientsModel());
-                              Navigator.of(context).pushNamed(
-                                "clients",
-                                arguments: const ClientsScreen(
+                              Get.to(
+                                () => const ClientsScreen(
                                   canPushReplace: false,
                                   sectionType: 102,
                                   canTap: true,
@@ -67,12 +61,8 @@ class _DocumentsPageState extends State<DocumentsPage> {
                             imagePath: "assets/collection_document.png",
                             title: "seizure_document".tr,
                             onPressed: () {
-                              context
-                                  .read<DocumentsViewmodel>()
-                                  .setSelectedCustomer(input: ClientsModel());
-                              Navigator.of(context).pushNamed(
-                                "clients",
-                                arguments: const ClientsScreen(
+                              Get.to(
+                                () => const ClientsScreen(
                                   canPushReplace: false,
                                   sectionType: 101,
                                   canTap: true,
@@ -105,6 +95,38 @@ class _DocumentsPageState extends State<DocumentsPage> {
                                 () => const ExpensesView(
                                   sectionTypeNo: 107,
                                   canTap: true,
+                                ),
+                              );
+                            },
+                            visible: storage
+                                    .read("allow_expenses_seizure_document") ??
+                                true,
+                          ),
+                          OperationButton(
+                            imagePath: "assets/give-money.png",
+                            title: "employee payment document".tr,
+                            onPressed: () {
+                              Get.to(
+                                () => const EmployeeView(
+                                  sectionTypeNo: 106,
+                                  canTap: true,
+                                  canPushReplace: false,
+                                ),
+                              );
+                            },
+                            visible: storage
+                                    .read("allow_expenses_seizure_document") ??
+                                true,
+                          ),
+                          OperationButton(
+                            imagePath: "assets/take-money.png",
+                            title: "employee seizure document".tr,
+                            onPressed: () {
+                              Get.to(
+                                () => const EmployeeView(
+                                  sectionTypeNo: 105,
+                                  canTap: true,
+                                  canPushReplace: false,
                                 ),
                               );
                             },

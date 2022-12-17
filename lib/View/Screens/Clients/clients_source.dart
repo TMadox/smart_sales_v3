@@ -3,11 +3,11 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
 import 'package:smart_sales/App/Resources/values_manager.dart';
-import 'package:smart_sales/Data/Models/client_model.dart';
+import 'package:smart_sales/Data/Models/client.dart';
 import 'package:smart_sales/View/Screens/Clients/clients_viewmodel.dart';
 
 class ClientsSource extends DataTableSource {
-  final List<ClientsModel> clients;
+  final List<Client> clients;
   final BuildContext context;
   final bool canTap;
   final int sectionTypeNo;
@@ -21,11 +21,11 @@ class ClientsSource extends DataTableSource {
     required this.sectionTypeNo,
     required this.canPushReplacement,
   });
-  List prepareCells(ClientsModel client) {
+  List prepareCells(Client client) {
     return [
-      client.amId,
-      client.amName,
-      client.amCode,
+      client.id,
+      client.name,
+      client.code,
       client.curBalance,
       client.maxCredit,
       client.employAccId,
@@ -35,7 +35,7 @@ class ClientsSource extends DataTableSource {
 
   @override
   DataRow? getRow(int index) {
-    ClientsModel client = clients[index];
+    Client client = clients[index];
     List cells = prepareCells(client);
     return DataRow(
         color: MaterialStateProperty.resolveWith<Color?>(
@@ -48,32 +48,34 @@ class ClientsSource extends DataTableSource {
         cells: cells
             .mapIndexed(
               (index, e) => DataCell(
-                  index != 1
-                      ? SizedBox(
-                          width: screenWidth(context) * 0.2,
-                          child: Center(
-                            child: AutoSizeText(
-                              ValuesManager.doubleToString(e),
-                              overflow: TextOverflow.visible,
-                              maxLines: 1,
-                            ),
-                          ),
-                        )
-                      : Center(
-                          child: Text(
+                index != 1
+                    ? SizedBox(
+                        width: screenWidth(context) * 0.2,
+                        child: Center(
+                          child: AutoSizeText(
                             ValuesManager.doubleToString(e),
+                            overflow: TextOverflow.visible,
+                            maxLines: 1,
                           ),
-                        ), onTap: () async {
-                if (canTap) {
-                  await ClientsViewmodel().intializeReceipt(
-                    context: context,
-                    client: client,
-                    sectionTypeNo: sectionTypeNo,
-                    canPushReplacement: canPushReplacement,
-                    selectedStorId: selectedStorId,
-                  );
-                }
-              }),
+                        ),
+                      )
+                    : Center(
+                        child: Text(
+                          ValuesManager.doubleToString(e),
+                        ),
+                      ),
+                onTap: () async {
+                  if (canTap) {
+                    await ClientsViewmodel().intializeReceipt(
+                      context: context,
+                      client: client,
+                      sectionTypeNo: sectionTypeNo,
+                      canPushReplacement: canPushReplacement,
+                      selectedStorId: selectedStorId,
+                    );
+                  }
+                },
+              ),
             )
             .toList());
   }

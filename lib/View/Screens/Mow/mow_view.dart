@@ -6,33 +6,27 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_sales/App/Util/date.dart';
-import 'package:smart_sales/App/Util/device.dart';
-import 'package:smart_sales/App/Util/locator.dart';
-import 'package:smart_sales/App/Util/routing.dart';
 import 'package:smart_sales/App/Resources/values_manager.dart';
-import 'package:smart_sales/Data/Models/client_model.dart';
 import 'package:smart_sales/Data/Models/mow_model.dart';
-import 'package:smart_sales/Data/Models/user_model.dart';
-import 'package:smart_sales/Provider/clients_state.dart';
-import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/Provider/mow_state.dart';
-import 'package:smart_sales/Provider/options_state.dart';
-import 'package:smart_sales/Provider/powers_state.dart';
 import 'package:smart_sales/Provider/stor_state.dart';
 import 'package:smart_sales/Provider/user_state.dart';
-import 'package:smart_sales/View/Screens/Documents/document_viewmodel.dart';
-import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
+import 'package:smart_sales/View/Screens/Documents/documents_view.dart';
+import 'package:smart_sales/View/Screens/Receipts/receipt_view.dart';
+import 'package:smart_sales/View/Common/Widgets/Common/custom_textfield.dart';
+import 'package:smart_sales/View/Screens/Receipts/receipts_controller.dart';
 
 class MowView extends StatefulWidget {
   final bool canTap;
-  final int? sectionTypeNo;
+  final int sectionTypeNo;
   final bool canPushReplace;
+  final int? storeId;
   const MowView({
     Key? key,
     required this.canTap,
-    this.sectionTypeNo,
+    required this.sectionTypeNo,
     required this.canPushReplace,
+    this.storeId,
   }) : super(key: key);
 
   @override
@@ -44,13 +38,8 @@ class _MowViewState extends State<MowView> {
   late int selectedStoreId;
   @override
   void initState() {
-    if (context.read<GeneralState>().currentReceipt["selected_stor_id"] ==
-        null) {
-      selectedStoreId = context.read<UserState>().user.defStorId;
-    } else {
-      selectedStoreId =
-          context.read<GeneralState>().currentReceipt["selected_stor_id"];
-    }
+    selectedStoreId =
+        widget.storeId ?? context.read<UserState>().user.defStorId;
     super.initState();
   }
 
@@ -89,10 +78,7 @@ class _MowViewState extends State<MowView> {
                     child: FormBuilderDropdown<int>(
                       name: "stor",
                       iconEnabledColor: Colors.transparent,
-                      initialValue: context
-                              .read<GeneralState>()
-                              .currentReceipt["selected_stor_id"] ??
-                          selectedStoreId,
+                      initialValue: selectedStoreId,
                       hint: Text("choose_stor".tr),
                       onChanged: (value) {
                         if (value != null) {
@@ -109,12 +95,12 @@ class _MowViewState extends State<MowView> {
                             (stor) => DropdownMenuItem<int>(
                               alignment: AlignmentDirectional.center,
                               child: AutoSizeText(
-                                stor.storName.toString(),
+                                stor.name.toString(),
                                 style: GoogleFonts.cairo(
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              value: stor.storId,
+                              value: stor.id,
                             ),
                           )
                           .toList(),
@@ -139,88 +125,95 @@ class _MowViewState extends State<MowView> {
           ),
         ),
       ),
-      body: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          double width = constraints.maxWidth;
-          double height = constraints.maxHeight;
-          return Center(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: SizedBox(
-                width: width * 0.98,
-                height: height * 0.95,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: SingleChildScrollView(
-                      child: DataTable(
-                    headingRowColor: MaterialStateProperty.resolveWith<Color?>(
-                        (Set<MaterialState> states) {
-                      return Colors.green;
-                    }),
-                    dividerThickness: 1,
-                    headingRowHeight: height * 0.09,
-                    dataRowHeight: height * 0.1,
-                    border: TableBorder.all(
-                        width: 0.5,
-                        style: BorderStyle.none,
-                        borderRadius: BorderRadius.circular(10)),
-                    columns: [
-                      "number".tr,
-                      "name".tr,
-                      "cst_code".tr,
-                      "current_credit".tr,
-                      "user_number".tr,
-                    ]
-                        .map((e) => DataColumn(
-                                label: Text(
-                              e,
-                              style: GoogleFonts.cairo(
-                                color: Colors.white,
-                              ),
-                            )))
-                        .toList(),
-                    rows: filterList(context: context, input: searchWord)
-                        .mapIndexed((index, mow) {
-                      final cell = [
-                        mow.accId,
-                        mow.mowName,
-                        mow.mowCode,
-                        mow.curBalance,
-                        mow.accId
-                      ];
-                      return DataRow(
-                          color: MaterialStateProperty.resolveWith<Color?>(
-                              (Set<MaterialState> states) {
-                            if ((index % 2) == 0) {
-                              return Colors.grey[200];
+      body: Container(
+        foregroundDecoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15.0),
+          border: Border.all(color: Colors.green, width: 4),
+        ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        margin: const EdgeInsets.all(5),
+        width: double.infinity,
+        height: double.infinity,
+        clipBehavior: Clip.hardEdge,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: SingleChildScrollView(
+              child: DataTable(
+            headingRowColor: MaterialStateProperty.resolveWith<Color?>(
+                (Set<MaterialState> states) {
+              return Colors.green;
+            }),
+            dividerThickness: 1,
+            headingRowHeight: 30,
+            dataRowHeight: 30,
+            border: TableBorder.all(
+                width: 0.5,
+                style: BorderStyle.none,
+                borderRadius: BorderRadius.circular(10)),
+            columns: [
+              "number".tr,
+              "name".tr,
+              "cst_code".tr,
+              "current_credit".tr,
+              "user_number".tr,
+            ]
+                .map(
+                  (e) => DataColumn(
+                    label: Expanded(
+                      child: Center(
+                        child: Text(
+                          e,
+                          style: GoogleFonts.cairo(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+                .toList(),
+            rows: filterList(context: context, input: searchWord)
+                .mapIndexed((index, mow) {
+              final cell = [
+                mow.accId,
+                mow.name,
+                mow.code,
+                mow.curBalance,
+                mow.accId
+              ];
+              return DataRow(
+                  color: MaterialStateProperty.resolveWith<Color?>(
+                      (Set<MaterialState> states) {
+                    if ((index % 2) == 0) {
+                      return Colors.grey[200];
+                    }
+                    return null;
+                  }),
+                  cells: cell
+                      .map(
+                        (e) => DataCell(
+                          Center(
+                            child: Text(
+                              ValuesManager.doubleToString(e),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          onTap: () async {
+                            if (widget.canTap) {
+                              await intializeReceipt(
+                                context: context,
+                                mow: mow,
+                              );
                             }
-                            return null;
-                          }),
-                          cells: cell
-                              .map(
-                                (e) => DataCell(
-                                  Text(
-                                    ValuesManager.doubleToString(e),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  onTap: () async {
-                                    if (widget.canTap) {
-                                      await intializeReceipt(
-                                        context: context,
-                                        mow: mow,
-                                      );
-                                    }
-                                  },
-                                ),
-                              )
-                              .toList());
-                    }).toList(),
-                  )),
-                ),
-              ),
-            ),
-          );
-        },
+                          },
+                        ),
+                      )
+                      .toList());
+            }).toList(),
+          )),
+        ),
       ),
     );
   }
@@ -229,7 +222,7 @@ class _MowViewState extends State<MowView> {
       {required String input, required BuildContext context}) {
     if (input != "") {
       return context.read<MowState>().mows.where((element) {
-        return (element.mowName.contains(input) ||
+        return (element.name.contains(input) ||
             element.accId.toString().contains(input));
       }).toList();
     } else {
@@ -237,122 +230,34 @@ class _MowViewState extends State<MowView> {
     }
   }
 
-  getStartingId(BuildContext context) {
-    int sectionNo = widget.sectionTypeNo!;
-    if (context.read<GeneralState>().finalReceipts[sectionNo.toString()] ==
-        null) {
-      return 0;
-    } else {
-      return context.read<GeneralState>().finalReceipts[sectionNo.toString()]
-              ["oper_id"] ??
-          0;
-    }
-  }
-
-  intializeReceipt({
+  Future<void> intializeReceipt({
     required BuildContext context,
     required MowModel mow,
   }) async {
-    UserModel loggedUser = context.read<UserState>().user;
-    context
-        .read<ClientsState>()
-        .setCurrentCustomer(customer: ClientsModel(priceId: 1));
-    context.read<GeneralState>().setCurrentReceipt(input: {
-      "oper_code": getStartingId(context) + 1,
-      "basic_acc_id": mow.accId,
-      "client_acc_id": loggedUser.defBoxAccId,
-      "oper_id": getStartingId(context) + 1,
-      "allow_sell_qty_less_zero":
-          context.read<PowersState>().allowSellQtyLessThanZero,
-      "items_count": 0.0,
-      "credit_after": mow.curBalance,
-      "credit_before": mow.curBalance,
-      "extend_time": DateTime.now().toString(),
-      "section_type_no": widget.sectionTypeNo,
-      "oper_time": CurrentDate.getCurrentTime(),
-      "employ_id": loggedUser.defEmployAccId,
-      "cst_tax": mow.taxFileNo,
-      "cash_value": 0.0,
-      "created_user_id": loggedUser.userId,
-      "created_user_ip": loggedUser.ipAddress,
-      "user_name": mow.mowName,
-      'created_date': CurrentDate.getCurrentDate(),
-      'oper_date': CurrentDate.getCurrentDate(),
-      "oper_due_date": CurrentDate.getCurrentDate(),
-      "oper_value": 0.0,
-      "oper_disc_per": 0.0,
-      "oper_disc_value": 0.0,
-      "oper_add_per": 0.0,
-      "oper_add_value": 0.0,
-      "oper_net_value": 0.0,
-      "selected_stor_id": selectedStoreId,
-      "reside_value": 0.0,
-      "tax_per": 0.0,
-      "tax_value": 0.0,
-      "total_tax": 0.0,
-      "oper_net_value_with_tax": 0.0,
-      "oper_profit": 0.0,
-      "pay_by_cash_only": 1,
-      "force_cash": false,
-      "is_form_for_fat": 1,
-      "is_form_has_affect_on_stock": 1,
-      "is_form_for_output_stock": 1,
-      "stor_id": selectedStoreId,
-      "comp_id": loggedUser.compId,
-      "branch_id": loggedUser.branchId,
-      "is_saved_in_server": 1,
-      "refrence_id": locator.get<DeviceParam>().deviceId,
-      "save_eror_mes": "0",
-      "sender_oper_id": context.read<GeneralState>().receiptsList.length,
-      "is_review_from_sender": 0,
-      "is_sender_complete_status": 0,
-      "employee_name": loggedUser.userName,
-      "saved": 0,
-      "oper_disc_value_with_tax": 0.0,
-      "oper_add_value_with_tax": 0.0,
-      "use_tax_system":
-          context.read<OptionsState>().options[0].optionValue ?? 0.0,
-      "use_price_with_tax":
-          context.read<OptionsState>().options[1].optionValue ?? 0.0,
-      "is_for_price_with_tax":
-          context.read<OptionsState>().options[1].optionValue,
-      "notes": ""
-    });
-
     if (widget.canPushReplace) {
-      int count = 0;
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        "ReceiptCreation",
-        (route) => count++ >= 2,
-        arguments: ClientsModel(
-          amName: mow.mowName,
-          curBalance: mow.curBalance,
-          taxFileNo: mow.taxFileNo,
-          employAccId: mow.mowId,
-          accId: mow.accId,
-        ),
+      Get.find<ReceiptsController>().startReceipt(
+        entity: mow,
+        context: context,
+        sectionTypeNo: widget.sectionTypeNo,
+        selectedStorId: widget.storeId,
+        resetReceipt: true,
       );
+      Get.back();
     } else {
-      context.read<DocumentsViewmodel>().setSelectedCustomer(
-              input: ClientsModel(
-            amName: mow.mowName,
-            curBalance: mow.curBalance,
-            taxFileNo: mow.taxFileNo,
-            employAccId: mow.mowId,
-            accId: mow.accId,
-          ));
       if (widget.sectionTypeNo == 104 || widget.sectionTypeNo == 103) {
-        await Navigator.of(context)
-            .pushNamed(Routes.documentsRoute, arguments: widget.sectionTypeNo);
+        Get.to(
+          () => DocumentsScreen(
+            sectionTypeNo: widget.sectionTypeNo,
+            entity: mow,
+            entitiesList: context.read<MowState>().mows,
+          ),
+        );
       } else {
-        await Navigator.of(context).pushNamed(
-          "ReceiptCreation",
-          arguments: ClientsModel(
-            amName: mow.mowName,
-            curBalance: mow.curBalance,
-            taxFileNo: mow.taxFileNo,
-            employAccId: mow.mowId,
-            accId: mow.accId,
+        Get.to(
+          () => ReceiptView(
+            entity: mow,
+            sectionTypeNo: widget.sectionTypeNo,
+            resetReceipt: true,
           ),
         );
       }

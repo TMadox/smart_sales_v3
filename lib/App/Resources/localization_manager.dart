@@ -348,9 +348,15 @@ class LocalizationManager extends Translations {
     "show offers": "Show Offers",
     "default length is 1": "Default length is 1",
     "cashier settings": "Cashier Settings",
+    "employee payment document": "Employee Payment Document",
+    "employee seizure document": "Employee Seizure Document",
+    "employee id": "Employee ID"
   };
 
   final Map<String, String> arabic = {
+    "employee id": "رقم الموظف",
+    "employee payment document": "سند دفع موظف",
+    "employee seizure document": "سند قبض موظف",
     "use shifts": "استخدام الشفتات",
     "cashier settings": "اعدادات الكاشير",
     "default length is 1": "الطول الافتراضي 1",

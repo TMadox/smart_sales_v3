@@ -2,7 +2,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:smart_sales/View/Widgets/Common/common_button.dart';
+import 'package:smart_sales/View/Common/Widgets/Common/common_button.dart';
 import 'package:universal_io/io.dart';
 
 cashierSaveDialog({

@@ -4,11 +4,11 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Util/locator.dart';
-import 'package:smart_sales/Data/Models/client_model.dart';
+import 'package:smart_sales/Data/Models/client.dart';
 import 'package:smart_sales/Provider/clients_state.dart';
 import 'package:smart_sales/Services/Repositories/dio_repository.dart';
-import 'package:smart_sales/View/Widgets/Dialogs/done_dialog.dart';
-import 'package:smart_sales/View/Widgets/Dialogs/error_dialog.dart';
+import 'package:smart_sales/View/Common/Widgets/Dialogs/done_dialog.dart';
+import 'package:smart_sales/View/Common/Widgets/Dialogs/error_dialog.dart';
 
 class RegisterViewmodel {
   Future<void> addRecord({
@@ -38,8 +38,7 @@ class RegisterViewmodel {
           throw "تمت اضافه العميل في القاعده الاساسيه وال api  ولكن حدث خطا في ارساله للموبايل";
         default:
           {
-            ClientsModel client =
-                ClientsModel.fromMap(json.decode(response)[0]);
+            Client client = Client.fromMap(json.decode(response)[0]);
             await context.read<ClientsState>().addClient(client: client);
           }
       }

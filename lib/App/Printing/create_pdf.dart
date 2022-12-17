@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:share_plus/share_plus.dart';
-
 import 'package:smart_sales/App/Printing/a4_pdf.dart';
 import 'package:smart_sales/App/Util/device.dart';
 import 'package:smart_sales/App/Util/locator.dart';

@@ -5,13 +5,15 @@ import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Resources/enums_manager.dart';
 import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/Provider/user_state.dart';
+import 'package:smart_sales/View/Screens/Documents/document_controller.dart';
 import 'package:smart_sales/View/Screens/Documents/document_viewmodel.dart';
-import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
+import 'package:smart_sales/View/Common/Widgets/Common/custom_textfield.dart';
 
 class ThirdRow extends StatelessWidget {
-  final double width;
   final int sectionNo;
-  const ThirdRow({Key? key, required this.width, required this.sectionNo})
+  final DocumentsController documentsController;
+  const ThirdRow(
+      {Key? key, required this.sectionNo, required this.documentsController})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -25,8 +27,8 @@ class ThirdRow extends StatelessWidget {
                       : "box_name".tr) +
                   ": ",
             ),
-            SizedBox(
-              width: width * 0.01,
+            const SizedBox(
+              width: 5,
             ),
             Expanded(
               child: Text(
@@ -38,24 +40,22 @@ class ThirdRow extends StatelessWidget {
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
               ),
             ),
-            SizedBox(
-              width: width * 0.01,
+            const SizedBox(
+              width: 5,
             ),
             Text(
               "doc_number".tr,
             ),
-            SizedBox(
-              width: width * 0.01,
+            const SizedBox(
+              width: 5,
             ),
             Expanded(
               child: CustomTextField(
                 activated: false,
                 hintText: "",
                 name: "op_number",
-                initialValue: context
-                    .read<GeneralState>()
-                    .currentReceipt["oper_id"]
-                    .toString(),
+                initialValue:
+                    documentsController.document.value["oper_id"].toString(),
               ),
             ),
           ],

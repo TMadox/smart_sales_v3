@@ -3,26 +3,19 @@ import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Util/locator.dart';
 import 'package:smart_sales/Data/Database/Commands/save_data.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:smart_sales/Data/Models/client_model.dart';
+import 'package:smart_sales/Data/Models/client.dart';
+import 'package:smart_sales/Data/Models/entity.dart';
 import 'package:smart_sales/Data/Models/options_model.dart';
 import 'package:smart_sales/Data/Models/user_model.dart';
 import 'package:smart_sales/Provider/options_state.dart';
 import 'package:smart_sales/Services/Repositories/dio_repository.dart';
 
 class ClientsState extends ChangeNotifier {
-  List<ClientsModel> clients = [];
+  List<Client> clients = [];
   String lastCustomerFetchDate = "";
-  ClientsModel? currentClient;
-
-  void setCurrentCustomer({
-    required ClientsModel customer,
-  }) {
-    currentClient = customer;
-    notifyListeners();
-  }
 
   Future<void> addClient({
-    required ClientsModel client,
+    required Client client,
   }) async {
     clients.add(client);
     await locator.get<SaveData>().saveCustomersData(
@@ -51,7 +44,7 @@ class ClientsState extends ChangeNotifier {
         customersListFromJson(input: GetStorage().read("customers") ?? "[]");
   }
 
-  Future<List<ClientsModel>> reloadClients({
+  Future<List<Client>> reloadClients({
     required BuildContext context,
     required UserModel user,
   }) async {
@@ -77,20 +70,22 @@ class ClientsState extends ChangeNotifier {
   }) async {
     if (sectionType == 2 || sectionType == 101) {
       double originalAmount =
-          clients.firstWhere((element) => element.accId == id).curBalance ??
-              0.0;
-      clients.firstWhere((element) => element.accId == id).curBalance =
-          (originalAmount - amount);
+          clients.firstWhere((element) => element.accId == id).curBalance;
+      final Client client =
+          clients.firstWhere((element) => element.accId == id);
+      clients[clients.indexOf(client)] = clients[clients.indexOf(client)]
+          .copyWith(curBalance: (originalAmount - amount));
     } else {
       double originalAmount =
-          clients.firstWhere((element) => element.accId == id).curBalance ??
-              0.0;
-      clients.firstWhere((element) => element.accId == id).curBalance =
-          (originalAmount + amount);
+          clients.firstWhere((element) => element.accId == id).curBalance;
+      final Client client =
+          clients.firstWhere((element) => element.accId == id);
+      clients[clients.indexOf(client)] = clients[clients.indexOf(client)]
+          .copyWith(curBalance: (originalAmount + amount));
     }
     await locator.get<SaveData>().saveCustomersData(
           input: clients,
         );
-    return clients.firstWhere((element) => element.accId == id).curBalance!;
+    return clients.firstWhere((element) => element.accId == id).curBalance;
   }
 }

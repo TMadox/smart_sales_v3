@@ -1,7 +1,7 @@
 // ignore: file_names
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Resources/enums_manager.dart';
 import 'package:smart_sales/App/Util/locator.dart';
@@ -17,7 +17,7 @@ import 'package:smart_sales/Provider/powers_state.dart';
 import 'package:smart_sales/Provider/stor_state.dart';
 import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/Services/Repositories/dio_repository.dart';
-import 'package:smart_sales/View/Screens/Receipts/receipt_viewmodel.dart';
+import 'package:smart_sales/View/Screens/Receipts/receipts_controller.dart';
 
 class ItemsViewmodel extends ChangeNotifier {
   List<ItemsModel> items = [];
@@ -82,12 +82,12 @@ class ItemsViewmodel extends ChangeNotifier {
           for (var currentItem in items) {
             TypeModel tempType = types.firstWhere(
                 (type) => (type.typeId == currentItem.typeId &&
-                    type.storId == stor.storId), orElse: () {
+                    type.storId == stor.id), orElse: () {
               return TypeModel(
                 qtyId: 0,
                 typeId: currentItem.typeId,
                 itemId: 1,
-                storId: stor.storId,
+                storId: stor.id,
                 curQty0: 0,
                 noInQty: 0,
               );
@@ -131,10 +131,7 @@ class ItemsViewmodel extends ChangeNotifier {
 
   void muliAddToReceipt({required BuildContext context}) {
     for (var item in selectedItems) {
-      context.read<ReceiptViewmodel>().addNewItem(
-            item: item,
-            context: context,
-          );
+      Get.find<ReceiptsController>().addItem(input: item, context: context);
     }
   }
 
@@ -340,14 +337,18 @@ class ItemsViewmodel extends ChangeNotifier {
   }) {
     List<ItemsModel> filteredItems = filterItems(context: context);
     if (filteredItems.isNotEmpty && canTap) {
-      if (context.read<GeneralState>().currentReceipt["selected_stor_id"] ==
+      if (Get.find<ReceiptsController>()
+              .currentReceipt
+              .value["selected_stor_id"] ==
           null) {
         return filteredItems;
       } else {
         return filteredItems
             .where((element) =>
                 element.storId ==
-                context.read<GeneralState>().currentReceipt["selected_stor_id"])
+                Get.find<ReceiptsController>()
+                    .currentReceipt
+                    .value["selected_stor_id"])
             .toList();
       }
     } else {

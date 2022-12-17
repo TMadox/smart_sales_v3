@@ -5,26 +5,29 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:smart_sales/App/Resources/values_manager.dart';
 import 'package:smart_sales/App/Util/colors.dart';
-import 'package:smart_sales/Data/Models/client_model.dart';
+import 'package:smart_sales/Data/Models/client.dart';
 import 'package:smart_sales/Provider/clients_state.dart';
-import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/Provider/options_state.dart';
 import 'package:smart_sales/Provider/stor_state.dart';
 import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/View/Screens/Clients/clients_source.dart';
-import 'package:smart_sales/View/Widgets/Common/custom_textfield.dart';
+import 'package:smart_sales/View/Common/Widgets/Common/custom_textfield.dart';
 import 'package:provider/provider.dart';
+import 'package:smart_sales/View/Screens/Items/items_viewmodel.dart';
 
 class ClientsScreen extends StatefulWidget {
   final bool canPushReplace;
   final int sectionType;
   final bool canTap;
+  final int? storeId;
   const ClientsScreen({
     Key? key,
     required this.canPushReplace,
     required this.sectionType,
     required this.canTap,
+    this.storeId,
   }) : super(key: key);
   @override
   State<ClientsScreen> createState() => _ClientsScreenState();
@@ -35,13 +38,9 @@ class _ClientsScreenState extends State<ClientsScreen> {
   late int selectedStoreId;
   @override
   void initState() {
-    if (context.read<GeneralState>().currentReceipt["selected_stor_id"] ==
-        null) {
-      selectedStoreId = context.read<UserState>().user.defStorId;
-    } else {
-      selectedStoreId =
-          context.read<GeneralState>().currentReceipt["selected_stor_id"];
-    }
+    selectedStoreId =
+        widget.storeId ?? context.read<UserState>().user.defStorId;
+
     super.initState();
   }
 
@@ -84,10 +83,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
                       child: FormBuilderDropdown<int>(
                         name: "stor",
                         iconEnabledColor: Colors.transparent,
-                        initialValue: context
-                                .read<GeneralState>()
-                                .currentReceipt["selected_stor_id"] ??
-                            selectedStoreId,
+                        initialValue: selectedStoreId,
                         enabled: context
                                 .read<OptionsState>()
                                 .options
@@ -110,12 +106,12 @@ class _ClientsScreenState extends State<ClientsScreen> {
                               (stor) => DropdownMenuItem<int>(
                                 alignment: AlignmentDirectional.center,
                                 child: AutoSizeText(
-                                  stor.storName.toString(),
+                                  stor.name.toString(),
                                   style: GoogleFonts.cairo(
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                value: stor.storId,
+                                value: stor.id,
                               ),
                             )
                             .toList(),
@@ -140,139 +136,145 @@ class _ClientsScreenState extends State<ClientsScreen> {
             ),
           ),
         ),
-        body: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            double width = constraints.maxWidth;
-            double height = constraints.maxHeight;
-            return Center(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: SizedBox(
-                  width: width * 0.98,
-                  height: height * 0.95,
-                  child: Column(
-                    children: [
-                      Align(
-                        alignment: AlignmentDirectional.centerStart,
-                        child: Text(
-                          "last_clients_update".tr +
-                              ": " +
-                              context
-                                  .read<ClientsState>()
-                                  .lastCustomerFetchDate,
-                          style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(30),
-                            child: PaginatedDataTable(
-                              sortAscending: true,
-                              headingRowHeight: height * 0.09,
-                              dataRowHeight: height * 0.1,
-                              horizontalMargin: 0,
-                              arrowHeadColor: Colors.green,
-                              columnSpacing: 0,
-                              columns: [
-                                "number".tr,
-                                "name".tr,
-                                "cst_code".tr,
-                                "current_credit".tr,
-                                "max_debt".tr,
-                                "employee_number".tr,
-                                "user_number".tr,
-                              ]
-                                  .map(
-                                    (e) => DataColumn(
-                                      label: Expanded(
-                                        child: Container(
-                                          alignment:
-                                              AlignmentDirectional.center,
-                                          color: Colors.green,
-                                          width: double.infinity,
-                                          child: Text(
-                                            e,
-                                            style: GoogleFonts.cairo(
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                  .toList(),
-                              source: ClientsSource(
-                                clients: filterList(
-                                  context: context,
-                                  input: searchWord,
-                                ),
-                                context: context,
-                                canTap: widget.canTap,
-                                canPushReplacement: widget.canPushReplace,
-                                sectionTypeNo: widget.sectionType,
-                                selectedStorId: selectedStoreId,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: height * 0.02,
-                      ),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(15),
-                        child: Consumer<ClientsState>(
-                          builder:
-                              (BuildContext context, value, Widget? child) {
-                            double totalCredit = 0;
-                            for (var clients in value.clients) {
-                              totalCredit += clients.curBalance!;
-                            }
-                            return Column(
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: width * 0.02,
-                                  ),
-                                  color: smaltBlue,
+        body: Padding(
+          padding: const EdgeInsets.all(5),
+          child: Column(
+            children: [
+              Expanded(
+                child: Container(
+                  foregroundDecoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15.0),
+                    border: Border.all(color: Colors.green, width: 4),
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  clipBehavior: Clip.hardEdge,
+                  child: SingleChildScrollView(
+                    child: PaginatedDataTable(
+                      sortAscending: true,
+                      headingRowHeight: 30,
+                      dataRowHeight: 30,
+                      horizontalMargin: 0,
+                      arrowHeadColor: Colors.green,
+                      columnSpacing: 0,
+                      columns: [
+                        "number",
+                        "name",
+                        "cst_code",
+                        "current_credit",
+                        "max_debt",
+                        "employee_number",
+                        "user_number",
+                      ]
+                          .map(
+                            (title) => DataColumn(
+                              label: Expanded(
+                                child: Container(
+                                  alignment: AlignmentDirectional.center,
+                                  color: Colors.green,
+                                  width: double.infinity,
                                   child: Text(
-                                    "total_credit".tr,
+                                    title.tr,
+                                    textAlign: TextAlign.center,
                                     style: GoogleFonts.cairo(
                                       color: Colors.white,
                                     ),
                                   ),
                                 ),
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: width * 0.02,
-                                  ),
-                                  child: AutoSizeText(
-                                    totalCredit.toString(),
-                                    style: GoogleFonts.cairo(),
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
+                              ),
+                            ),
+                          )
+                          .toList(),
+                      source: ClientsSource(
+                        clients: filterList(
+                          context: context,
+                          input: searchWord,
                         ),
-                      )
-                    ],
+                        context: context,
+                        canTap: widget.canTap,
+                        canPushReplacement: widget.canPushReplace,
+                        sectionTypeNo: widget.sectionType,
+                        selectedStorId: selectedStoreId,
+                      ),
+                    ),
                   ),
                 ),
               ),
-            );
-          },
+              const SizedBox(
+                height: 5,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                clipBehavior: Clip.antiAlias,
+                width: 200,
+                child: Consumer<ClientsState>(
+                  builder: (BuildContext context, value, Widget? child) {
+                    double totalCredit = 0;
+                    for (var clients in value.clients) {
+                      totalCredit += clients.curBalance;
+                    }
+                    return DataTable(
+                      headingRowColor:
+                          MaterialStateProperty.resolveWith<Color?>(
+                        (Set<MaterialState> states) {
+                          return smaltBlue;
+                        },
+                      ),
+                      border: TableBorder.all(
+                        width: 0.5,
+                        style: BorderStyle.none,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      headingRowHeight: 30,
+                      dataRowHeight: 30,
+                      horizontalMargin: 0,
+                      columnSpacing: 0,
+                      columns: [
+                        DataColumn(
+                          label: Expanded(
+                            child: Center(
+                              child: Text(
+                                "total_credit".tr,
+                                style: GoogleFonts.cairo(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                      rows: [
+                        DataRow(
+                          cells: [
+                            DataCell(
+                              Center(
+                                child: Text(
+                                  totalCredit.toString(),
+                                  maxLines: 1,
+                                  style: GoogleFonts.cairo(),
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  List<ClientsModel> filterList(
+  List<Client> filterList(
       {required String input, required BuildContext context}) {
     if (input != "") {
       return context.read<ClientsState>().clients.where((element) {
-        return (element.amName!.contains(input) ||
+        return (element.name.contains(input) ||
             element.accId.toString().contains(input));
       }).toList();
     } else {

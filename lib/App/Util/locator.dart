@@ -4,7 +4,6 @@ import 'package:smart_sales/Data/Database/Commands/read_data.dart';
 import 'package:smart_sales/Data/Database/Commands/save_data.dart';
 import 'package:smart_sales/Data/Database/Secure/read_sensitive_data.dart';
 import 'package:smart_sales/Data/Database/Secure/save_sensitive_data.dart';
-
 import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/Services/Repositories/check_allowance_repo.dart';
 import 'package:smart_sales/Services/Repositories/customers_repo.dart';
@@ -15,7 +14,6 @@ import 'package:smart_sales/Services/Repositories/login_repo.dart';
 import 'package:smart_sales/Services/Repositories/options_repo.dart';
 import 'package:smart_sales/Services/Repositories/powers_repo.dart';
 import 'package:smart_sales/Services/Repositories/request_allowance_repo.dart';
-import 'package:smart_sales/Services/Repositories/upload_repo.dart';
 
 final locator = GetIt.instance;
 
@@ -24,7 +22,6 @@ void inject() {
   locator.registerLazySingleton<DioRepository>(() => DioRepository());
   locator.registerLazySingleton<CustomersRepo>(() => CustomersRepo());
   locator.registerLazySingleton<LoginRepo>(() => LoginRepo());
-  locator.registerLazySingleton<UploadReceipts>(() => UploadReceipts());
   locator.registerLazySingleton<OptionsRepo>(() => OptionsRepo());
   locator.registerLazySingleton<InfoRepo>(() => InfoRepo());
   locator.registerLazySingleton<PowersRepo>(() => PowersRepo());

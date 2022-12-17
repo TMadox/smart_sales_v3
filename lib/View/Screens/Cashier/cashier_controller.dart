@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -7,19 +6,17 @@ import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Util/routing.dart';
 import 'package:smart_sales/Data/Models/cashier_settings_model.dart';
 import 'package:smart_sales/Data/Models/item_model.dart';
-import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/Provider/powers_state.dart';
-import 'package:smart_sales/View/Screens/Base/base_viewmodel.dart';
+import 'package:smart_sales/View/Common/Controllers/general_controller.dart';
 import 'package:smart_sales/View/Screens/Cashier/Widget/cashier_save_dialog.dart';
 import 'package:smart_sales/View/Screens/Cashier/Widget/chashier_dialog_body.dart';
-import 'package:smart_sales/View/Widgets/Common/alert_snackbar.dart';
-import 'package:smart_sales/View/Widgets/Dialogs/error_dialog.dart';
+import 'package:smart_sales/View/Common/Widgets/Common/alert_snackbar.dart';
+import 'package:smart_sales/View/Common/Widgets/Dialogs/error_dialog.dart';
 
-class CashierController extends GetxController with BaseViewmodel {
+class CashierController extends GetxController with GeneralController {
   final selectedKindId = Rxn<int>();
   final selectedGroupId = Rxn<int>();
   final List<ItemsModel> items;
-  final selectedItems = Rx<List<Map>>([]);
   final filteredItems = Rx<List<ItemsModel>>([]);
   String searchWord = '';
   final cashierSettings = Rx(
@@ -37,7 +34,7 @@ class CashierController extends GetxController with BaseViewmodel {
   }) {
     filteredItems.value = filterItems();
     cashierSettings.value = CashierSettingsModel.fromJson(
-      GetStorage().read<String>("cashier_settings") ?? "{}",
+      GetStorage().read("cashier_settings") ?? "{}",
     );
   }
 
@@ -53,9 +50,7 @@ class CashierController extends GetxController with BaseViewmodel {
     GetStorage().write("cashier_settings", cashierSettings.toJson());
   }
 
-  void clearSelectedItems() {
-    selectedItems.value.clear();
-  }
+ 
 
   void selectItem({required Map input, required bool value}) {
     if (value) {
@@ -86,7 +81,6 @@ class CashierController extends GetxController with BaseViewmodel {
   void addCashierItem({
     required BuildContext context,
     required ItemsModel item,
-    required GeneralState generalState,
     required int qty,
   }) {
     try {
@@ -97,18 +91,17 @@ class CashierController extends GetxController with BaseViewmodel {
           text: "qty_error".tr,
         );
       } else {
-        addNewItem(
+        addItem(
           context: context,
-          item: item,
           qty: qty,
+          input: item,
         );
       }
       filteredItems.value = filterItems();
       Get.back();
       update();
     } catch (e) {
-      log(e.toString());
-      generalState.removeLastItem();
+      removeLastItem();
       showErrorDialog(
         context: context,
         description: e.toString(),
@@ -119,24 +112,23 @@ class CashierController extends GetxController with BaseViewmodel {
 
   void saveChashier({
     required BuildContext context,
-    required GeneralState generalState,
   }) {
-    if (context.read<GeneralState>().receiptItems.isEmpty) {
+    if (receiptItems.value.isEmpty) {
       showAlertSnackbar(
         context: context,
         text: "no_items".tr,
       );
     } else {
-      generalState.changeReceiptValue(
+      changeReceiptValue(
         input: {
-          "cash_value": generalState.currentReceipt["oper_net_value_with_tax"],
+          "cash_value": currentReceipt.value["oper_net_value_with_tax"],
           "saraf_cash_value": 0.0,
         },
       );
       cashierSaveDialog(
         context: context,
         body: ChashierDialogBody(
-          generalState: generalState,
+          cashierController: this,
         ),
         onSave: () async {
           Get.back();
