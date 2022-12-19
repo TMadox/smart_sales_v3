@@ -350,10 +350,14 @@ class LocalizationManager extends Translations {
     "cashier settings": "Cashier Settings",
     "employee payment document": "Employee Payment Document",
     "employee seizure document": "Employee Seizure Document",
-    "employee id": "Employee ID"
+    "employee id": "Employee ID",
+    "seizure from": "Seizure From",
+    "payment from": "Payment From",
   };
 
   final Map<String, String> arabic = {
+    "seizure from": "استلمنا من",
+    "payment from": "الدفع من",
     "employee id": "رقم الموظف",
     "employee payment document": "سند دفع موظف",
     "employee seizure document": "سند قبض موظف",

@@ -32,7 +32,7 @@ class FirstRow extends StatelessWidget {
     return Row(
       children: [
         Text(
-          sectionNo == 102 ? "paid_by".tr : "received_from".tr,
+          documentsController.title(sectionNo),
         ),
         const SizedBox(
           width: 5,

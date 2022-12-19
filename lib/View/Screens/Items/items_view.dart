@@ -198,6 +198,7 @@ class _ItemsViewState extends State<ItemsView> {
                     borderRadius: BorderRadius.circular(15.0),
                   ),
                   clipBehavior: Clip.hardEdge,
+                  alignment: AlignmentDirectional.center,
                   child: SingleChildScrollView(
                     child: Consumer<ItemsViewmodel>(
                       builder: (BuildContext context, state, Widget? child) {

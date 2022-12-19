@@ -35,6 +35,23 @@ class DocumentsController extends GetxController with BaseController {
     });
   }
 
+  String title(int sectionTypeNo) {
+    switch (sectionTypeNo) {
+      case 101:
+      case 104:
+      case 106:
+      case 108:
+        return "payment from".tr;
+      case 102:
+      case 103:
+      case 105:
+      case 107:
+        return "seizure from".tr;
+      default:
+        return "";
+    }
+  }
+
   num calculateCreditAfter() {
     num creditBefore = document.value["credit_before"];
     num resideValue = document.value["cash_value"];
