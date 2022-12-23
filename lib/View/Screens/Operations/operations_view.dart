@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:smart_sales/App/Resources/screen_size.dart';
 import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/View/Common/Controllers/upload_controller.dart';
 import 'package:smart_sales/View/Screens/Operations/Widgets/receipts_summery_table.dart';
@@ -14,7 +13,8 @@ import 'package:smart_sales/View/Common/Widgets/Common/custom_textfield.dart';
 import 'package:provider/provider.dart';
 
 class OperationsView extends StatefulWidget {
-  const OperationsView({Key? key}) : super(key: key);
+  final bool selecting;
+  const OperationsView({Key? key, required this.selecting}) : super(key: key);
 
   @override
   State<OperationsView> createState() => _OperationsViewState();
@@ -77,7 +77,6 @@ class _OperationsViewState extends State<OperationsView> {
                     initialValue: 0,
                     name: "filter",
                     iconEnabledColor: Colors.transparent,
-                    // isDense: false,
                     onChanged: (value) {
                       setState(() {
                         filterSectionType = value!;
@@ -283,9 +282,7 @@ class _OperationsViewState extends State<OperationsView> {
                 },
                 mini: true,
                 backgroundColor: Colors.green,
-                child: const Icon(
-                  Icons.upload,
-                ),
+                child: const Icon(Icons.upload),
               ),
             ],
           ),
@@ -321,56 +318,55 @@ class _OperationsViewState extends State<OperationsView> {
                     ),
                     clipBehavior: Clip.hardEdge,
                     child: SingleChildScrollView(
-                        child: PaginatedDataTable(
-                      arrowHeadColor: Colors.green,
-                      headingRowHeight: 30,
-                      dataRowHeight: 30,
-                      horizontalMargin: 0,
-                      columnSpacing: 0,
-                      source: OperationsSource(
-                        context: context,
-                        receipts: filterList(
-                          input: searchWord,
-                          receiptsList: operationController.operations.value,
+                      child: PaginatedDataTable(
+                        arrowHeadColor: Colors.green,
+                        headingRowHeight: 30,
+                        dataRowHeight: 30,
+                        horizontalMargin: 0,
+                        columnSpacing: 0,
+                        source: OperationsSource(
+                          context: context,
+                          receipts: filterList(
+                            input: searchWord,
+                            receiptsList: operationController.operations.value,
+                          ),
+                          controller: operationController,
+                          isSelecting: widget.selecting,
                         ),
-                        controller: operationController,
-                      ),
-                      columns: [
-                        "number".tr,
-                        "customer_name".tr,
-                        "receipt_total".tr,
-                        "date".tr,
-                        "time".tr,
-                        "paid_amount".tr,
-                        "operation_type".tr,
-                        "uploaded".tr
-                      ]
-                          .map(
-                            (e) => DataColumn(
-                              label: Expanded(
-                                child: Container(
-                                  color: Colors.green,
-                                  width: screenWidth(context) * 0.15,
-                                  child: Center(
-                                    child: Text(
-                                      e,
-                                      textAlign: TextAlign.center,
-                                      style: GoogleFonts.cairo(
-                                        color: Colors.white,
+                        columns: [
+                          "number",
+                          "customer_name",
+                          "receipt_total",
+                          "date",
+                          "time",
+                          "paid_amount",
+                          "operation_type",
+                          "uploaded",
+                        ]
+                            .map(
+                              (title) => DataColumn(
+                                label: Expanded(
+                                  child: Container(
+                                    color: Colors.green,
+                                    child: Center(
+                                      child: Text(
+                                        title.tr,
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.cairo(
+                                          color: Colors.white,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                          )
-                          .toList(),
-                    )),
+                            )
+                            .toList(),
+                      ),
+                    ),
                   ),
                 ),
-                const SizedBox(
-                  height: 5,
-                ),
+                const SizedBox(height: 5),
                 const ReceiptsSummeryTable()
               ],
             ),

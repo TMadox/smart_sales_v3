@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import 'package:smart_sales/App/Printing/create_pdf.dart';
 import 'package:smart_sales/App/Resources/enums_manager.dart';
-import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/View/Screens/Base/base_controller.dart';
-import 'package:provider/provider.dart';
-import 'package:smart_sales/View/Common/Widgets/Dialogs/done_dialog.dart';
 
 class DocumentsViewmodel extends ChangeNotifier with BaseController {
   PaymentMethod paymentMethod = PaymentMethod.cash;

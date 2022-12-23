@@ -1,13 +1,11 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/Data/Models/client.dart';
 import 'package:smart_sales/Data/Models/info_model.dart';
 import 'package:smart_sales/Data/Models/item_model.dart';
 import 'package:smart_sales/Data/Models/options_model.dart';
 import 'package:smart_sales/Data/Models/power_model.dart';
-import 'package:provider/provider.dart';
-import 'package:smart_sales/Provider/general_state.dart';
+
 
 class SaveData {
   final GetStorage box = GetStorage();

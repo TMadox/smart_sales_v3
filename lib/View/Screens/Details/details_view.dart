@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:auto_size_text/auto_size_text.dart';
 // ignore: implementation_imports
 import 'package:collection/src/iterable_extensions.dart';
@@ -64,7 +65,7 @@ class _DetailsViewState extends State<DetailsView> {
                     Expanded(
                       flex: 3,
                       child: Container(
-                        height: 30,
+                        height: 40,
                         decoration: const BoxDecoration(
                           color: smaltBlue,
                           borderRadius: BorderRadius.only(
@@ -133,7 +134,7 @@ class _DetailsViewState extends State<DetailsView> {
                   horizontal: 5,
                   vertical: 1,
                 ),
-                height: 30,
+                height: 35,
                 decoration: const BoxDecoration(
                   color: smaltBlue,
                   borderRadius: BorderRadius.only(
@@ -220,9 +221,6 @@ class _DetailsViewState extends State<DetailsView> {
                               iconData: Icons.redo,
                             ),
                           ),
-                          const SizedBox(
-                            height: 5,
-                          ),
                           OptionsButton(
                             height: 30,
                             color: Colors.purple,
@@ -244,9 +242,6 @@ class _DetailsViewState extends State<DetailsView> {
                             },
                             iconData: Icons.print,
                           ),
-                          const SizedBox(
-                            height: 5,
-                          ),
                           OptionsButton(
                             height: 30,
                             color: Colors.red,
@@ -254,9 +249,6 @@ class _DetailsViewState extends State<DetailsView> {
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                          ),
-                          const SizedBox(
-                            height: 5,
                           ),
                           OptionsButton(
                             height: 30,
@@ -267,7 +259,6 @@ class _DetailsViewState extends State<DetailsView> {
                                 receipt: widget.receipt,
                                 share: true,
                               );
-                              Navigator.of(context).pop();
                             },
                             iconData: Icons.share,
                           ),
@@ -279,8 +270,15 @@ class _DetailsViewState extends State<DetailsView> {
                     ),
                     Expanded(
                       flex: 20,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(15),
+                      child: Container(
+                        foregroundDecoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(width: 1, color: Colors.red),
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        clipBehavior: Clip.hardEdge,
                         child: SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: SingleChildScrollView(
@@ -294,11 +292,6 @@ class _DetailsViewState extends State<DetailsView> {
                               }),
                               headingRowHeight: 30,
                               dataRowHeight: 30,
-                              border: TableBorder.all(
-                                width: 0.5,
-                                style: BorderStyle.none,
-                                borderRadius: BorderRadius.circular(15),
-                              ),
                               columns: [
                                 "number".tr,
                                 "item".tr,

@@ -13,7 +13,6 @@ import 'package:smart_sales/Data/Models/item_model.dart';
 import 'package:smart_sales/Data/Models/options_model.dart';
 import 'package:smart_sales/Data/Models/user_model.dart';
 import 'package:smart_sales/Provider/clients_state.dart';
-import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/Provider/options_state.dart';
 import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/Services/Helpers/exceptions.dart';

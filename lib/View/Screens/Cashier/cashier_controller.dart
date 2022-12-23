@@ -50,8 +50,6 @@ class CashierController extends GetxController with GeneralController {
     GetStorage().write("cashier_settings", cashierSettings.toJson());
   }
 
- 
-
   void selectItem({required Map input, required bool value}) {
     if (value) {
       selectedItems.update(
@@ -97,7 +95,7 @@ class CashierController extends GetxController with GeneralController {
           input: item,
         );
       }
-      filteredItems.value = filterItems();
+      // filteredItems.value = filterItems();
       Get.back();
       update();
     } catch (e) {

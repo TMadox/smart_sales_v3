@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -10,8 +9,8 @@ import 'package:smart_sales/Data/Models/client.dart';
 import 'package:smart_sales/Data/Models/mow_model.dart';
 import 'package:smart_sales/Provider/mow_state.dart';
 import 'package:smart_sales/Provider/clients_state.dart';
-import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/View/Common/Features/starting_id.dart';
+import 'package:smart_sales/View/Screens/Mow/mow_view.dart';
 import 'package:smart_sales/View/Screens/Receipts/receipt_view.dart';
 import 'package:smart_sales/View/Screens/Receipts/receipts_controller.dart';
 
@@ -159,7 +158,13 @@ void partReturn({required BuildContext context, required Map receipt}) {
     } else {
       MowModel mow = context.read<MowState>().mows.firstWhere(
           (element) => element.accId == loadedReceipt["basic_acc_id"]);
-      Get.toNamed("receiptEdit", arguments: mow);
+      Get.to(
+        () => ReceiptView(
+          entity: mow,
+          sectionTypeNo: 4,
+          resetReceipt: false,
+        ),
+      );
     }
   } else {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -211,11 +216,11 @@ fullReturn({required BuildContext context, required Map receipt}) async {
     loadedReceipt["oper_id"] = StartingId().get(receipt["section_type_no"]);
     loadedReceipt["oper_code"] = StartingId().get(receipt["section_type_no"]);
     loadedReceipt["extend_time"] = DateTime.now().toString();
-    // context.read<GeneralState>().setCurrentReceipt(input: loadedReceipt);
-    // context
-    //     .read<GeneralState>()
-    //     .fillReceiptWithItems(input: products, addController: false);
-    await saveReceipt(context);
+    Get.find<ReceiptsController>().setReceipt(loadedReceipt);
+    Get.find<ReceiptsController>()
+        .fillReceiptWithItems(input: products, addController: false);
+    await Get.find<ReceiptsController>().computeReceipt(context);
+    Get.delete<ReceiptsController>();
     EasyLoading.dismiss();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -266,10 +271,9 @@ Future<void> newReceipt(
     loadedReceipt["oper_code"] = StartingId().get(loadedReceipt["oper_id"]);
     loadedReceipt["is_sender_complete_status"] = 0;
     loadedReceipt["extend_time"] = DateTime.now().toString();
-    // context.read<GeneralState>().setCurrentReceipt(input: loadedReceipt);
-    // context
-    //     .read<GeneralState>()
-    //     .fillReceiptWithItems(input: products, addController: true);
+    Get.find<ReceiptsController>().setReceipt(loadedReceipt);
+    Get.find<ReceiptsController>()
+        .fillReceiptWithItems(input: products, addController: false);
     Navigator.of(context).pop();
     if (loadedReceipt["section_type_no"] == 1) {
       final Client client = context.read<ClientsState>().clients.firstWhere(
@@ -309,11 +313,6 @@ bool checkIfAllowed({required BuildContext context, required Map receipt}) {
     }
   }
   return hasRemaining;
-}
-
-saveReceipt(BuildContext context) async {
-  // context.read<GeneralState>().setRemainingQty();
-  // await context.read<GeneralState>().computeReceipt(context: context);
 }
 
 int getReturnId({required int parentTypeNo}) {

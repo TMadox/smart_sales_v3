@@ -9,15 +9,18 @@ import 'package:smart_sales/View/Common/Widgets/Common/options_button.dart';
 import 'package:smart_sales/View/Common/Widgets/Dialogs/general_dialog.dart';
 import 'package:smart_sales/View/Common/Widgets/Dialogs/save_dialog.dart';
 import 'package:smart_sales/View/Screens/Items/items_view.dart';
+import 'package:smart_sales/View/Screens/Operations/operations_view.dart';
 import 'package:smart_sales/View/Screens/Receipts/receipts_controller.dart';
 
 class OptionsColumn extends StatelessWidget {
   final Map data;
   final ReceiptsController controller;
+  final bool isEditing;
   const OptionsColumn({
     Key? key,
     required this.data,
     required this.controller,
+    required this.isEditing,
   }) : super(key: key);
 
   @override
@@ -25,39 +28,37 @@ class OptionsColumn extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: [
-          OptionsButton(
-            height: 30,
-            color: Colors.blue,
-            onPressed: () {
-              Get.to(() => const ItemsView(canTap: true));
-            },
-            iconData: Icons.add,
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          OptionsButton(
-            height: 30,
-            color: Colors.purple,
-            onPressed: () {
-              Get.find<ReceiptsController>().scanBarcode(context: context);
-            },
-            iconData: Icons.qr_code,
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          OptionsButton(
-            height: 30,
-            color: Colors.pink,
-            onPressed: () {
-              // showSelectReceiptsDialog(context: context);
-            },
-            iconData: Icons.copy_rounded,
-          ),
-          const SizedBox(
-            height: 5,
-          ),
+          if (!isEditing)
+            OptionsButton(
+              height: 40,
+              color: Colors.blue,
+              onPressed: () {
+                Get.to(() => const ItemsView(canTap: true));
+              },
+              iconData: Icons.add,
+            ),
+          if (!isEditing)
+            OptionsButton(
+              height: 30,
+              color: Colors.purple,
+              onPressed: () {
+                Get.find<ReceiptsController>().scanBarcode(context: context);
+              },
+              iconData: Icons.qr_code,
+            ),
+          if (!isEditing)
+            OptionsButton(
+              height: 30,
+              color: Colors.pink,
+              onPressed: () {
+                Get.to(
+                  () => const OperationsView(
+                    selecting: true,
+                  ),
+                );
+              },
+              iconData: Icons.copy_rounded,
+            ),
           OptionsButton(
             height: 40,
             color: Colors.orange,
@@ -118,36 +119,31 @@ class OptionsColumn extends StatelessWidget {
             },
             iconData: Icons.save,
           ),
-          const SizedBox(
-            height: 5,
-          ),
-          OptionsButton(
-            height: 30,
-            color: Colors.indigo,
-            onPressed: () {
-              if (controller.selectedItems.value.isNotEmpty) {
-                generalDialog(
-                  title: "warning".tr,
-                  context: context,
-                  onCancel: () {
-                    controller.deleteItems(context: context);
-                  },
-                  onOkText: "back".tr,
-                  onCancelText: "confirm".tr,
-                  message: "discard_confirm".tr,
-                );
-              } else {
-                showAlertSnackbar(
-                  context: context,
-                  text: "not_items_to_discard".tr,
-                );
-              }
-            },
-            iconData: Icons.delete,
-          ),
-          const SizedBox(
-            height: 5,
-          ),
+          if (!isEditing)
+            OptionsButton(
+              height: 30,
+              color: Colors.indigo,
+              onPressed: () {
+                if (controller.selectedItems.value.isNotEmpty) {
+                  generalDialog(
+                    title: "warning".tr,
+                    context: context,
+                    onCancel: () {
+                      controller.deleteItems(context: context);
+                    },
+                    onOkText: "back".tr,
+                    onCancelText: "confirm".tr,
+                    message: "discard_confirm".tr,
+                  );
+                } else {
+                  showAlertSnackbar(
+                    context: context,
+                    text: "not_items_to_discard".tr,
+                  );
+                }
+              },
+              iconData: Icons.delete,
+            ),
           OptionsButton(
             height: 30,
             color: Colors.red,

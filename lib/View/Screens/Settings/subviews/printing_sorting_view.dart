@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_sales/App/Printing/create_pdf.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/View/Screens/Settings/Widgets/demo_cell.dart';
 import 'package:smart_sales/View/Screens/Settings/settings_viewmodel.dart';
 

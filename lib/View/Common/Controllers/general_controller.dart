@@ -13,7 +13,6 @@ import 'package:smart_sales/Data/Models/entity.dart';
 import 'package:smart_sales/Data/Models/item_model.dart';
 import 'package:smart_sales/Data/Models/location_model.dart';
 import 'package:smart_sales/Provider/clients_state.dart';
-import 'package:smart_sales/Provider/expenses_state.dart';
 import 'package:smart_sales/Provider/mow_state.dart';
 import 'package:smart_sales/Provider/powers_state.dart';
 import 'package:smart_sales/Provider/user_state.dart';
@@ -196,6 +195,11 @@ class GeneralController {
     }
     final List<Map> operations = ReadData().readOperations();
     final Map lastOperations = ReadData().readLastOperations();
+    if (currentReceipt.value["section_type_no"] != 31 &&
+        currentReceipt.value["parent_id"] != null) {
+      log("testttt");
+      setRemainingQty(operations);
+    }
     operations.add(currentReceipt.value);
     if (currentReceipt.value["oper_id"] >= 999999) {
       lastOperations[currentReceipt.value["section_type_no"].toString()] = null;
@@ -207,6 +211,31 @@ class GeneralController {
       operations: operations,
       lastOperations: lastOperations,
     );
+  }
+
+  void fillReceiptWithItems(
+      {required List<Map> input, bool addController = true}) {
+    receiptItems.value.addAll(input);
+    for (var i = 0; i < receiptItems.value.length; i++) {
+      if (addController) {
+        receiptItems.value[i]["fat_qty_controller"] = TextEditingController(
+            text: receiptItems.value[i]["fat_qty"].toString());
+        receiptItems.value[i]["fat_disc_value_controller"] =
+            TextEditingController(
+                text: receiptItems.value[i]["fat_disc_value"].toString());
+        receiptItems.value[i]["free_qty_controller"] = TextEditingController(
+            text: receiptItems.value[i]["free_qty"].toString());
+        receiptItems.value[i]["fat_price_controller"] = TextEditingController(
+            text: receiptItems.value[i]["original_price"].toString());
+      } else {
+        receiptItems.value[i]["fat_qty_controller"] =
+            TextEditingController(text: 0.toString());
+        receiptItems.value[i]["free_qty_controller"] =
+            TextEditingController(text: 0.toString());
+      }
+      calculateItemPrices(item: receiptItems.value[i]);
+    }
+    calculateReceiptNetValues();
   }
 
   void editItem({
@@ -282,7 +311,7 @@ class GeneralController {
     if (currentReceipt.value["saved"] == 1) {
       if ((item["qty_remain"] < item["fat_qty"]) ||
           (item["free_qty_remain"] < item["free_qty"])) {
-        throw "لا يمكن تقليل الكمية الي اقل من الكمية المتاحة";
+        throw "this quantity is bigger than allowed".tr;
       }
     }
 
@@ -362,34 +391,8 @@ class GeneralController {
             currentReceipt.value["section_type_no"] != 4);
   }
 
-  void fillReceiptWithItems(
-      {required List<Map> input, bool addController = true}) {
-    receiptItems.value.addAll(input);
-    for (var i = 0; i < receiptItems.value.length; i++) {
-      if (addController) {
-        receiptItems.value[i]["fat_qty_controller"] = TextEditingController(
-            text: receiptItems.value[i]["fat_qty"].toString());
-        receiptItems.value[i]["fat_disc_value_controller"] =
-            TextEditingController(
-                text: receiptItems.value[i]["fat_disc_value"].toString());
-        receiptItems.value[i]["free_qty_controller"] = TextEditingController(
-            text: receiptItems.value[i]["free_qty"].toString());
-        receiptItems.value[i]["fat_price_controller"] = TextEditingController(
-            text: receiptItems.value[i]["original_price"].toString());
-      } else {
-        receiptItems.value[i]["fat_qty_controller"] =
-            TextEditingController(text: 0.toString());
-        receiptItems.value[i]["free_qty_controller"] =
-            TextEditingController(text: 0.toString());
-      }
-      calculateItemPrices(item: receiptItems.value[i]);
-    }
-    calculateReceiptNetValues();
-  }
-
-  void setRemainingQty() {
+  void setRemainingQty(List<Map> operations) {
     Map parent = {};
-    final List<Map> operations = ReadData().readOperations();
     if (currentReceipt.value["section_type_no"] == 2) {
       parent = operations.firstWhere(
         (element) =>
@@ -418,17 +421,8 @@ class GeneralController {
   }) async {
     double creditAfter = 0;
     if (currentReceipt.value["section_type_no"] == 3 ||
-        currentReceipt.value["section_type_no"] == 4 ||
-        currentReceipt.value["section_type_no"] == 103 ||
-        currentReceipt.value["section_type_no"] == 104) {
+        currentReceipt.value["section_type_no"] == 4) {
       creditAfter = await context.read<MowState>().editMows(
-            id: currentReceipt.value["basic_acc_id"],
-            amount: currentReceipt.value["reside_value"] ?? 0.0,
-            sectionType: currentReceipt.value["section_type_no"],
-          );
-    } else if (currentReceipt.value["section_type_no"] == 108 ||
-        currentReceipt.value["section_type_no"] == 107) {
-      creditAfter = await context.read<ExpenseState>().editExpenses(
             id: currentReceipt.value["basic_acc_id"],
             amount: currentReceipt.value["reside_value"] ?? 0.0,
             sectionType: currentReceipt.value["section_type_no"],
@@ -439,8 +433,6 @@ class GeneralController {
           currentReceipt.value["oper_net_value_with_tax"];
     } else if (currentReceipt.value["section_type_no"] == 2 ||
         currentReceipt.value["section_type_no"] == 1 ||
-        currentReceipt.value["section_type_no"] == 101 ||
-        currentReceipt.value["section_type_no"] == 102 ||
         currentReceipt.value["section_type_no"] == 31 ||
         currentReceipt.value["section_type_no"] == 51) {
       creditAfter = await context.read<ClientsState>().editCustomer(
@@ -679,6 +671,8 @@ class GeneralController {
               currentReceipt.value["cash_value"];
     }
     currentReceipt.value["credit_after"] = calculateCreditAfter();
+    log(currentReceipt.value["credit_after"].toString());
+    log(currentReceipt.value["credit_before"].toString());
     currentReceipt.refresh();
   }
 

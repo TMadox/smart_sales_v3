@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
 import 'package:smart_sales/App/Util/routing.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:smart_sales/Data/Database/Commands/read_data.dart';
 import 'package:smart_sales/Provider/info_state.dart';
 import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/View/Common/Controllers/upload_controller.dart';
@@ -19,7 +17,6 @@ import 'package:smart_sales/View/Screens/Home/Subviews/operations_page.dart';
 import 'package:smart_sales/View/Screens/Home/Subviews/records_page.dart';
 import 'package:smart_sales/View/Screens/Home/Widgets/custom_fab.dart';
 import 'package:smart_sales/View/Screens/Home/Widgets/side_bar.dart';
-import 'package:smart_sales/View/Screens/Receipts/receipts_controller.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);

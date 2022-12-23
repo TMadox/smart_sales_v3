@@ -4,13 +4,11 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_sales/App/Resources/screen_size.dart';
 import 'package:smart_sales/App/Util/colors.dart';
 import 'package:smart_sales/App/Util/routing.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/Data/Models/stor_model.dart';
 import 'package:smart_sales/Provider/stor_state.dart';
-import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/View/Screens/Receipts/Widgets/receipt_items_table.dart';
 import 'package:smart_sales/View/Screens/Receipts/receipts_controller.dart';
@@ -373,6 +371,7 @@ class _StorTransferState extends State<StorTransfer> {
                       child: ReceiptItemsTable(
                         data: data,
                         receiptsController: receiptsController,
+                        isEditing: false,
                       ),
                     ),
                   ],

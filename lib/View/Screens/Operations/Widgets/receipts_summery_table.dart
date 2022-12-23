@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:smart_sales/App/Util/colors.dart';
 import 'package:smart_sales/App/Resources/values_manager.dart';
 import 'package:smart_sales/Data/Database/Commands/read_data.dart';
+import 'package:smart_sales/View/Common/Features/receipt_type.dart';
 
 class ReceiptsSummeryTable extends StatelessWidget {
   const ReceiptsSummeryTable({
@@ -63,7 +64,7 @@ class ReceiptsSummeryTable extends StatelessWidget {
                         color: Colors.red,
                         child: Center(
                           child: Text(
-                            receiptType(type: type),
+                            ReceiptType().get(type: type),
                             style: GoogleFonts.cairo(
                               color: Colors.white,
                             ),
@@ -201,27 +202,6 @@ class ReceiptsSummeryTable extends StatelessWidget {
     );
   }
 
-  String receiptType({required int type}) {
-    switch (type) {
-      case 0:
-        return "total".tr;
-      case 1:
-        return "sales".tr;
-      case 2:
-        return "return".tr;
-      case 3:
-        return "purchase".tr;
-      case 4:
-        return "purchase_return".tr;
-      case 101:
-        return "seizure_document".tr;
-      case 31:
-        return "cashier_receipt".tr;
-      default:
-        return "sales".tr;
-    }
-  }
-
   double totalValues(
       {required BuildContext context, required int type, required String key}) {
     final List<Map> operations = ReadData().readOperations();
@@ -237,6 +217,7 @@ class ReceiptsSummeryTable extends StatelessWidget {
                 element["section_type_no"] == 31 ||
                 element["section_type_no"] == 3 ||
                 element["section_type_no"] == 107 ||
+                element["section_type_no"] == 105 ||
                 element["section_type_no"] == 103))
             .fold<double>(0, (double sum, receipt) => sum + receipt[key]);
       }
@@ -250,6 +231,7 @@ class ReceiptsSummeryTable extends StatelessWidget {
             .where((element) => (element["section_type_no"] == type ||
                 element["section_type_no"] == 102 ||
                 element["section_type_no"] == 4 ||
+                element["section_type_no"] == 106 ||
                 element["section_type_no"] == 108 ||
                 element["section_type_no"] == 104))
             .fold<double>(0, (double sum, receipt) => sum + receipt[key]);
@@ -264,12 +246,14 @@ class ReceiptsSummeryTable extends StatelessWidget {
                 .fold<double>(0, (double sum, receipt) => sum + receipt[key]));
       } else {
         return (operations
-                .where((element) => (element["section_type_no"] == 1 ||
-                    element["section_type_no"] == 101 ||
-                    element["section_type_no"] == 3 ||
-                    element["section_type_no"] == 31 ||
-                    element["section_type_no"] == 107 ||
-                    element["section_type_no"] == 103))
+                .where(
+                  (element) => (element["section_type_no"] == 1 ||
+                      element["section_type_no"] == 101 ||
+                      element["section_type_no"] == 3 ||
+                      element["section_type_no"] == 31 ||
+                      element["section_type_no"] == 107 ||
+                      element["section_type_no"] == 103),
+                )
                 .fold<double>(0, (double sum, receipt) => sum + receipt[key]) -
             operations
                 .where(

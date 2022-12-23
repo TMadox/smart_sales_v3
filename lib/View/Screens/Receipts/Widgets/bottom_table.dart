@@ -88,7 +88,7 @@ class _BottomTableState extends State<BottomTable> {
                         width: 80,
                         padding: const EdgeInsets.symmetric(horizontal: 5),
                         decoration: BoxDecoration(
-                          color: Colors.green,
+                          color: Colors.green[800],
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(
@@ -149,7 +149,7 @@ class _BottomTableState extends State<BottomTable> {
                       Container(
                         width: 80,
                         decoration: BoxDecoration(
-                          color: Colors.blue,
+                          color: Colors.green[800],
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(
@@ -191,7 +191,7 @@ class _BottomTableState extends State<BottomTable> {
                         width: 80,
                         padding: const EdgeInsets.symmetric(horizontal: 5),
                         decoration: BoxDecoration(
-                          color: Colors.green,
+                          color: Colors.green[800],
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(

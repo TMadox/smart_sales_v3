@@ -1,4 +1,4 @@
-import 'dart:developer';
+import 'dart:convert';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -7,15 +7,18 @@ import 'package:smart_sales/App/Resources/screen_size.dart';
 import 'package:smart_sales/App/Resources/values_manager.dart';
 import 'package:smart_sales/View/Common/Features/receipt_type.dart';
 import 'package:smart_sales/View/Screens/Operations/operations_controller.dart';
+import 'package:smart_sales/View/Screens/Receipts/receipts_controller.dart';
 
 class OperationsSource extends DataTableSource {
   final List receipts;
   final BuildContext context;
   final OperationsController controller;
+  final bool isSelecting;
   OperationsSource({
     required this.receipts,
     required this.context,
     required this.controller,
+    required this.isSelecting,
   });
 
   @override
@@ -61,12 +64,18 @@ class OperationsSource extends DataTableSource {
                       ),
                     ),
               onTap: () {
-                log(receipt.toString());
-                if (receipt["section_type_no"] != 9999) {
-                  Navigator.of(context).pushNamed(
-                    "receiptDetails",
-                    arguments: receipt,
+                if (isSelecting) {
+                  Get.find<ReceiptsController>().fillReceiptWithItems(
+                    input: List.from(json.decode(receipt["products"])),
                   );
+                  Get.back();
+                } else {
+                  if (receipt["section_type_no"] != 9999) {
+                    Navigator.of(context).pushNamed(
+                      "receiptDetails",
+                      arguments: receipt,
+                    );
+                  }
                 }
               },
             ),

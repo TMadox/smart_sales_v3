@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -11,7 +9,6 @@ import 'package:smart_sales/View/Screens/Receipts/Widgets/bottom_table.dart';
 import 'package:smart_sales/View/Screens/Receipts/Widgets/first_bar.dart';
 import 'package:smart_sales/View/Screens/Receipts/Widgets/receipt_items_table.dart';
 import 'package:smart_sales/View/Screens/Receipts/Widgets/second_bar.dart';
-
 import 'package:smart_sales/View/Screens/Receipts/receipts_controller.dart';
 
 class ReceiptView extends StatefulWidget {
@@ -76,7 +73,6 @@ class _ReceiptViewState extends State<ReceiptView> {
 
   @override
   Widget build(BuildContext context) {
-    log(widget.sectionTypeNo.toString());
     return WillPopScope(
       onWillPop: () async {
         return Exit().commit(
@@ -118,6 +114,7 @@ class _ReceiptViewState extends State<ReceiptView> {
                       child: ReceiptItemsTable(
                         data: data,
                         receiptsController: receiptsController,
+                        isEditing: isEditing,
                       ),
                     ),
                     const SizedBox(

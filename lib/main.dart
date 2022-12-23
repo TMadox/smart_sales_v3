@@ -73,7 +73,6 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => InfoState()),
         ChangeNotifierProvider(create: (_) => PowersState()),
         ChangeNotifierProvider(create: (_) => LoginViewmodel()),
-        // ChangeNotifierProvider(create: (_) => PrintingViewmodel()),
         ChangeNotifierProvider(create: (_) => StoreState()),
         ChangeNotifierProvider(create: (_) => KindsState()),
         ChangeNotifierProvider(create: (_) => MowState()),
@@ -118,7 +117,7 @@ class MyApp extends StatelessWidget {
             minWidth: 480,
             defaultScale: true,
             breakpoints: [
-              const ResponsiveBreakpoint.autoScale(600, scaleFactor: 0.8),
+              const ResponsiveBreakpoint.autoScale(600, scaleFactor: 0.75),
             ],
           );
         }),

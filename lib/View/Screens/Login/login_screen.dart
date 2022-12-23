@@ -26,12 +26,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // floatingActionButton: FloatingActionButton(onPressed: () async {
-      //   final Dio _dio = Dio();
-      //   final response = await _dio.get("https://reqbin.com/echo");
-      //   log(response.statusCode.toString());
-      //   log(response.data.toString());
-      // }),
       body: Center(
         child: FormBuilder(
           key: _formKey,

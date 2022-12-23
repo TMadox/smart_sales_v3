@@ -353,9 +353,12 @@ class LocalizationManager extends Translations {
     "employee id": "Employee ID",
     "seizure from": "Seizure From",
     "payment from": "Payment From",
+    "this quantity is bigger than allowed":
+        "This qunatity is bigger than allowed",
   };
 
   final Map<String, String> arabic = {
+    "this quantity is bigger than allowed": "هذه الكمية اكبر من الكمية المتاحة",
     "seizure from": "استلمنا من",
     "payment from": "الدفع من",
     "employee id": "رقم الموظف",

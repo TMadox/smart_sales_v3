@@ -11,7 +11,7 @@ class MowState extends ChangeNotifier {
 
   Future<double> editMows({
     required int id,
-    required double amount,
+    required num amount,
     required int sectionType,
   }) async {
     if (sectionType == 3 || sectionType == 104) {

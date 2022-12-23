@@ -52,7 +52,9 @@ class InfoPage extends StatelessWidget {
                       imagePath: "assets/operations.png",
                       onPressed: () {
                         Get.to(
-                          () => const OperationsView(),
+                          () => const OperationsView(
+                            selecting: false,
+                          ),
                         );
                       },
                       title: "view_operations".tr,

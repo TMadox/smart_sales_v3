@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:smart_sales/Data/Database/Commands/read_data.dart';
 
 class StartingId {

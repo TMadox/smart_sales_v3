@@ -4,7 +4,6 @@ import 'package:smart_sales/App/Util/locator.dart';
 import 'package:smart_sales/Data/Database/Commands/save_data.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/Data/Models/client.dart';
-import 'package:smart_sales/Data/Models/entity.dart';
 import 'package:smart_sales/Data/Models/options_model.dart';
 import 'package:smart_sales/Data/Models/user_model.dart';
 import 'package:smart_sales/Provider/options_state.dart';
@@ -65,7 +64,7 @@ class ClientsState extends ChangeNotifier {
 
   Future<double> editCustomer({
     required int id,
-    required double amount,
+    required num amount,
     required int sectionType,
   }) async {
     if (sectionType == 2 || sectionType == 101) {

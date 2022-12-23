@@ -11,7 +11,7 @@ class ExpenseState extends ChangeNotifier {
 
   Future<double> editExpenses({
     required int id,
-    required double amount,
+    required num amount,
     required int sectionType,
   }) async {
     double originalAmount =

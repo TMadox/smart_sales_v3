@@ -1,10 +1,8 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
-import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
 import 'package:smart_sales/App/Resources/values_manager.dart';
-import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/View/Common/Widgets/Common/custom_textfield.dart';
 import 'package:smart_sales/View/Screens/Cashier/cashier_controller.dart';
 

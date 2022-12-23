@@ -4,17 +4,16 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smart_sales/App/Resources/values_manager.dart';
-import 'package:smart_sales/Provider/general_state.dart';
+import 'package:smart_sales/View/Common/Controllers/general_controller.dart';
 import 'package:smart_sales/View/Common/Widgets/Common/custom_textfield.dart';
-import 'package:provider/provider.dart';
 import 'package:smart_sales/View/Common/Widgets/Dialogs/general_dialog.dart';
-import 'package:smart_sales/View/Screens/Receipts/receipts_controller.dart';
 
 void showEditPriceDialog({
   required BuildContext context,
   required String leastSellingPrice,
   required Map item,
   required String originalPrice,
+  required GeneralController generalController,
   required String itemPrice,
 }) {
   final TextEditingController _controller = TextEditingController(
@@ -86,15 +85,20 @@ void showEditPriceDialog({
                 child: ElevatedButton(
                   onPressed: () {
                     try {
-                      Get.find<ReceiptsController>()
-                          .editItem(item: item, input: {
-                        "original_price": double.parse(_controller.value.text)
-                      });
+                      generalController.editItem(
+                        item: item,
+                        input: {
+                          "original_price": double.parse(_controller.value.text)
+                        },
+                      );
                       Navigator.of(context).pop();
                     } catch (e) {
-                      Get.find<ReceiptsController>().editItem(
-                          item: item,
-                          input: {"original_price": double.parse(itemPrice)});
+                      generalController.editItem(
+                        item: item,
+                        input: {
+                          "original_price": double.parse(itemPrice),
+                        },
+                      );
                       generalDialog(
                         context: context,
                         dialogType: DialogType.ERROR,

@@ -1,12 +1,9 @@
-import 'dart:developer';
-
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Resources/values_manager.dart';
-import 'package:smart_sales/Data/Models/entity.dart';
 import 'package:smart_sales/Data/Models/stor_model.dart';
 import 'package:smart_sales/Provider/stor_state.dart';
 import 'package:smart_sales/View/Screens/Receipts/receipts_controller.dart';

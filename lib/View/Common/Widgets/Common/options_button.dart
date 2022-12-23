@@ -18,6 +18,7 @@ class OptionsButton extends StatelessWidget {
     return Container(
       height: height,
       width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 5),
       decoration:
           BoxDecoration(borderRadius: BorderRadius.circular(5), color: color),
       child: InkWell(

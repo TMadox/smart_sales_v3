@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +17,6 @@ import 'package:smart_sales/Data/Models/info_model.dart';
 import 'package:smart_sales/Data/Models/options_model.dart';
 import 'package:smart_sales/Data/Models/power_model.dart';
 import 'package:smart_sales/Data/Models/user_model.dart';
-import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/Services/Helpers/exceptions.dart';
 import 'package:smart_sales/Services/Repositories/customers_repo.dart';

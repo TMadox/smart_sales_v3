@@ -11,7 +11,6 @@ import 'package:smart_sales/Data/Models/item_model.dart';
 import 'package:smart_sales/Data/Models/options_model.dart';
 import 'package:smart_sales/Data/Models/type_model.dart';
 import 'package:smart_sales/Data/Models/user_model.dart';
-import 'package:smart_sales/Provider/general_state.dart';
 import 'package:smart_sales/Provider/options_state.dart';
 import 'package:smart_sales/Provider/powers_state.dart';
 import 'package:smart_sales/Provider/stor_state.dart';
@@ -241,11 +240,6 @@ class ItemsViewmodel extends ChangeNotifier {
           );
           itemQty = currentItem.curQty;
           totalReceiptQty = qty * currentItem.unitConvert;
-          log(items
-              .firstWhere((element) =>
-                  element.unitId == id && element.storId == inStorId)
-              .curQty
-              .toString());
           items
               .firstWhere((element) =>
                   element.unitId == id && element.storId == inStorId)

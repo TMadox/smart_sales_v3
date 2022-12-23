@@ -5,7 +5,6 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:smart_sales/App/Resources/values_manager.dart';
 import 'package:smart_sales/App/Util/colors.dart';
 import 'package:smart_sales/Data/Models/client.dart';
 import 'package:smart_sales/Provider/clients_state.dart';
@@ -15,7 +14,6 @@ import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/View/Screens/Clients/clients_source.dart';
 import 'package:smart_sales/View/Common/Widgets/Common/custom_textfield.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_sales/View/Screens/Items/items_viewmodel.dart';
 
 class ClientsScreen extends StatefulWidget {
   final bool canPushReplace;

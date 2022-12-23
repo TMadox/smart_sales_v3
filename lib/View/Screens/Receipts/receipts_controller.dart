@@ -2,7 +2,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/Data/Models/item_model.dart';
 import 'package:smart_sales/Provider/powers_state.dart';
@@ -222,12 +221,18 @@ class ReceiptsController extends GetxController with GeneralController {
           ),
         ),
         DataCell(
-          CustomCell(
-            isEditable: context.read<PowersState>().canEditItemPrice,
-            item: item,
-            keyValue: 'original_price',
-            controller: item["fat_price_controller"],
-            generalController: this,
+          Card(
+            color: Colors.green[800],
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            child: CustomCell(
+              isEditable: context.read<PowersState>().canEditItemPrice,
+              textColor: Colors.white,
+              item: item,
+              keyValue: 'original_price',
+              controller: item["fat_price_controller"],
+              generalController: this,
+            ),
           ),
         ),
         DataCell(

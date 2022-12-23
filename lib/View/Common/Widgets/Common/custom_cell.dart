@@ -2,7 +2,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:smart_sales/View/Common/Controllers/general_controller.dart';
 import 'package:smart_sales/View/Common/Widgets/Common/custom_textfield.dart';
 import 'package:smart_sales/View/Common/Widgets/Dialogs/edit_price_dialog.dart';
@@ -14,6 +13,7 @@ class CustomCell extends StatefulWidget {
   final Map item;
   final GeneralController generalController;
   final TextEditingController? controller;
+  final Color? textColor;
   final double? width;
   const CustomCell({
     Key? key,
@@ -23,6 +23,7 @@ class CustomCell extends StatefulWidget {
     required this.generalController,
     this.controller,
     this.width,
+    this.textColor,
   }) : super(key: key);
 
   @override
@@ -35,8 +36,7 @@ class _CustomCellState extends State<CustomCell> {
     if (widget.controller != null) {
       widget.controller!.addListener(
         () {
-          final currentValue =
-              widget.generalController.currentReceipt.value[widget.keyValue];
+          final currentValue = widget.item[widget.keyValue];
           final value = widget.controller!.value.text;
           try {
             if (value != "" && value != ".") {
@@ -67,8 +67,7 @@ class _CustomCellState extends State<CustomCell> {
             );
             showErrorDialog(
               context: context,
-              description:
-                  'ليس لديك صلاحيات لتقليل السعر الي اقل من الحد الادني',
+              description: e.toString(),
               title: "error".tr,
             );
           }
@@ -119,6 +118,7 @@ class _CustomCellState extends State<CustomCell> {
                     context: context,
                     leastSellingPrice:
                         widget.item["least_selling_price_with_tax"].toString(),
+                    generalController: widget.generalController,
                     itemPrice: widget.item["original_price"].toString(),
                     item: widget.item,
                     originalPrice: widget.item["original_price"].toString(),
@@ -128,6 +128,10 @@ class _CustomCellState extends State<CustomCell> {
                   widget.item[widget.keyValue].toString(),
                   textAlign: TextAlign.center,
                   maxLines: 1,
+                  style: TextStyle(
+                    color: widget.textColor,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               );
             } else {
@@ -137,7 +141,7 @@ class _CustomCellState extends State<CustomCell> {
                     : widget.item[widget.keyValue].toString(),
                 textAlign: TextAlign.center,
                 maxLines: 1,
-                style: GoogleFonts.cairo(),
+                style: TextStyle(color: widget.textColor),
               );
             }
           },

@@ -498,7 +498,6 @@
 //     currentReceipt["credit_after"] = calculateCreditAfter();
 //   }
 
-
 //   deleteReceipt({required Map receipt}) {
 //     receiptsList.remove(receipt);
 //   }
@@ -604,5 +603,6 @@
 //           );
 //     }
 //     return ValuesManager.checkNum(creditAfter);
-//   // }
+//     // }
+//   }
 // }

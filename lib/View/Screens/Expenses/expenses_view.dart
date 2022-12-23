@@ -3,20 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_sales/App/Util/date.dart';
-import 'package:smart_sales/App/Util/device.dart';
-import 'package:smart_sales/App/Util/locator.dart';
 import 'package:smart_sales/App/Resources/values_manager.dart';
 import 'package:smart_sales/Data/Models/expense_model.dart';
-import 'package:smart_sales/Data/Models/user_model.dart';
 import 'package:smart_sales/Provider/expenses_state.dart';
-import 'package:smart_sales/Provider/general_state.dart';
-import 'package:smart_sales/Provider/options_state.dart';
-import 'package:smart_sales/Provider/powers_state.dart';
-import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/View/Screens/Documents/documents_view.dart';
 import 'package:smart_sales/View/Common/Widgets/Common/custom_textfield.dart';
-import 'package:smart_sales/View/Common/Widgets/Dialogs/return_dialog.dart';
 
 class ExpensesView extends StatefulWidget {
   final int sectionTypeNo;

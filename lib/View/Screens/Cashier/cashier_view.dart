@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -7,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
 import 'package:smart_sales/Data/Models/entity.dart';
 import 'package:smart_sales/Data/Models/kinds_model.dart';
-
 import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/View/Screens/Cashier/Widget/bottom_info.dart';
 import 'package:smart_sales/View/Screens/Cashier/Widget/details_table.dart';

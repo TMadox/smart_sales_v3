@@ -80,10 +80,13 @@ class DetailsTable extends StatelessWidget {
                     selected: selectedItems.contains(item),
                     color: MaterialStateProperty.resolveWith<Color?>(
                         (Set<MaterialState> states) {
+                      if (selectedItems.contains(item)) {
+                        return Colors.blue[100];
+                      }
                       if ((cashierController.receiptItems.value.indexOf(item) %
                               2) ==
                           0) {
-                        return Colors.grey[200];
+                        return Colors.yellow[50];
                       }
                       return null;
                     }),
