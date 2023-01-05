@@ -16,49 +16,28 @@ class _RecordsPageState extends State<RecordsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(
-            "assets/home_background3.png",
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 10,
+            runSpacing: 10,
+            children: [
+              OperationButton(
+                imagePath: "assets/new_rec.png",
+                title: "new_rec".tr,
+                onPressed: () {
+                  Get.to(
+                    () => const RegisterView(),
+                  );
+                },
+                visible: storage.read("allow_new_rec") ?? true,
+              )
+            ],
           ),
-          fit: BoxFit.fill,
-        ),
-      ),
-      child: Directionality(
-        textDirection: TextDirection.rtl,
-        child: LayoutBuilder(
-          builder: (context, constrains) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Column(
-                  children: [
-                    SizedBox(
-                      width: constrains.maxWidth * 0.89,
-                      child: Wrap(
-                        alignment: WrapAlignment.center,
-                        spacing: constrains.maxWidth * 0.02,
-                        runSpacing: constrains.maxHeight * 0.02,
-                        children: [
-                          OperationButton(
-                            imagePath: "assets/new_rec.png",
-                            title: "new_rec".tr,
-                            onPressed: () {
-                              Get.to(
-                                () => const RegisterView(),
-                              );
-                            },
-                            visible: storage.read("allow_new_rec") ?? true,
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            );
-          },
         ),
       ),
     );

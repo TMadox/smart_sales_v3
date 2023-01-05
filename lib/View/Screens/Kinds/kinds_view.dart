@@ -106,7 +106,7 @@ class _KindsViewState extends State<KindsView> {
                       (e) => DataCell(
                         Center(
                           child: Text(
-                            ValuesManager.doubleToString(e),
+                            ValuesManager.numToString(e),
                           ),
                         ),
                       ),

@@ -13,19 +13,24 @@ class MowState extends ChangeNotifier {
     required int id,
     required num amount,
     required int sectionType,
+    bool? reverse,
   }) async {
+    int factor = 1;
+    if (reverse ?? false) {
+      factor = -1;
+    }
     if (sectionType == 3 || sectionType == 104) {
       double originalAmount =
           mows.firstWhere((element) => element.accId == id).curBalance;
       final MowModel mow = mows.firstWhere((element) => element.accId == id);
       mows[mows.indexOf(mow)] = mows[mows.indexOf(mow)]
-          .copyWith(curBalance: (originalAmount - amount));
+          .copyWith(curBalance: (originalAmount - (amount * factor)));
     } else {
       double originalAmount =
           mows.firstWhere((element) => element.accId == id).curBalance;
       final MowModel mow = mows.firstWhere((element) => element.accId == id);
       mows[mows.indexOf(mow)] = mows[mows.indexOf(mow)]
-          .copyWith(curBalance: (originalAmount + amount));
+          .copyWith(curBalance: (originalAmount + (amount * factor)));
     }
     await GetStorage().write("mows", mowModelToMap(mows));
     return mows.firstWhere((element) => element.accId == id).curBalance;

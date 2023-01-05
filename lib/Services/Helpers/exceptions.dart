@@ -41,7 +41,7 @@ class DioExceptions implements Exception {
       case 401:
         return "خطا في العملية";
       default:
-        return 'Oops, something went wrong';
+        return 'server connection error'.tr;
     }
   }
 

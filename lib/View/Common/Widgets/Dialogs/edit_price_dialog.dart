@@ -17,7 +17,7 @@ void showEditPriceDialog({
   required String itemPrice,
 }) {
   final TextEditingController _controller = TextEditingController(
-      text: ValuesManager.doubleToString(double.parse(itemPrice)));
+      text: ValuesManager.numToString(double.parse(itemPrice)));
   showAnimatedDialog(
     barrierDismissible: false,
     context: context,
@@ -38,7 +38,7 @@ void showEditPriceDialog({
                     Text(
                       "edit_price_dialog_first_text".tr +
                           ": " +
-                          ValuesManager.doubleToString(
+                          ValuesManager.numToString(
                               double.parse(leastSellingPrice)),
                       style: GoogleFonts.cairo(
                         color: Colors.black,
@@ -48,7 +48,7 @@ void showEditPriceDialog({
                     Text(
                       "edit_price_dialog_second_text".tr +
                           ": " +
-                          ValuesManager.doubleToString(
+                          ValuesManager.numToString(
                               double.parse(originalPrice)),
                       style: GoogleFonts.cairo(
                         color: Colors.black,

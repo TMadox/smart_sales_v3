@@ -26,7 +26,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with RouteAware {
-  int selectedPage = 0;
   PageController page = PageController();
   final storage = GetStorage();
   @override
@@ -64,7 +63,12 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware {
                 flex: 6,
                 child: CustomFAB(
                   child: Stack(
+                    fit: StackFit.expand,
                     children: [
+                      Image.asset(
+                        "assets/home_background3.png",
+                        fit: BoxFit.fill,
+                      ),
                       PageView(
                         controller: page,
                         physics: const NeverScrollableScrollPhysics(),

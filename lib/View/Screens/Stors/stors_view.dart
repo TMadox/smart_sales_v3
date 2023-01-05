@@ -120,7 +120,7 @@ class _StorsViewState extends State<StorsView> {
                         (e) => DataCell(
                           Center(
                             child: Text(
-                              ValuesManager.doubleToString(e),
+                              ValuesManager.numToString(e),
                             ),
                           ),
                           onTap: () async {

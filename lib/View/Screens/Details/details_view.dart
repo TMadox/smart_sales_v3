@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:auto_size_text/auto_size_text.dart';
 // ignore: implementation_imports
 import 'package:collection/src/iterable_extensions.dart';
@@ -36,99 +35,119 @@ class _DetailsViewState extends State<DetailsView> {
           padding: const EdgeInsets.all(5),
           child: Column(
             children: [
-              Container(
-                decoration: const BoxDecoration(
-                  color: whiteHaze,
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(15),
-                    topLeft: Radius.circular(15),
+              Row(
+                children: [
+                  OptionsButton(
+                    color: Colors.red,
+                    iconData: Icons.arrow_back_ios,
+                    width: 40,
+                    height: 40,
+                    bottomMargin: 0,
+                    onPressed: () {
+                      Get.back();
+                    },
                   ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 5,
-                        ),
-                        child: AutoSizeText(
-                          widget.receipt["user_name"],
-                          maxLines: 1,
-                          style: GoogleFonts.cairo(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
+                  const SizedBox(width: 5),
+                  Expanded(
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: whiteHaze,
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(15),
+                          topLeft: Radius.circular(15),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      flex: 3,
-                      child: Container(
-                        height: 40,
-                        decoration: const BoxDecoration(
-                          color: smaltBlue,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(
-                              15,
-                            ),
-                            topRight: Radius.circular(
-                              15,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 5,
+                              ),
+                              child: AutoSizeText(
+                                widget.receipt["user_name"],
+                                maxLines: 1,
+                                style: GoogleFonts.cairo(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            AutoSizeText.rich(
-                              TextSpan(children: [
-                                TextSpan(
-                                  text: "date".tr + " ",
-                                  style: GoogleFonts.cairo(color: atlantis),
-                                ),
-                                TextSpan(
-                                  text: ": " + widget.receipt["created_date"],
-                                  style: GoogleFonts.cairo(
-                                    color: Colors.white,
+                          Expanded(
+                            flex: 3,
+                            child: Container(
+                              height: 40,
+                              decoration: const BoxDecoration(
+                                color: smaltBlue,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(
+                                    15,
                                   ),
-                                )
-                              ]),
-                            ),
-                            AutoSizeText.rich(
-                              TextSpan(
+                                  topRight: Radius.circular(
+                                    15,
+                                  ),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: [
-                                  TextSpan(
-                                    text: "time".tr + " ",
+                                  AutoSizeText.rich(
+                                    TextSpan(children: [
+                                      TextSpan(
+                                        text: "date".tr + " ",
+                                        style:
+                                            GoogleFonts.cairo(color: atlantis),
+                                      ),
+                                      TextSpan(
+                                        text: ": " +
+                                            widget.receipt["created_date"],
+                                        style: GoogleFonts.cairo(
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    ]),
+                                  ),
+                                  AutoSizeText.rich(
+                                    TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: "time".tr + " ",
+                                          style: GoogleFonts.cairo(
+                                            color: atlantis,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: ": " +
+                                              widget.receipt["oper_time"]
+                                                  .toString(),
+                                          style: GoogleFonts.cairo(
+                                              color: Colors.white),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  AutoSizeText(
+                                    ReceiptType().get(
+                                        type:
+                                            widget.receipt["section_type_no"]),
                                     style: GoogleFonts.cairo(
                                       color: atlantis,
                                     ),
                                   ),
-                                  TextSpan(
-                                    text: ": " +
-                                        widget.receipt["oper_time"].toString(),
-                                    style:
-                                        GoogleFonts.cairo(color: Colors.white),
-                                  )
                                 ],
                               ),
                             ),
-                            AutoSizeText(
-                              ReceiptType()
-                                  .get(type: widget.receipt["section_type_no"]),
-                              style: GoogleFonts.cairo(
-                                color: atlantis,
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              const SizedBox(
-                height: 5,
-              ),
+              const SizedBox(height: 5),
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 5,
@@ -203,14 +222,15 @@ class _DetailsViewState extends State<DetailsView> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
+                    SizedBox(
+                      width: 50,
                       child: Column(
                         children: [
                           Visibility(
                             visible: (widget.receipt['section_type_no'] == 1 ||
                                 widget.receipt['section_type_no'] == 3),
                             child: OptionsButton(
-                              height: 30,
+                              height: 50,
                               color: Colors.blue,
                               onPressed: () {
                                 showReturnDialog(
@@ -222,7 +242,7 @@ class _DetailsViewState extends State<DetailsView> {
                             ),
                           ),
                           OptionsButton(
-                            height: 30,
+                            height: 50,
                             color: Colors.purple,
                             onPressed: () async {
                               EasyLoading.show();
@@ -243,15 +263,7 @@ class _DetailsViewState extends State<DetailsView> {
                             iconData: Icons.print,
                           ),
                           OptionsButton(
-                            height: 30,
-                            color: Colors.red,
-                            iconData: Icons.arrow_back_ios,
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                          OptionsButton(
-                            height: 30,
+                            height: 50,
                             color: Colors.green,
                             onPressed: () async {
                               await createPDF(
@@ -265,9 +277,7 @@ class _DetailsViewState extends State<DetailsView> {
                         ],
                       ),
                     ),
-                    const SizedBox(
-                      width: 5,
-                    ),
+                    const SizedBox(width: 5),
                     Expanded(
                       flex: 20,
                       child: Container(
@@ -417,7 +427,7 @@ class _DetailsViewState extends State<DetailsView> {
                                 (e) => DataCell(
                                   Center(
                                     child: Text(
-                                      ValuesManager.doubleToString(
+                                      ValuesManager.numToString(
                                               widget.receipt[e])
                                           .toString(),
                                       style: GoogleFonts.cairo(),

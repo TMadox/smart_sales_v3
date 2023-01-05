@@ -197,7 +197,6 @@ class GeneralController {
     final Map lastOperations = ReadData().readLastOperations();
     if (currentReceipt.value["section_type_no"] != 31 &&
         currentReceipt.value["parent_id"] != null) {
-      log("testttt");
       setRemainingQty(operations);
     }
     operations.add(currentReceipt.value);

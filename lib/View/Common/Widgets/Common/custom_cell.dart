@@ -14,16 +14,20 @@ class CustomCell extends StatefulWidget {
   final GeneralController generalController;
   final TextEditingController? controller;
   final Color? textColor;
+  final Color? borderColor;
+  final Color? fillColor;
   final double? width;
   const CustomCell({
     Key? key,
     this.isEditable = false,
+    this.fillColor,
     required this.keyValue,
     required this.item,
     required this.generalController,
     this.controller,
     this.width,
     this.textColor,
+    this.borderColor,
   }) : super(key: key);
 
   @override
@@ -94,6 +98,8 @@ class _CustomCellState extends State<CustomCell> {
             if (widget.isEditable && widget.keyValue != "original_price") {
               return CustomTextField(
                 activated: true,
+                fillColor: widget.fillColor,
+                borderColor: widget.borderColor,
                 editingController: widget.controller,
                 readOnly: !widget.isEditable,
                 inputFormatters: [

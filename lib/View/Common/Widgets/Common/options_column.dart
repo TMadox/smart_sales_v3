@@ -2,9 +2,7 @@ import 'package:flutter/material.dart' hide ThemeData;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:smart_sales/App/Util/routing.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:smart_sales/View/Common/Widgets/Common/alert_snackbar.dart';
-import 'package:smart_sales/View/Common/Widgets/Dialogs/exit_dialog.dart';
 import 'package:smart_sales/View/Common/Widgets/Common/options_button.dart';
 import 'package:smart_sales/View/Common/Widgets/Dialogs/general_dialog.dart';
 import 'package:smart_sales/View/Common/Widgets/Dialogs/save_dialog.dart';
@@ -25,42 +23,22 @@ class OptionsColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          if (!isEditing)
-            OptionsButton(
-              height: 40,
+    return Column(
+      children: [
+        if (!isEditing)
+          Expanded(
+            flex: 2,
+            child: OptionsButton(
               color: Colors.blue,
               onPressed: () {
                 Get.to(() => const ItemsView(canTap: true));
               },
               iconData: Icons.add,
             ),
-          if (!isEditing)
-            OptionsButton(
-              height: 30,
-              color: Colors.purple,
-              onPressed: () {
-                Get.find<ReceiptsController>().scanBarcode(context: context);
-              },
-              iconData: Icons.qr_code,
-            ),
-          if (!isEditing)
-            OptionsButton(
-              height: 30,
-              color: Colors.pink,
-              onPressed: () {
-                Get.to(
-                  () => const OperationsView(
-                    selecting: true,
-                  ),
-                );
-              },
-              iconData: Icons.copy_rounded,
-            ),
-          OptionsButton(
-            height: 40,
+          ),
+        Expanded(
+          flex: 2,
+          child: OptionsButton(
             color: Colors.orange,
             onPressed: () {
               if (controller.receiptItems.value.isEmpty) {
@@ -119,9 +97,30 @@ class OptionsColumn extends StatelessWidget {
             },
             iconData: Icons.save,
           ),
-          if (!isEditing)
-            OptionsButton(
-              height: 30,
+        ),
+        if (!isEditing) ...[
+          Expanded(
+            child: OptionsButton(
+              height: 50,
+              bottomMargin: 0,
+              color: Colors.pink,
+              onPressed: () {
+                Get.to(
+                  () => const OperationsView(
+                    selecting: true,
+                  ),
+                );
+              },
+              iconData: Icons.copy_rounded,
+            ),
+          ),
+          const SizedBox(height: 5)
+        ],
+        if (!isEditing)
+          Expanded(
+            child: OptionsButton(
+              height: 50,
+              bottomMargin: 0,
               color: Colors.indigo,
               onPressed: () {
                 if (controller.selectedItems.value.isNotEmpty) {
@@ -144,44 +143,8 @@ class OptionsColumn extends StatelessWidget {
               },
               iconData: Icons.delete,
             ),
-          OptionsButton(
-            height: 30,
-            color: Colors.red,
-            onPressed: () {
-              if (controller.receiptItems.value.isNotEmpty) {
-                generalDialog(
-                  context: context,
-                  message: 'receipt_still_inprogress'.tr,
-                  onCancelText: 'exit'.tr,
-                  onOkText: 'stay'.tr,
-                  onCancel: () {
-                    if (GetStorage().read("request_visit") ?? false) {
-                      exitDialog(
-                        context: context,
-                        data: data,
-                      );
-                      return false;
-                    } else {
-                      Get.back();
-                    }
-                  },
-                  title: 'warning'.tr,
-                );
-              } else {
-                if ((GetStorage().read("request_visit") ?? false)) {
-                  exitDialog(
-                    context: context,
-                    data: data,
-                  );
-                } else {
-                  Get.back();
-                }
-              }
-            },
-            iconData: Icons.arrow_back_ios,
           ),
-        ],
-      ),
+      ],
     );
   }
 }

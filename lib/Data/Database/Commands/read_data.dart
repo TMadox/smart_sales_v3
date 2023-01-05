@@ -8,6 +8,10 @@ class ReadData {
     return List<Map>.from(json.decode(GetStorage().read("operations") ?? "[]"));
   }
 
+  List<Map> readRecylePin() {
+    return List<Map>.from(json.decode(GetStorage().read("recycle") ?? "[]"));
+  }
+
   Map readLastOperations() {
     return json.decode(GetStorage().read("lastOperations") ?? "{}");
   }

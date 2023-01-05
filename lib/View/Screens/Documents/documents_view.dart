@@ -175,7 +175,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
                                   ),
                                   Expanded(
                                     child: AutoSizeText(
-                                      ValuesManager.doubleToString(
+                                      ValuesManager.numToString(
                                         documentsController
                                             .document.value["credit_after"],
                                       ),

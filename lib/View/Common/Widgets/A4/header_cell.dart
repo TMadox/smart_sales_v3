@@ -20,7 +20,7 @@ headerCell({
           alignment: Alignment.centerLeft,
           decoration: BoxDecoration(border: Border.all(color: PdfColors.black)),
           child: Text(
-            ValuesManager.doubleToString(receipt[key]),
+            ValuesManager.numToString(receipt[key]),
             style: TextStyle(
               font: arabic,
             ),

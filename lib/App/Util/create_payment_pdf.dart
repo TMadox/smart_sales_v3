@@ -265,8 +265,7 @@ createPaymentPDF({
                               ),
                               border: pw.Border.all(color: PdfColors.black)),
                           child: pw.Text(
-                              ValuesManager.doubleToString(
-                                  receipt["cash_value"]),
+                              ValuesManager.numToString(receipt["cash_value"]),
                               style: pw.TextStyle(font: arabic)),
                         ),
                       ),
@@ -295,7 +294,7 @@ createPaymentPDF({
                             ),
                             border: pw.Border.all(color: PdfColors.black)),
                         child: pw.Text(
-                            ValuesManager.doubleToString(receipt["notes"]),
+                            ValuesManager.numToString(receipt["notes"]),
                             style: pw.TextStyle(font: arabic)),
                       ),
                     ),
@@ -355,7 +354,7 @@ createPaymentPDF({
                             ),
                             border: pw.Border.all(color: PdfColors.black)),
                         child: pw.Text(
-                            ValuesManager.doubleToString(
+                            ValuesManager.numToString(
                                 receipt["client_acc_id"].toString()),
                             style: pw.TextStyle(font: arabic)),
                       ),
@@ -388,7 +387,7 @@ createPaymentPDF({
                                     border:
                                         pw.Border.all(color: PdfColors.black)),
                                 child: pw.Text(
-                                    ValuesManager.doubleToString(
+                                    ValuesManager.numToString(
                                         receipt["credit_before"].toString()),
                                     style: pw.TextStyle(font: arabic)),
                               ),
@@ -426,7 +425,7 @@ createPaymentPDF({
                                     border:
                                         pw.Border.all(color: PdfColors.black)),
                                 child: pw.Text(
-                                    ValuesManager.doubleToString(
+                                    ValuesManager.numToString(
                                         receipt["credit_after"].toString()),
                                     style: pw.TextStyle(font: arabic)),
                               ),

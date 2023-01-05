@@ -355,9 +355,34 @@ class LocalizationManager extends Translations {
     "payment from": "Payment From",
     "this quantity is bigger than allowed":
         "This qunatity is bigger than allowed",
+    "do you really want to move this operation to recylce pin":
+        "Do you really want to move this operation to recylce pin ?",
+    "recycle bin": "Recycle Bin",
+    "do you really want to move this operation out of recycle pin":
+        "Do you really want to move this operation out of recycle pin?",
+    "server connection error": "Server Conntection Error",
+    "error with the login attempt": "Error with the login attempt",
+    "document created successfully": "Document Created Successfully!",
+    "": "",
+    "": "",
+    "": "",
+    "": "",
+    "": "",
+    "": "",
+    "": "",
+    "": "",
+    "": "",
   };
 
   final Map<String, String> arabic = {
+    "document created successfully": "تم انشاء السند بنجاح",
+    "error with the login attempt": "خطأ في محاولة التسجيل",
+    "server connection error": "خطأ في الاتصال بالسرفر",
+    "do you really want to move this operation out of recycle pin":
+        "هل حقا تود اخراج الفاتورة من سلة المهملات ؟",
+    "recycle bin": "سلة المهملات",
+    "do you really want to move this operation to recylce pin":
+        "هل حقا تود وضع هذه العملية فالسلة؟",
     "this quantity is bigger than allowed": "هذه الكمية اكبر من الكمية المتاحة",
     "seizure from": "استلمنا من",
     "payment from": "الدفع من",

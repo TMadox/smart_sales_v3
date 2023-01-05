@@ -51,7 +51,7 @@ saveDialog({
                         ),
                       ),
                       TextSpan(
-                        text: ValuesManager.doubleToString(
+                        text: ValuesManager.numToString(
                           operation['oper_net_value_with_tax'],
                         ),
                       ),
@@ -69,7 +69,7 @@ saveDialog({
                         ),
                       ),
                       TextSpan(
-                        text: ValuesManager.doubleToString(
+                        text: ValuesManager.numToString(
                           operation['cash_value'],
                         ),
                       ),
@@ -87,7 +87,7 @@ saveDialog({
                         ),
                       ),
                       TextSpan(
-                        text: ValuesManager.doubleToString(
+                        text: ValuesManager.numToString(
                           operation['reside_value'],
                         ),
                       ),

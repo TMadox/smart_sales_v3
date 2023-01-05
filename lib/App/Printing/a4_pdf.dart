@@ -324,7 +324,7 @@ Future<pw.Page> a4Pdf({
                                         border: pw.Border.all(
                                             color: PdfColors.black)),
                                     child: pw.Text(
-                                        ValuesManager.doubleToString(
+                                        ValuesManager.numToString(
                                             receipt["original_oper_value"]),
                                         style: pw.TextStyle(
                                           font: arabic,
@@ -365,7 +365,7 @@ Future<pw.Page> a4Pdf({
                                         border: pw.Border.all(
                                             color: PdfColors.black)),
                                     child: pw.Text(
-                                        ValuesManager.doubleToString(
+                                        ValuesManager.numToString(
                                           receipt["oper_disc_value_with_tax"],
                                         ),
                                         style: pw.TextStyle(
@@ -407,7 +407,7 @@ Future<pw.Page> a4Pdf({
                                         border: pw.Border.all(
                                             color: PdfColors.black)),
                                     child: pw.Text(
-                                        ValuesManager.doubleToString(
+                                        ValuesManager.numToString(
                                             receipt["oper_add_value_with_tax"]),
                                         style: pw.TextStyle(
                                           font: arabic,
@@ -448,7 +448,7 @@ Future<pw.Page> a4Pdf({
                                         border: pw.Border.all(
                                             color: PdfColors.black)),
                                     child: pw.Text(
-                                        ValuesManager.doubleToString(
+                                        ValuesManager.numToString(
                                           receipt["tax_value"] is double
                                               ? receipt["tax_value"]
                                                   .toStringAsFixed(2)
@@ -493,7 +493,7 @@ Future<pw.Page> a4Pdf({
                                         border: pw.Border.all(
                                             color: PdfColors.black)),
                                     child: pw.Text(
-                                        ValuesManager.doubleToString(
+                                        ValuesManager.numToString(
                                             receipt["oper_net_value_with_tax"]),
                                         style: pw.TextStyle(
                                           font: arabic,
@@ -537,7 +537,7 @@ Future<pw.Page> a4Pdf({
                                   border:
                                       pw.Border.all(color: PdfColors.black)),
                               child: pw.Text(
-                                  ValuesManager.doubleToString(
+                                  ValuesManager.numToString(
                                     receipt["items_count"],
                                   ),
                                   style: pw.TextStyle(
@@ -647,28 +647,28 @@ pw.Table _createItemsTable(
   List<dynamic> items = json.decode(receipt["products"]);
   final data = items.map((item) {
     return [
-      ValuesManager.doubleToString(
+      ValuesManager.numToString(
         item[getKey(name: cells[0])],
       ),
-      ValuesManager.doubleToString(
+      ValuesManager.numToString(
         item[getKey(name: cells[1])],
       ),
-      ValuesManager.doubleToString(
+      ValuesManager.numToString(
         item[getKey(name: cells[2])],
       ),
-      ValuesManager.doubleToString(
+      ValuesManager.numToString(
         item[getKey(name: cells[3])],
       ),
-      ValuesManager.doubleToString(
+      ValuesManager.numToString(
         item[getKey(name: cells[4])],
       ),
-      ValuesManager.doubleToString(
+      ValuesManager.numToString(
         item[getKey(name: cells[5])],
       ),
-      ValuesManager.doubleToString(
+      ValuesManager.numToString(
         item[getKey(name: cells[6])],
       ),
-      ValuesManager.doubleToString(
+      ValuesManager.numToString(
         item[getKey(name: cells[7])],
       )
     ];

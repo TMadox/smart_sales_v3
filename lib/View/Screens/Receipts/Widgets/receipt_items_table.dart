@@ -21,7 +21,8 @@ class ReceiptItemsTable extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
+        SizedBox(
+          width: 50,
           child: OptionsColumn(
             isEditing: isEditing,
             data: data,
@@ -32,7 +33,6 @@ class ReceiptItemsTable extends StatelessWidget {
           width: 5,
         ),
         Expanded(
-          flex: 20,
           child: Align(
             alignment: Alignment.topCenter,
             child: Container(
@@ -71,6 +71,7 @@ class ReceiptItemsTable extends StatelessWidget {
                       dataRowHeight: 35,
                       showBottomBorder: true,
                       columnSpacing: 0,
+                      horizontalMargin: 0,
                       dividerThickness: 1,
                       columns: receiptsController
                           .itemTableColumns()

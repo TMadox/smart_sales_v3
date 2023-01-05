@@ -573,6 +573,7 @@
 //     if (currentReceipt["section_type_no"] == 3 ||
 //         currentReceipt["section_type_no"] == 4 ||
 //         currentReceipt["section_type_no"] == 103 ||
+
 //         currentReceipt["section_type_no"] == 104) {
 //       creditAfter = await context.read<MowState>().editMows(
 //             id: currentReceipt["basic_acc_id"],

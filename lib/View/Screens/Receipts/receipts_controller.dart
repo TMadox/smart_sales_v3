@@ -208,6 +208,7 @@ class ReceiptsController extends GetxController with GeneralController {
             isEditable: false,
             item: item,
             keyValue: 'name',
+            width: 80,
             generalController: this,
           ),
         ),
@@ -221,18 +222,12 @@ class ReceiptsController extends GetxController with GeneralController {
           ),
         ),
         DataCell(
-          Card(
-            color: Colors.green[800],
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            child: CustomCell(
-              isEditable: context.read<PowersState>().canEditItemPrice,
-              textColor: Colors.white,
-              item: item,
-              keyValue: 'original_price',
-              controller: item["fat_price_controller"],
-              generalController: this,
-            ),
+          CustomCell(
+            isEditable: context.read<PowersState>().canEditItemPrice,
+            item: item,
+            keyValue: 'original_price',
+            controller: item["fat_price_controller"],
+            generalController: this,
           ),
         ),
         DataCell(

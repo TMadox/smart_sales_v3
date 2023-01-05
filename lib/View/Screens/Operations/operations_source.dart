@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
 import 'package:smart_sales/App/Resources/values_manager.dart';
 import 'package:smart_sales/View/Common/Features/receipt_type.dart';
+import 'package:smart_sales/View/Common/Widgets/Dialogs/general_dialog.dart';
+import 'package:smart_sales/View/Common/Widgets/Dialogs/settings_dialog.dart';
 import 'package:smart_sales/View/Screens/Operations/operations_controller.dart';
 import 'package:smart_sales/View/Screens/Receipts/receipts_controller.dart';
 
@@ -27,7 +30,7 @@ class OperationsSource extends DataTableSource {
     final cell = [
       receipt["oper_id"],
       receipt["user_name"],
-      ValuesManager.doubleToString(receipt["oper_net_value_with_tax"]),
+      ValuesManager.numToString(receipt["oper_net_value_with_tax"]),
       receipt["oper_date"],
       receipt["oper_time"],
       receipt["cash_value"],
@@ -47,22 +50,61 @@ class OperationsSource extends DataTableSource {
       cells: cell
           .mapIndexed(
             (index, e) => DataCell(
-              index != 1
-                  ? SizedBox(
-                      width: screenWidth(context) * 0.15,
-                      child: Center(
-                        child: AutoSizeText(
-                          ValuesManager.doubleToString(e),
-                          overflow: TextOverflow.visible,
-                          maxLines: 1,
-                        ),
-                      ),
-                    )
-                  : Center(
-                      child: Text(
-                        ValuesManager.doubleToString(e),
-                      ),
-                    ),
+              Center(
+                child: SizedBox(
+                  width: index == 1 ? 100 : 50,
+                  child: AutoSizeText(
+                    ValuesManager.numToString(e),
+                    overflow: TextOverflow.visible,
+                    maxLines: 1,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+              // onLongPress: () {
+              //   generalDialog(
+              //     context: context,
+              //     title: "warning".tr,
+              //     message:
+              //         "do you really want to move this operation to recylce pin"
+              //             .tr,
+              //     dialogType: DialogType.WARNING,
+              //     onOk: () async {
+              //       await Get.find<OperationsController>()
+              //           .moveToRecyclePin(input: receipt, context: context);
+              //     },
+              //     onOkText: "confirm".tr,
+              //     onCancel: () {},
+              //   );
+              // },
+              onLongPress: () {
+                if (receipt["upload_code"] == -1 ||
+                    receipt["upload_code"] == -19 ||
+                    receipt["upload_code"] == -30 ||
+                    receipt["upload_code"] == "[]") {
+                  generalDialog(
+                    context: context,
+                    title: "warning".tr,
+                    message:
+                        "do you really want to move this operation to recylce pin"
+                            .tr,
+                    dialogType: DialogType.WARNING,
+                    onOk: () async {
+                      passwordDialog(
+                        context: context,
+                        title: 'settings'.tr,
+                        onCheck: () async {
+                          await Get.find<OperationsController>()
+                              .moveToRecyclePin(
+                                  input: receipt, context: context);
+                        },
+                      );
+                    },
+                    onOkText: "confirm".tr,
+                    onCancel: () {},
+                  );
+                }
+              },
               onTap: () {
                 if (isSelecting) {
                   Get.find<ReceiptsController>().fillReceiptWithItems(

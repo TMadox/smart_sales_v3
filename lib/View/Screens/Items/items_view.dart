@@ -310,7 +310,7 @@ class _ItemsViewState extends State<ItemsView> {
                         DataCell(
                           Center(
                             child: Text(
-                              ValuesManager.doubleToString(
+                              ValuesManager.numToString(
                                 context
                                     .read<ItemsViewmodel>()
                                     .items

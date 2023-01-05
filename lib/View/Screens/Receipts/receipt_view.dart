@@ -98,6 +98,7 @@ class _ReceiptViewState extends State<ReceiptView> {
                     FirstBar(
                       receiptsController: receiptsController,
                       isEditing: isEditing,
+                      data: data,
                     ),
                     const SizedBox(
                       height: 5,

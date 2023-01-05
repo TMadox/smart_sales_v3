@@ -77,7 +77,7 @@ class ReceiptsSummeryTable extends StatelessWidget {
                         color: type == 0 ? Colors.red : null,
                         child: Center(
                           child: Text(
-                            ValuesManager.doubleToString(
+                            ValuesManager.numToString(
                               totalValues(
                                 context: context,
                                 type: type,
@@ -97,7 +97,7 @@ class ReceiptsSummeryTable extends StatelessWidget {
                         color: type == 0 ? Colors.red : null,
                         child: Center(
                           child: Text(
-                            ValuesManager.doubleToString(
+                            ValuesManager.numToString(
                               totalValues(
                                 context: context,
                                 type: type,
@@ -119,7 +119,7 @@ class ReceiptsSummeryTable extends StatelessWidget {
                           child: Container(
                             color: type == 0 ? Colors.red : null,
                             child: Text(
-                              ValuesManager.doubleToString(
+                              ValuesManager.numToString(
                                 totalValues(
                                   context: context,
                                   type: type,
@@ -140,7 +140,7 @@ class ReceiptsSummeryTable extends StatelessWidget {
                         color: type == 0 ? Colors.red : null,
                         child: Center(
                           child: Text(
-                            ValuesManager.doubleToString(totalValues(
+                            ValuesManager.numToString(totalValues(
                               context: context,
                               type: type,
                               key: "tax_value",
@@ -158,7 +158,7 @@ class ReceiptsSummeryTable extends StatelessWidget {
                         color: type == 0 ? Colors.red : null,
                         child: Center(
                           child: Text(
-                            ValuesManager.doubleToString(
+                            ValuesManager.numToString(
                               totalValues(
                                 context: context,
                                 type: type,
@@ -178,7 +178,7 @@ class ReceiptsSummeryTable extends StatelessWidget {
                         color: type == 0 ? Colors.red : null,
                         child: Center(
                           child: Text(
-                            ValuesManager.doubleToString(
+                            ValuesManager.numToString(
                               totalValues(
                                 context: context,
                                 type: type,
@@ -219,7 +219,8 @@ class ReceiptsSummeryTable extends StatelessWidget {
                 element["section_type_no"] == 107 ||
                 element["section_type_no"] == 105 ||
                 element["section_type_no"] == 103))
-            .fold<double>(0, (double sum, receipt) => sum + receipt[key]);
+            .fold<double>(
+                0, (double sum, receipt) => sum + (receipt[key] ?? 0));
       }
     } else if (type == 2) {
       if (key == "oper_value") {
@@ -254,7 +255,8 @@ class ReceiptsSummeryTable extends StatelessWidget {
                       element["section_type_no"] == 107 ||
                       element["section_type_no"] == 103),
                 )
-                .fold<double>(0, (double sum, receipt) => sum + receipt[key]) -
+                .fold<double>(
+                    0, (double sum, receipt) => sum + (receipt[key] ?? 0)) -
             operations
                 .where(
                   (element) => (element["section_type_no"] == 2 ||

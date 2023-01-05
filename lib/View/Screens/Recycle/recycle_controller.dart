@@ -1,7 +1,7 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_sales/Data/Database/Commands/read_data.dart';
 import 'package:smart_sales/Data/Database/Commands/save_data.dart';
@@ -11,27 +11,19 @@ import 'package:smart_sales/Provider/mow_state.dart';
 import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/View/Screens/Items/items_viewmodel.dart';
 
-class OperationsController extends GetxController {
-  Map currentReceipt = {"totalProducts": 0};
-  List selectedItems = [];
-  final Rx<List<Map>> operations = Rx<List<Map>>([]);
-  List<Map> receiptItems = [];
-
+class RecycleController extends GetxController {
+  final Rx<List<Map>> recycledOperations = Rx<List<Map>>([]);
   void loadOperations() {
-    operations.value = ReadData().readOperations();
-    update();
+    recycledOperations.value = ReadData().readRecylePin();
   }
 
-  Map loadLastOperations() {
-    return Map.from(json.decode(GetStorage().read("lastOperations") ?? "{}"));
-  }
-
-  Future<void> moveToRecyclePin(
+  Future<void> moveFromRecycleBin(
       {required Map input, required BuildContext context}) async {
-    List<Map> recycledOperations = ReadData().readRecylePin();
-    operations.value.remove(input);
-    recycledOperations.add(input);
-    List<Map> products = List.from(json.decode(input["products"].toString()));
+    List<Map> operations = ReadData().readOperations();
+    recycledOperations.value.remove(input);
+    update();
+    operations.add(input);
+    List<Map> products = List.from(json.decode(input["products"]));
     for (var element in products) {
       element.remove("fat_qty_controller");
       element.remove("fat_disc_value_controller");
@@ -44,7 +36,6 @@ class OperationsController extends GetxController {
             storId: input["selected_stor_id"] ??
                 context.read<UserState>().user.defStorId,
             sectionTypeNo: input["section_type_no"],
-            reverse: true,
           );
     }
     switch (input["section_type_no"]) {
@@ -56,7 +47,6 @@ class OperationsController extends GetxController {
               id: input["basic_acc_id"],
               amount: input["reside_value"] ?? 0.0,
               sectionType: input["section_type_no"],
-              reverse: true,
             );
         break;
       case 108:
@@ -65,7 +55,6 @@ class OperationsController extends GetxController {
               id: input["basic_acc_id"] ?? 0,
               amount: input["reside_value"] ?? 0.0,
               sectionType: input["section_type_no"],
-              reverse: true,
             );
         break;
       case 1:
@@ -78,13 +67,11 @@ class OperationsController extends GetxController {
               id: input["basic_acc_id"],
               amount: input["reside_value"],
               sectionType: input["section_type_no"],
-              reverse: true,
             );
         break;
     }
-    await SaveData().saveRecyclePin(recycledOperations: recycledOperations);
-    await SaveData().saveOperationsData(operations: operations.value);
-    loadOperations();
-    update();
+    await SaveData()
+        .saveRecyclePin(recycledOperations: recycledOperations.value);
+    await SaveData().saveOperationsData(operations: operations);
   }
 }

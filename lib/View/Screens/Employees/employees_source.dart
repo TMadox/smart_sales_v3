@@ -34,7 +34,7 @@ class EmployeesSource extends DataTableSource {
                     child: SizedBox(
                       width: 100,
                       child: AutoSizeText(
-                        ValuesManager.doubleToString(item),
+                        ValuesManager.numToString(item),
                         textAlign: TextAlign.center,
                         overflow: TextOverflow.visible,
                         maxLines: 1,

@@ -21,6 +21,7 @@ class CustomTextField extends StatefulWidget {
   final Function()? onTap;
   final Widget? suffixWidget;
   final List<TextInputFormatter> inputFormatters;
+  final Color? borderColor;
   final bool readOnly;
   final double? errorFontSize;
   final AutovalidateMode? validationMode;
@@ -31,6 +32,7 @@ class CustomTextField extends StatefulWidget {
     required this.name,
     this.prefixIcon,
     this.fillColor,
+    this.borderColor,
     this.activated,
     this.onChanged,
     this.initialValue,
@@ -88,9 +90,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
             Radius.circular(10),
           ),
         ),
-        enabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey),
-          borderRadius: BorderRadius.all(
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: widget.borderColor ?? Colors.grey),
+          borderRadius: const BorderRadius.all(
             Radius.circular(10),
           ),
         ),

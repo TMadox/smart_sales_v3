@@ -25,7 +25,7 @@ class InitSave {
         "section_type_no": 9999,
         "reside_value": 0.0,
         "cash_value": 0.0,
-        "products": [],
+        "products": "[]",
         "location_code": (await getLocationData()).locationCode,
         "location_name": (await getLocationData()).locationName,
         "credit_after": 0.0,

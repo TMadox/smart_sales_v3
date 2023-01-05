@@ -297,7 +297,7 @@ Future<pw.Page> roll80Pdf({
                                   border: pw.Border.all(color: PdfColors.black),
                                 ),
                                 child: pw.Text(
-                                  ValuesManager.doubleToString(
+                                  ValuesManager.numToString(
                                     receipt["user_name"],
                                   ),
                                   style: pw.TextStyle(font: arabic),
@@ -377,7 +377,7 @@ Future<pw.Page> roll80Pdf({
                         border: pw.Border.all(color: PdfColors.black),
                       ),
                       child: pw.Text(
-                        ValuesManager.doubleToString(
+                        ValuesManager.numToString(
                           receipt["original_oper_value"],
                         ),
                         style: pw.TextStyle(
@@ -413,7 +413,7 @@ Future<pw.Page> roll80Pdf({
                         border: pw.Border.all(color: PdfColors.black),
                       ),
                       child: pw.Text(
-                        ValuesManager.doubleToString(
+                        ValuesManager.numToString(
                           receipt["oper_disc_value_with_tax"],
                         ),
                         style: pw.TextStyle(
@@ -450,7 +450,7 @@ Future<pw.Page> roll80Pdf({
                         border: pw.Border.all(color: PdfColors.black),
                       ),
                       child: pw.Text(
-                        ValuesManager.doubleToString(
+                        ValuesManager.numToString(
                           receipt["oper_add_value_with_tax"],
                         ),
                         style: pw.TextStyle(
@@ -487,7 +487,7 @@ Future<pw.Page> roll80Pdf({
                         border: pw.Border.all(color: PdfColors.black),
                       ),
                       child: pw.Text(
-                        ValuesManager.doubleToString(
+                        ValuesManager.numToString(
                           receipt["tax_value"] is double
                               ? receipt["tax_value"].toStringAsFixed(2)
                               : receipt["tax_value"].toString(),
@@ -527,7 +527,7 @@ Future<pw.Page> roll80Pdf({
                         border: pw.Border.all(color: PdfColors.black),
                       ),
                       child: pw.Text(
-                        ValuesManager.doubleToString(
+                        ValuesManager.numToString(
                           receipt["oper_net_value_with_tax"],
                         ),
                         style: pw.TextStyle(
@@ -567,7 +567,7 @@ Future<pw.Page> roll80Pdf({
                                   border: pw.Border.all(color: PdfColors.black),
                                 ),
                                 child: pw.Text(
-                                  ValuesManager.doubleToString(
+                                  ValuesManager.numToString(
                                     receipt["cash_value"],
                                   ),
                                   style: pw.TextStyle(
@@ -611,7 +611,7 @@ Future<pw.Page> roll80Pdf({
                                   border: pw.Border.all(color: PdfColors.black),
                                 ),
                                 child: pw.Text(
-                                  ValuesManager.doubleToString(
+                                  ValuesManager.numToString(
                                     receipt["reside_value"],
                                   ),
                                   style: pw.TextStyle(
@@ -639,7 +639,7 @@ Future<pw.Page> roll80Pdf({
               pw.Divider(),
               storage.read("credit_before") ?? true
                   ? pw.Text(
-                      ValuesManager.doubleToString(
+                      ValuesManager.numToString(
                         receipt["credit_before"],
                       ),
                       textAlign: pw.TextAlign.center,
@@ -652,7 +652,7 @@ Future<pw.Page> roll80Pdf({
               pw.Divider(endIndent: 55, indent: 55),
               storage.read("credit_after") ?? true
                   ? pw.Text(
-                      ValuesManager.doubleToString(
+                      ValuesManager.numToString(
                         receipt["credit_after"],
                       ),
                       textAlign: pw.TextAlign.center,
@@ -700,23 +700,23 @@ pw.Table _createItemsTable({required Map receipt, required font}) {
           "(" +
           item["barcode"].toString() +
           ")"),
-      (ValuesManager.doubleToString(
+      (ValuesManager.numToString(
             item["fat_qty"],
           ) +
           "\n" +
           "(" +
           item["free_qty"].toString() +
           ")"),
-      (ValuesManager.doubleToString(
+      (ValuesManager.numToString(
             item["original_price"],
           ) +
           "\n" +
           "(" +
-          ValuesManager.doubleToString(
+          ValuesManager.numToString(
             item["fat_disc_value_with_tax"],
           ) +
           ")"),
-      ValuesManager.doubleToString(
+      ValuesManager.numToString(
         item["original_fat_value"],
       ),
     ].reversed.toList();

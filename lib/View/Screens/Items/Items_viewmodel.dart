@@ -175,12 +175,17 @@ class ItemsViewmodel extends ChangeNotifier {
     required int sectionTypeNo,
     int? inStorId,
     required num storId,
+    bool? reverse,
   }) async {
     ItemsModel currentItem = items.firstWhere(
       (element) => element.unitId == id && element.storId == storId,
     );
     num itemQty = currentItem.curQty;
     double totalReceiptQty = qty * currentItem.unitConvert;
+    int factor = 1;
+    if (reverse ?? false) {
+      factor = -1;
+    }
     switch (sectionTypeNo) {
       case 3:
       case 2:
@@ -188,14 +193,14 @@ class ItemsViewmodel extends ChangeNotifier {
           items
               .firstWhere(
                   (element) => element.unitId == id && element.storId == storId)
-              .curQty = itemQty + qty;
+              .curQty = itemQty + (qty * factor);
           items
               .where((element) => (element.typeId == currentItem.typeId &&
                   element.unitId != currentItem.unitId &&
                   element.storId == storId))
               .forEach((element) {
-            element.curQty =
-                (element.curQty + (totalReceiptQty / element.unitConvert));
+            element.curQty = (element.curQty +
+                ((totalReceiptQty / element.unitConvert) * factor));
           });
           break;
         }
@@ -205,7 +210,7 @@ class ItemsViewmodel extends ChangeNotifier {
           items
               .firstWhere(
                   (element) => element.unitId == id && element.storId == storId)
-              .curQty = itemQty - qty;
+              .curQty = itemQty - (qty * factor);
           items
               .where(
             (element) => (element.typeId == currentItem.typeId &&
@@ -213,8 +218,8 @@ class ItemsViewmodel extends ChangeNotifier {
                 element.storId == storId),
           )
               .forEach((element) {
-            element.curQty =
-                (element.curQty - (totalReceiptQty / element.unitConvert));
+            element.curQty = (element.curQty -
+                ((totalReceiptQty / element.unitConvert) * factor));
           });
           break;
         }
@@ -223,7 +228,7 @@ class ItemsViewmodel extends ChangeNotifier {
           items
               .firstWhere(
                   (element) => element.unitId == id && element.storId == storId)
-              .curQty = itemQty - qty;
+              .curQty = itemQty - (qty * factor);
           items
               .where(
             (element) => (element.typeId == currentItem.typeId &&
@@ -231,8 +236,8 @@ class ItemsViewmodel extends ChangeNotifier {
                 element.storId == storId),
           )
               .forEach((element) {
-            element.curQty =
-                (element.curQty - (totalReceiptQty / element.unitConvert));
+            element.curQty = (element.curQty -
+                ((totalReceiptQty / element.unitConvert) * factor));
           });
 ///////////////
           currentItem = items.firstWhere(
@@ -250,11 +255,12 @@ class ItemsViewmodel extends ChangeNotifier {
                 element.unitId != currentItem.unitId &&
                 element.storId == inStorId),
           )
-              .forEach((element) {
-            element.curQty =
-                (element.curQty + (totalReceiptQty / element.unitConvert));
-          });
-
+              .forEach(
+            (element) {
+              element.curQty = (element.curQty +
+                  ((totalReceiptQty / element.unitConvert) * factor));
+            },
+          );
           break;
         }
     }

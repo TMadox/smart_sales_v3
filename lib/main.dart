@@ -18,6 +18,7 @@ import 'package:smart_sales/Provider/groups_state.dart';
 import 'package:smart_sales/Provider/kinds_state.dart';
 import 'package:smart_sales/Provider/mow_state.dart';
 import 'package:smart_sales/Provider/stor_state.dart';
+import 'package:smart_sales/View/Common/Widgets/Common/error_widget.dart';
 import 'package:smart_sales/View/Screens/Items/items_viewmodel.dart';
 import 'package:smart_sales/Provider/clients_state.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -43,10 +44,11 @@ Future<void> main() async {
     await prefs.write("user_id", "31");
     await prefs.write("ip_address", "sky3m.duckdns.org");
   }
-  SystemChrome.setEnabledSystemUIMode(
+  await SystemChrome.setEnabledSystemUIMode(
     SystemUiMode.manual,
-    overlays: [SystemUiOverlay.bottom],
+    overlays: [],
   );
+
   EasyLoading.instance
     ..displayDuration = const Duration(milliseconds: 2000)
     ..indicatorType = EasyLoadingIndicatorType.threeBounce
@@ -94,6 +96,7 @@ class MyApp extends StatelessWidget {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
     ]);
+    precacheImage(const AssetImage("assets/cashier.png"), context);
     return GetMaterialApp(
       theme: ThemeManger.lightTheme,
       scrollBehavior: MyCustomScrollBehavior(),
@@ -111,6 +114,12 @@ class MyApp extends StatelessWidget {
       onGenerateRoute: appRouter.generateRoute,
       builder: EasyLoading.init(
         builder: ((context, child) {
+          ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
+            return CustomError(
+              errorDetails: errorDetails,
+              key: null,
+            );
+          };
           return ResponsiveWrapper.builder(
             child,
             maxWidth: 2024,

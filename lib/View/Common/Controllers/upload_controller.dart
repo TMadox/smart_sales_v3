@@ -1,9 +1,11 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:smart_sales/Data/Database/Commands/read_data.dart';
 import 'package:smart_sales/Data/Database/Commands/save_data.dart';
+import 'package:smart_sales/Services/Helpers/exceptions.dart';
 import 'package:smart_sales/Services/Repositories/dio_repository.dart';
 
 class UploadController extends GetxController {
@@ -75,7 +77,11 @@ class UploadController extends GetxController {
         if (foundError) throw error;
       }
     } catch (e) {
-      Get.snackbar("error".tr, "error with auto upload".tr);
+      if (e is DioError) {
+        EasyLoading.showError(DioExceptions.fromDioError(e).message);
+      } else {
+        EasyLoading.showError(e.toString());
+      }
     } finally {
       isUploading = false;
     }

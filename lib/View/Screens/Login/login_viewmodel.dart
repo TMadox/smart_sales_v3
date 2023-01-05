@@ -152,7 +152,7 @@ class LoginViewmodel extends ChangeNotifier {
             dialogType: DialogType.ERROR,
             context: context,
             title: "error".tr,
-            message: e.toString(),
+            message: "error with the login attempt".tr,
             onOkText: "ok".tr,
             onOkColor: Colors.green,
             onOkIcon: const Icon(Icons.check),

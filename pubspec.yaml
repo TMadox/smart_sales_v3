@@ -9,7 +9,6 @@ dependencies:
   auto_size_text: ^3.0.0
   awesome_dialog: ^2.1.2
   badges: ^2.0.3
-  bouncing_widget: ^2.0.0
   collection: ^1.15.0
   dio: ^4.0.4
   double_back_to_close: ^2.0.0

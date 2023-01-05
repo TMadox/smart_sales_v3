@@ -196,7 +196,7 @@ class _MowViewState extends State<MowView> {
                         (e) => DataCell(
                           Center(
                             child: Text(
-                              ValuesManager.doubleToString(e),
+                              ValuesManager.numToString(e),
                               textAlign: TextAlign.center,
                             ),
                           ),

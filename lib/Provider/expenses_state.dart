@@ -13,19 +13,24 @@ class ExpenseState extends ChangeNotifier {
     required int id,
     required num amount,
     required int sectionType,
+    bool? reverse,
   }) async {
+    int factor = 1;
+    if (reverse ?? false) {
+      factor = -1;
+    }
     double originalAmount =
         expenses.firstWhere((element) => element.accId == id).curBalance;
     if (sectionType == 108) {
       final ExpenseModel mow =
           expenses.firstWhere((element) => element.accId == id);
       expenses[expenses.indexOf(mow)] = expenses[expenses.indexOf(mow)]
-          .copyWith(curBalance: (originalAmount - amount));
+          .copyWith(curBalance: (originalAmount - (amount * factor)));
     } else {
       final ExpenseModel mow =
           expenses.firstWhere((element) => element.accId == id);
       expenses[expenses.indexOf(mow)] = expenses[expenses.indexOf(mow)]
-          .copyWith(curBalance: (originalAmount + amount));
+          .copyWith(curBalance: (originalAmount + (amount * factor)));
     }
     await GetStorage().write("expenses", expenseModelToMap(expenses));
     return expenses.firstWhere((element) => element.accId == id).curBalance;

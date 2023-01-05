@@ -1,6 +1,6 @@
 class ValuesManager {
   static String checkString(String? input) => input ?? ' ';
-  static String doubleToString(dynamic input) {
+  static String numToString(dynamic input) {
     if (input is double) {
       return input.toStringAsFixed(3);
     } else {

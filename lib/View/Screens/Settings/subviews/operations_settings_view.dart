@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
@@ -20,7 +22,11 @@ class _OperationsSettingsViewState extends State<OperationsSettingsView> {
 
   @override
   void initState() {
-    favorites = storage.read("favorites") ?? [];
+    try {
+      favorites = List.from(json.decode(storage.read("favorites") ?? "[]"));
+    } catch (e) {
+      favorites = [];
+    }
     super.initState();
   }
 
@@ -50,7 +56,7 @@ class _OperationsSettingsViewState extends State<OperationsSettingsView> {
                       FormBuilderCheckboxGroup<String>(
                         onChanged: (value) async {
                           favorites = value!;
-                          await storage.write("favorites", value);
+                          await storage.write("favorites", json.encode(value));
                           state(
                             () {},
                           );

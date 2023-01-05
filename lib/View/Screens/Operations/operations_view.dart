@@ -55,16 +55,13 @@ class _OperationsViewState extends State<OperationsView> {
                   child: CustomTextField(
                     name: "search",
                     onChanged: (p0) {
-                      // setState(() {
-                      //   searchWord = p0!;
-                      // });
+                      setState(() {
+                        searchWord = p0!;
+                      });
                     },
                     activated: true,
                     hintText: "search".tr,
-                    prefixIcon: const Icon(
-                      Icons.search,
-                      color: Colors.green,
-                    ),
+                    prefixIcon: const Icon(Icons.search, color: Colors.green),
                   ),
                 ),
               ),
@@ -278,7 +275,9 @@ class _OperationsViewState extends State<OperationsView> {
               ),
               FloatingActionButton(
                 onPressed: () async {
-                  await Get.find<UploadController>().commit(showLoading: true);
+                  await Get.find<UploadController>()
+                      .commit(showLoading: true)
+                      .then((value) => operationController.loadOperations());
                 },
                 mini: true,
                 backgroundColor: Colors.green,
@@ -317,52 +316,58 @@ class _OperationsViewState extends State<OperationsView> {
                       borderRadius: BorderRadius.circular(15.0),
                     ),
                     clipBehavior: Clip.hardEdge,
-                    child: SingleChildScrollView(
-                      child: PaginatedDataTable(
-                        arrowHeadColor: Colors.green,
-                        headingRowHeight: 30,
-                        dataRowHeight: 30,
-                        horizontalMargin: 0,
-                        columnSpacing: 0,
-                        source: OperationsSource(
-                          context: context,
-                          receipts: filterList(
-                            input: searchWord,
-                            receiptsList: operationController.operations.value,
-                          ),
-                          controller: operationController,
-                          isSelecting: widget.selecting,
-                        ),
-                        columns: [
-                          "number",
-                          "customer_name",
-                          "receipt_total",
-                          "date",
-                          "time",
-                          "paid_amount",
-                          "operation_type",
-                          "uploaded",
-                        ]
-                            .map(
-                              (title) => DataColumn(
-                                label: Expanded(
-                                  child: Container(
-                                    color: Colors.green,
-                                    child: Center(
-                                      child: Text(
-                                        title.tr,
-                                        textAlign: TextAlign.center,
-                                        style: GoogleFonts.cairo(
-                                          color: Colors.white,
+                    width: double.infinity,
+                    child: GetBuilder<OperationsController>(
+                      builder: (controller) {
+                        return SingleChildScrollView(
+                          child: PaginatedDataTable(
+                            arrowHeadColor: Colors.green,
+                            headingRowHeight: 30,
+                            dataRowHeight: 30,
+                            horizontalMargin: 0,
+                            columnSpacing: 0,
+                            source: OperationsSource(
+                              context: context,
+                              receipts: filterList(
+                                input: searchWord,
+                                receiptsList: controller.operations.value,
+                              ),
+                              controller: controller,
+                              isSelecting: widget.selecting,
+                            ),
+                            columns: [
+                              "number",
+                              "customer_name",
+                              "receipt_total",
+                              "date",
+                              "time",
+                              "paid_amount",
+                              "operation_type",
+                              "uploaded",
+                            ]
+                                .map(
+                                  (title) => DataColumn(
+                                    label: Expanded(
+                                      child: Container(
+                                        color: Colors.green,
+                                        child: Center(
+                                          child: Text(
+                                            title.tr,
+                                            textAlign: TextAlign.center,
+                                            style: GoogleFonts.cairo(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ),
-                            )
-                            .toList(),
-                      ),
+                                )
+                                .toList(),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ),

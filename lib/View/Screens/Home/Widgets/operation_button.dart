@@ -1,4 +1,3 @@
-import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
 
@@ -19,8 +18,8 @@ class OperationButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Visibility(
       visible: visible,
-      child: BouncingWidget(
-        onPressed: onPressed,
+      child: GestureDetector(
+        onTap: onPressed,
         child: Column(
           children: [
             CircleAvatar(

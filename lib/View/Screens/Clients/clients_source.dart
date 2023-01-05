@@ -53,7 +53,7 @@ class ClientsSource extends DataTableSource {
                         width: screenWidth(context) * 0.2,
                         child: Center(
                           child: AutoSizeText(
-                            ValuesManager.doubleToString(e),
+                            ValuesManager.numToString(e),
                             overflow: TextOverflow.visible,
                             maxLines: 1,
                           ),
@@ -61,7 +61,7 @@ class ClientsSource extends DataTableSource {
                       )
                     : Center(
                         child: Text(
-                          ValuesManager.doubleToString(e),
+                          ValuesManager.numToString(e),
                         ),
                       ),
                 onTap: () async {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:smart_sales/App/Util/colors.dart';
+import 'package:smart_sales/App/Resources/colors_manager.dart';
 import 'package:smart_sales/App/Resources/values_manager.dart';
 import 'package:smart_sales/Data/Models/entity.dart';
 import 'package:smart_sales/View/Screens/Receipts/Widgets/bottom_table_cell.dart';
@@ -44,7 +44,7 @@ class _BottomTableState extends State<BottomTable> {
             return DataTable(
               headingRowColor: MaterialStateProperty.resolveWith<Color?>(
                   (Set<MaterialState> states) {
-                return smaltBlue;
+                return defaultGreen;
               }),
               border: TableBorder.all(
                 width: 0.5,
@@ -88,12 +88,12 @@ class _BottomTableState extends State<BottomTable> {
                         width: 80,
                         padding: const EdgeInsets.symmetric(horizontal: 5),
                         decoration: BoxDecoration(
-                          color: Colors.green[800],
+                          color: lightGreen,
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(
-                          controller.currentReceipt.value['credit_before']
-                              .toString(),
+                          ValuesManager.numToString(
+                              controller.currentReceipt.value['credit_before']),
                           textAlign: TextAlign.center,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.cairo(
@@ -108,7 +108,7 @@ class _BottomTableState extends State<BottomTable> {
                         width: 80,
                         child: Center(
                           child: Text(
-                            ValuesManager.doubleToString(controller
+                            ValuesManager.numToString(controller
                                     .currentReceipt.value['oper_value'])
                                 .toString(),
                             overflow: TextOverflow.ellipsis,
@@ -137,7 +137,7 @@ class _BottomTableState extends State<BottomTable> {
                       SizedBox(
                         width: 80,
                         child: Text(
-                          ValuesManager.doubleToString(widget.receiptsController
+                          ValuesManager.numToString(widget.receiptsController
                               .currentReceipt.value['tax_value']),
                           textAlign: TextAlign.center,
                           overflow: TextOverflow.ellipsis,
@@ -149,11 +149,11 @@ class _BottomTableState extends State<BottomTable> {
                       Container(
                         width: 80,
                         decoration: BoxDecoration(
-                          color: Colors.green[800],
+                          color: lightGreen,
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(
-                          ValuesManager.doubleToString(widget.receiptsController
+                          ValuesManager.numToString(widget.receiptsController
                               .currentReceipt.value['oper_net_value_with_tax']),
                           textAlign: TextAlign.center,
                           overflow: TextOverflow.ellipsis,
@@ -179,7 +179,7 @@ class _BottomTableState extends State<BottomTable> {
                       SizedBox(
                         width: 80,
                         child: Text(
-                          ValuesManager.doubleToString(widget.receiptsController
+                          ValuesManager.numToString(widget.receiptsController
                               .currentReceipt.value['reside_value']),
                           textAlign: TextAlign.center,
                           overflow: TextOverflow.ellipsis,
@@ -191,12 +191,12 @@ class _BottomTableState extends State<BottomTable> {
                         width: 80,
                         padding: const EdgeInsets.symmetric(horizontal: 5),
                         decoration: BoxDecoration(
-                          color: Colors.green[800],
+                          color: lightGreen,
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(
-                          controller.currentReceipt.value['credit_after']
-                              .toString(),
+                          ValuesManager.numToString(
+                              controller.currentReceipt.value['credit_after']),
                           textAlign: TextAlign.center,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.cairo(

@@ -44,8 +44,8 @@ generalDialog({
       btnCancel: onCancel == null
           ? null
           : CommonButton(
-              title: onCancelText.toString(),
-              icon: onCancelIcon??const Icon(Icons.cancel),
+              title: onCancelText ?? "cancel".tr,
+              icon: onCancelIcon ?? const Icon(Icons.cancel),
               color: onCancelColor,
               onPressed: () {
                 Navigator.pop(context);

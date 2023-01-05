@@ -9,8 +9,10 @@ import 'package:smart_sales/App/Util/routing.dart';
 import 'package:smart_sales/View/Common/Widgets/Common/common_button.dart';
 import 'package:smart_sales/View/Common/Widgets/Common/custom_textfield.dart';
 
-void settingsDialog({
+void passwordDialog({
   required BuildContext context,
+  required String title,
+  required Function onCheck,
 }) {
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
   AwesomeDialog(
@@ -23,7 +25,7 @@ void settingsDialog({
       child: Column(
         children: [
           Text(
-            "settings".tr,
+            title,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 20,
@@ -49,7 +51,7 @@ void settingsDialog({
           if (_formKey.currentState!.value["ip_password"] ==
               GetStorage().read("ip_password")) {
             Get.back();
-            Navigator.of(context).pushNamed(Routes.settingsRoute);
+            onCheck();
           }
         }
       },

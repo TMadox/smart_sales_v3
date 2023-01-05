@@ -75,7 +75,7 @@ class _BottomInfoState extends State<BottomInfo> {
                   DataCell(
                     Center(
                       child: Text(
-                        ValuesManager.doubleToString(widget
+                        ValuesManager.numToString(widget
                                 .controller.currentReceipt.value['oper_value'])
                             .toString(),
                         overflow: TextOverflow.ellipsis,
@@ -122,7 +122,7 @@ class _BottomInfoState extends State<BottomInfo> {
                             }
                           } catch (e) {
                             discountController.text =
-                                ValuesManager.doubleToString(currentValue);
+                                ValuesManager.numToString(currentValue);
                             widget.controller.changeReceiptValue(
                               input: {
                                 "oper_disc_value": currentValue,
@@ -195,7 +195,7 @@ class _BottomInfoState extends State<BottomInfo> {
                   DataCell(
                     Center(
                       child: Text(
-                        ValuesManager.doubleToString(widget
+                        ValuesManager.numToString(widget
                             .controller.currentReceipt.value['tax_value']),
                         textAlign: TextAlign.center,
                         overflow: TextOverflow.ellipsis,
@@ -205,7 +205,7 @@ class _BottomInfoState extends State<BottomInfo> {
                   DataCell(
                     Center(
                       child: Text(
-                        ValuesManager.doubleToString(widget.controller
+                        ValuesManager.numToString(widget.controller
                             .currentReceipt.value['oper_net_value_with_tax']),
                         textAlign: TextAlign.center,
                         overflow: TextOverflow.ellipsis,

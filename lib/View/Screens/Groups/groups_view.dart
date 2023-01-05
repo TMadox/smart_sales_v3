@@ -112,7 +112,7 @@ class _GroupsViewState extends State<GroupsView> {
                           (e) => DataCell(
                             Center(
                               child: Text(
-                                ValuesManager.doubleToString(e),
+                                ValuesManager.numToString(e),
                               ),
                             ),
                           ),

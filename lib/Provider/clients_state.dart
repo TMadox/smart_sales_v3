@@ -66,21 +66,26 @@ class ClientsState extends ChangeNotifier {
     required int id,
     required num amount,
     required int sectionType,
+    bool? reverse,
   }) async {
+    int factor = 1;
+    if (reverse ?? false) {
+      factor = -1;
+    }
     if (sectionType == 2 || sectionType == 101) {
       double originalAmount =
           clients.firstWhere((element) => element.accId == id).curBalance;
       final Client client =
           clients.firstWhere((element) => element.accId == id);
       clients[clients.indexOf(client)] = clients[clients.indexOf(client)]
-          .copyWith(curBalance: (originalAmount - amount));
+          .copyWith(curBalance: (originalAmount - (amount * factor)));
     } else {
       double originalAmount =
           clients.firstWhere((element) => element.accId == id).curBalance;
       final Client client =
           clients.firstWhere((element) => element.accId == id);
       clients[clients.indexOf(client)] = clients[clients.indexOf(client)]
-          .copyWith(curBalance: (originalAmount + amount));
+          .copyWith(curBalance: (originalAmount + (amount * factor)));
     }
     await locator.get<SaveData>().saveCustomersData(
           input: clients,

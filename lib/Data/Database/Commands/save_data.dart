@@ -6,7 +6,6 @@ import 'package:smart_sales/Data/Models/item_model.dart';
 import 'package:smart_sales/Data/Models/options_model.dart';
 import 'package:smart_sales/Data/Models/power_model.dart';
 
-
 class SaveData {
   final GetStorage box = GetStorage();
   Future<void> saveItemsData({required List<ItemsModel> input}) async {
@@ -25,6 +24,12 @@ class SaveData {
     if (lastOperations != null) {
       await box.write("lastOperations", json.encode(lastOperations));
     }
+  }
+
+  Future<void> saveRecyclePin({
+    required List<Map> recycledOperations,
+  }) async {
+    await box.write("recycle", json.encode(recycledOperations));
   }
 
   Future<void> saveOptionsData({required List<OptionsModel> input}) async {

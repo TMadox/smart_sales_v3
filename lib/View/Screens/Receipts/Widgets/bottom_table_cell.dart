@@ -113,7 +113,7 @@ class _BottomTableCellState extends State<BottomTableCell> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
-                  ValuesManager.doubleToString(
+                  ValuesManager.numToString(
                     widget.receiptsController.currentReceipt
                         .value[widget.keyName],
                   ),

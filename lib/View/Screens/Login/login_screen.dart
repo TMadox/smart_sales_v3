@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 import 'package:smart_sales/App/Resources/screen_size.dart';
+import 'package:smart_sales/App/Util/routing.dart';
 import 'package:smart_sales/Provider/user_state.dart';
 import 'package:smart_sales/View/Screens/Login/login_viewmodel.dart';
 import 'package:smart_sales/View/Common/Widgets/Common/common_button.dart';
@@ -53,7 +54,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     ElevatedButton.icon(
                       onPressed: () {
-                        settingsDialog(context: context);
+                        passwordDialog(
+                          context: context,
+                          title: 'settings'.tr,
+                          onCheck: () {
+                            Navigator.of(context)
+                                .pushNamed(Routes.settingsRoute);
+                          },
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blue,
